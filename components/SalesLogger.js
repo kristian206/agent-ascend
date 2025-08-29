@@ -4,7 +4,6 @@ import { useAuth } from './AuthProvider'
 import { db } from '@/lib/firebase'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { createNotification } from '@/lib/notifications'
-import { awardPoints } from '@/lib/gamification'
 
 // Product types with commission values
 const PRODUCTS = {
@@ -86,10 +85,6 @@ export default function SalesLogger({ onSaleLogged }) {
 
       // Save to Firebase
       await addDoc(collection(db, 'sales'), saleData)
-
-      // Award points based on commission
-      const points = Math.floor(calculateTotalCommission() / 10) // 1 point per $10 commission
-      await awardPoints(user.uid, points, `Sale logged: ${formatProductsSold()}`)
 
       // Create notification
       await createNotification(
