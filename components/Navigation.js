@@ -64,14 +64,14 @@ export default function Navigation({ user }) {
             Team
           </Link>
           <Link 
-            href="/leaderboard" 
+            href="/achievement-wall" 
             className={`px-4 py-2 rounded-lg font-bold transition ${
-              isActive('/leaderboard') 
+              isActive('/achievement-wall') 
                 ? 'bg-white/20 text-white' 
                 : 'text-gray-300 hover:bg-white/10 hover:text-white'
             }`}
           >
-            Leaderboard
+            Achievements
           </Link>
           <Link 
             href="/profile" 

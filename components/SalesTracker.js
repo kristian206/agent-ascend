@@ -137,7 +137,7 @@ export default function SalesTracker() {
                         <span className="text-lg">🔔</span>
                         <span className="text-sm text-white">
                           <span className="font-semibold">{bell.userName}</span>
-                          <span className="text-gray-400"> {bell.message}</span>
+                          <span className="text-gray-400"> rang the bell!</span>
                         </span>
                       </div>
                       <span className="text-xs text-gray-500">

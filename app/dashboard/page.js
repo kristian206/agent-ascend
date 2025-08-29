@@ -5,6 +5,7 @@ import QuickStats from '@/components/QuickStats'
 import DailyCheckIn from '@/components/DailyCheckIn'
 import RecentActivity from '@/components/RecentActivity'
 import SalesTracker from '@/components/SalesTracker'
+import PersonalProgress from '@/components/PersonalProgress'
 import { useState } from 'react'
 
 export default function Dashboard() {
@@ -29,8 +30,9 @@ export default function Dashboard() {
 
         <QuickStats userData={userData} />
         
-        {/* Sales Tracker - Prominent Position */}
-        <div className="mt-8">
+        {/* Personal Progress and Sales Tracker */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+          <PersonalProgress />
           <SalesTracker />
         </div>
         

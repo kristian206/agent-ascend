@@ -5,6 +5,67 @@ All notable changes to Agency Ascent will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2024-12-29
+
+### Added
+
+#### Comprehensive Privacy System
+- **Privacy Rules Implementation**:
+  - Users see exact numbers for their own stats
+  - Team members see only percentages for others
+  - No current goals or points visible between users
+  - Lifetime stats remain visible (career achievements)
+
+- **Personal Progress Component**:
+  - Shows YOUR exact numbers and goals
+  - Weekly: points and items with progress bars
+  - Monthly: points and items with progress bars  
+  - Yearly: percentage view with actual numbers
+  - Color-coded progress (green/yellow/orange/gray)
+
+- **Achievement Wall (Replaces Leaderboard)**:
+  - No individual rankings or comparisons
+  - Team-wide achievement percentages
+  - "45% of team at weekly goal"
+  - Streak champions count (not names)
+  - Collective celebration focus
+  - Daily bell count for team motivation
+
+- **Privacy Utilities Library**:
+  - `getPrivacyLevel()` - Determines viewing permissions
+  - `filterUserData()` - Removes sensitive data based on privacy level
+  - `filterSaleActivity()` - Hides sale details from others
+  - `formatActivityItem()` - Shows "rang the bell" without numbers
+
+### Changed
+
+- **Dashboard Updates**:
+  - Personal Progress shows exact numbers (self only)
+  - Team activity shows no specific numbers
+  - Sales Tracker shows percentages for others
+
+- **Team Feed Privacy**:
+  - "John rang the bell! 🔔" (no policy type or points)
+  - "Sarah achieved weekly goal! 🎯" (no specific numbers)
+  - Activity feed hides all performance metrics
+
+- **Navigation Update**:
+  - "Leaderboard" replaced with "Achievements"
+  - Focus on collective success over competition
+
+### Privacy Levels
+
+1. **SELF**: See everything about yourself
+2. **TEAM_MEMBER**: See percentages and streaks only
+3. **LEADER**: See team aggregates (not individual numbers)
+4. **PUBLIC**: See lifetime stats and achievements only
+
+### Removed
+
+- **Leaderboard**: Completely removed competitive ranking
+- **Visible Current Stats**: Others can't see your current numbers
+- **Specific Sale Details**: Team feed no longer shows points/types
+
 ## [1.4.0] - 2024-12-29
 
 ### Added
