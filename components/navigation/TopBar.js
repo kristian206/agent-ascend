@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import NotificationBell from '@/components/NotificationBell'
-import CommandPalette from './CommandPalette'
+// CommandPalette is opened via parent component
 import { ThemeToggle, UiVersionToggle } from '@/components/theme/ThemeProvider'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
@@ -137,7 +137,7 @@ export default function TopBar({ user, onOpenCommand }) {
                         {user?.name || 'Agent'}
                       </div>
                       <div className="type-detail-caption text-ink-400">
-                        Level {user?.level || 1} • {user?.xp || 0} XP
+                        ID: {user?.userId || '------'} • Level {user?.level || 1} • {user?.xp || 0} XP
                       </div>
                     </div>
                   </div>

@@ -4,6 +4,10 @@ import { useAuth } from './AuthProvider'
 import { db } from '@/lib/firebase'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { createNotification } from '@/lib/notifications'
+import { canLogSale } from '@/lib/rateLimiter'
+import { withRetry, getUserMessage } from '@/lib/errorHandler'
+import { updateMonthlyTotals, updateUserStats } from '@/lib/denormalization'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 // Product types with commission values
 const PRODUCTS = {
@@ -65,9 +69,17 @@ export default function SalesLogger({ onSaleLogged }) {
     e.preventDefault()
     if (!clientFirstName.trim() || calculateTotalItems() === 0) return
 
+    // Check rate limit
+    const rateLimit = canLogSale(user.uid)
+    if (!rateLimit.allowed) {
+      const minutes = Math.ceil(rateLimit.resetIn / 60000)
+      alert(`Rate limit reached. You can log more sales in ${minutes} minutes. (Daily: ${rateLimit.dailyRemaining}/50, Hourly: ${rateLimit.hourlyRemaining}/10)`)
+      return
+    }
+
     setIsSubmitting(true)
     try {
-      // Prepare sale data
+      // Prepare sale data with retry logic
       const saleData = {
         userId: user.uid,
         userName: userData?.name || 'Agent',
@@ -83,15 +95,24 @@ export default function SalesLogger({ onSaleLogged }) {
         date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
       }
 
-      // Save to Firebase
-      await addDoc(collection(db, 'sales'), saleData)
+      // Save to Firebase with retry
+      const saleDoc = await withRetry(async () => {
+        return await addDoc(collection(db, 'sales'), saleData)
+      }, 3, 1000)
 
-      // Create notification
-      await createNotification(
-        user.uid,
-        `💰 Sale logged! ${formatProductsSold()} - $${calculateTotalCommission()} commission earned!`,
-        'success'
-      )
+      // Update denormalized data for performance
+      await Promise.all([
+        // Update monthly totals for fast aggregation
+        updateMonthlyTotals(saleData),
+        // Update user stats (points, level, streak)
+        updateUserStats(user.uid, calculateTotalCommission(), 'sale'),
+        // Create notification
+        createNotification(
+          user.uid,
+          `💰 Sale logged! ${formatProductsSold()} - $${calculateTotalCommission()} commission earned!`,
+          'success'
+        )
+      ])
 
       // Show success message
       setShowSuccess(true)

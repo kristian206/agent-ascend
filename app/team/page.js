@@ -23,8 +23,28 @@ export default function TeamPage() {
   const [activeTab, setActiveTab] = useState('roster')
 
   useEffect(() => {
+    const loadData = async () => {
+      setLoading(true)
+      
+      if (userData?.teamId) {
+        try {
+          const teamDoc = await getDoc(doc(db, 'teams', userData.teamId))
+          if (teamDoc.exists() && teamDoc.data().isActive) {
+            setTeamData(teamDoc.data())
+          } else {
+            // Team no longer exists or is inactive
+            setTeamData(null)
+          }
+        } catch (error) {
+          console.error('Error loading team:', error)
+        }
+      }
+      
+      setLoading(false)
+    }
+    
     if (user && userData) {
-      loadTeamData()
+      loadData()
     }
   }, [user, userData])
 
@@ -48,13 +68,13 @@ export default function TeamPage() {
     setLoading(false)
   }
 
-  const handleCreateSuccess = (result) => {
+  const handleCreateSuccess = () => {
     setShowCreateModal(false)
     router.refresh()
     window.location.reload()
   }
 
-  const handleJoinSuccess = (result) => {
+  const handleJoinSuccess = () => {
     setShowJoinModal(false)
     router.refresh()
     window.location.reload()
@@ -155,7 +175,7 @@ export default function TeamPage() {
                 {teamData.name}
               </h1>
               <p className="text-gray-400 mt-1">
-                {teamData.description || 'Working together to achieve greatness'}
+                Team ID: {teamData.teamNumber || '------'} • {teamData.description || 'Working together to achieve greatness'}
               </p>
             </div>
             
@@ -259,6 +279,10 @@ export default function TeamPage() {
             <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
               <h3 className="text-lg font-bold text-white mb-4">Quick Info</h3>
               <div className="space-y-3">
+                <div>
+                  <p className="text-xs text-gray-400">Team ID</p>
+                  <p className="text-white font-mono text-lg">{teamData.teamNumber || '------'}</p>
+                </div>
                 <div>
                   <p className="text-xs text-gray-400">Your Role</p>
                   <p className="text-white font-semibold capitalize">{userData?.teamRole}</p>

@@ -7,14 +7,13 @@ import DailyCheckIn from '@/components/DailyCheckIn'
 import RecentActivity from '@/components/RecentActivity'
 import SalesTracker from '@/components/SalesTracker'
 import PersonalProgress from '@/components/PersonalProgress'
-import { useState } from 'react'
+// Removed unused useState import
 import { useSearchParams } from 'next/navigation'
 import SalesLogger from '@/components/SalesLogger'
 import TeamCommissionOverview from '@/components/TeamCommissionOverview'
 
 export default function Dashboard() {
   const { user, userData } = useAuth()
-  const [activeTab, setActiveTab] = useState('home')
   const searchParams = useSearchParams()
   
   // Check UI version preference (default to new UI)
@@ -102,19 +101,6 @@ export default function Dashboard() {
           {/* Sales Actions Bar */}
           <div className="flex flex-wrap gap-4 mb-8">
             <SalesLogger onSaleLogged={() => window.location.reload()} />
-            <a 
-              href="/leads"
-              className="glass radius-lg px-6 py-3 flex items-center gap-3 hover:scale-105 transition-all group"
-            >
-              <span className="text-2xl">📋</span>
-              <div className="text-left">
-                <div className="type-list-heading text-primary">View Leads</div>
-                <div className="type-detail-caption text-secondary">Manage pipeline</div>
-              </div>
-              <svg className="w-5 h-5 text-ink-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
           </div>
 
           <QuickStats userData={userData} />

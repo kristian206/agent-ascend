@@ -4,6 +4,8 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { leaveTeam, promoteMember, demoteMember } from '@/lib/teamUtils'
 import { useAuth } from '@/components/AuthProvider'
+import { SkeletonTeamMember } from '@/components/ui/Skeleton'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 export default function TeamRoster({ teamId, teamData, currentUserRole, onUpdate }) {
   const { user } = useAuth()
@@ -42,6 +44,7 @@ export default function TeamRoster({ teamId, teamData, currentUserRole, onUpdate
           
           return {
             id: memberId,
+            userId: data.userId,
             name: data.name || data.email?.split('@')[0] || 'Unknown',
             email: data.email,
             role: data.teamRole,
@@ -127,7 +130,14 @@ export default function TeamRoster({ teamId, teamData, currentUserRole, onUpdate
   if (loading) {
     return (
       <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
-        <p className="text-gray-400">Loading team members...</p>
+        <h3 className="text-xl font-bold text-white mb-4">
+          Team Roster
+        </h3>
+        <div className="space-y-3">
+          {[1, 2, 3].map(i => (
+            <SkeletonTeamMember key={i} />
+          ))}
+        </div>
       </div>
     )
   }
@@ -158,6 +168,7 @@ export default function TeamRoster({ teamId, teamData, currentUserRole, onUpdate
                         <span className="text-xs text-gray-500">(You)</span>
                       )}
                     </div>
+                    <p className="text-xs text-gray-500">ID: {member.userId || '------'}</p>
                     <div className="flex items-center gap-4 mt-1">
                       <p className="text-xs text-gray-400">
                         🔥 {member.streak} day streak

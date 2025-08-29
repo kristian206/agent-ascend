@@ -1,9 +1,11 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, serverTimestamp, updateDoc, collection, query, getDocs } from 'firebase/firestore'
 import { auth, db } from '@/lib/firebase'
 import { useRouter, usePathname } from 'next/navigation'
+import { generateUniqueId } from '@/lib/idGenerator'
+import LoadingScreen from '@/components/LoadingScreen'
 
 const AuthContext = createContext({})
 
@@ -18,16 +20,28 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user)
-        
-        // Get or create user document
-        const userRef = doc(db, 'members', user.uid)
-        const userDoc = await getDoc(userRef)
+      try {
+        if (user) {
+          setUser(user)
+          
+          // Get or create user document
+          const userRef = doc(db, 'members', user.uid)
+          const userDoc = await getDoc(userRef)
         
         if (!userDoc.exists()) {
-          // Create new user
+          // Get all existing user IDs to ensure uniqueness
+          const usersQuery = query(collection(db, 'users'))
+          const usersSnapshot = await getDocs(usersQuery)
+          const existingIds = []
+          usersSnapshot.forEach(doc => {
+            if (doc.data().userId) {
+              existingIds.push(doc.data().userId)
+            }
+          })
+          
+          // Create new user with unique 6-digit ID
           const newUserData = {
+            userId: generateUniqueId(existingIds),
             email: user.email,
             name: user.displayName || user.email.split('@')[0],
             role: user.email === 'kristian.suson@gmail.com' ? 'god' : 'member',
@@ -54,15 +68,22 @@ export default function AuthProvider({ children }) {
         if (pathname === '/') {
           router.push('/dashboard')
         }
-      } else {
+        } else {
+          setUser(null)
+          setUserData(null)
+          // Redirect to login if not authenticated
+          if (pathname !== '/') {
+            router.push('/')
+          }
+        }
+      } catch (error) {
+        console.error('Error in auth state change:', error)
+        // Don't crash the app, just log the error
         setUser(null)
         setUserData(null)
-        // Redirect to login if not authenticated
-        if (pathname !== '/') {
-          router.push('/')
-        }
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     })
 
     return () => unsubscribe()
@@ -70,7 +91,7 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, userData, loading }}>
-      {!loading && children}
+      {loading ? <LoadingScreen /> : children}
     </AuthContext.Provider>
   )
 }

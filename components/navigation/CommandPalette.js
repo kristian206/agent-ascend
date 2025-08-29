@@ -5,29 +5,18 @@ import { useRouter } from 'next/navigation'
 // Search index - in production this would come from a backend
 const SEARCH_INDEX = {
   entities: [
-    // Sample leads
-    { type: 'lead', id: '1', name: 'John Smith', meta: 'Interested in auto policy', icon: '👤' },
-    { type: 'lead', id: '2', name: 'Sarah Johnson', meta: 'Home insurance quote', icon: '👤' },
-    { type: 'lead', id: '3', name: 'Mike Davis', meta: 'Life insurance inquiry', icon: '👤' },
-    
-    // Sample policies
-    { type: 'policy', id: 'P001', name: 'AUTO-2024-001', meta: 'John Smith - Active', icon: '🚗' },
-    { type: 'policy', id: 'P002', name: 'HOME-2024-042', meta: 'Sarah Johnson - Pending', icon: '🏠' },
-    { type: 'policy', id: 'P003', name: 'LIFE-2024-018', meta: 'Mike Davis - Active', icon: '❤️' },
-    
-    // Sample contacts
-    { type: 'contact', id: 'C1', name: 'Alice Brown', meta: 'Customer since 2020', icon: '📞' },
-    { type: 'contact', id: 'C2', name: 'Bob Wilson', meta: 'Premium member', icon: '📞' },
+    // Team members and users
+    { type: 'member', id: '1', name: 'Team Member 1', meta: 'Level 5 Agent', icon: '👤' },
+    { type: 'member', id: '2', name: 'Team Member 2', meta: 'Level 3 Agent', icon: '👤' },
   ],
   
   actions: [
     // Quick actions
-    { type: 'action', id: 'add-lead', name: 'Add New Lead', meta: 'Create a new prospect', icon: '➕', shortcut: '⌘L' },
-    { type: 'action', id: 'create-quote', name: 'Create Quote', meta: 'Generate new quote', icon: '💰', shortcut: '⌘Q' },
-    { type: 'action', id: 'log-call', name: 'Log Call', meta: 'Record customer interaction', icon: '📞' },
+    { type: 'action', id: 'log-sale', name: 'Log Sale', meta: 'Record a new sale', icon: '💰', shortcut: '⌘S' },
     { type: 'action', id: 'update-goals', name: 'Update Team Goals', meta: 'Set new targets', icon: '🎯' },
     { type: 'action', id: 'daily-checkin', name: 'Daily Check-in', meta: 'Morning intentions', icon: '☀️' },
-    { type: 'action', id: 'ring-bell', name: 'Ring the Bell', meta: 'Log a sale', icon: '🔔', shortcut: '⌘B' },
+    { type: 'action', id: 'ring-bell', name: 'Ring the Bell', meta: 'Celebrate achievement', icon: '🔔', shortcut: '⌘B' },
+    { type: 'action', id: 'view-leaderboard', name: 'View Leaderboard', meta: 'Check rankings', icon: '🏆' },
   ],
   
   navigation: [

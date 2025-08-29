@@ -27,7 +27,7 @@ export default function LoginPage() {
   const handleCreate = async (e) => {
     e.preventDefault()
     try {
-      const cred = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+      await createUserWithEmailAndPassword(auth, formData.email, formData.password)
       // User doc will be created by AuthProvider
       router.push('/dashboard')
     } catch (err) {

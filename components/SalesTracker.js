@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/components/AuthProvider'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import SalesLogger from './SalesLogger'
+import { SkeletonStats, SkeletonListItem } from '@/components/ui/Skeleton'
+import ErrorBoundary from '@/components/ErrorBoundary'
+// SalesLogger component is opened from parent
 
 export default function SalesTracker() {
-  const { user, userData } = useAuth()
-  const [showSalesLogger, setShowSalesLogger] = useState(false)
+  const { user } = useAuth()
   const [stats, setStats] = useState({
     todayCommission: 0,
     todayRevenue: 0,
@@ -99,14 +100,26 @@ export default function SalesTracker() {
       
     } catch (error) {
       console.error('Error loading sales stats:', error)
+      // Handle Firestore index errors gracefully
+      if (error.code === 'failed-precondition' && error.message?.includes('index')) {
+        console.info('Firestore index is being created. Sales data will be available soon.')
+      }
+      // Set default empty state on error
+      setStats({
+        todayCommission: 0,
+        todayRevenue: 0,
+        todaySales: 0,
+        monthCommission: 0,
+        monthRevenue: 0,
+        monthSales: 0,
+        weekCommission: 0
+      })
+      setRecentSales([])
     }
     setLoading(false)
   }
 
-  const handleSaleLogged = () => {
-    // Refresh stats after a sale
-    loadStats()
-  }
+  // Sales logging handled by parent component
 
   const formatTime = (timestamp) => {
     if (!timestamp) return ''
@@ -139,9 +152,19 @@ export default function SalesTracker() {
       
       {/* Stats Grid */}
       {loading ? (
-        <div className="text-center py-8">
-          <div className="animate-spin w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="type-list-body text-secondary">Loading sales data...</p>
+        <div>
+          {/* Loading Skeletons */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {[1, 2, 3, 4].map(i => (
+              <SkeletonStats key={i} />
+            ))}
+          </div>
+          <div className="space-y-3">
+            <h3 className="type-list-heading text-primary mb-3">Recent Sales</h3>
+            {[1, 2, 3].map(i => (
+              <SkeletonListItem key={i} />
+            ))}
+          </div>
         </div>
       ) : (
         <>
@@ -203,28 +226,28 @@ export default function SalesTracker() {
           </div>
           
           {/* Recent Sales */}
-          {recentSales.length > 0 && (
+          {recentSales && recentSales.length > 0 && (
             <div>
               <h3 className="type-list-heading text-primary mb-3">Recent Sales</h3>
               <div className="space-y-2">
                 {recentSales.map((sale) => (
                   <div
-                    key={sale.id}
+                    key={sale?.id || Math.random()}
                     className="flex items-center justify-between glass radius-lg p-3 border border-ink-100"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-xl">💼</span>
                       <div>
                         <span className="type-list-body text-primary">
-                          {sale.clientFirstName} - {sale.productsSummary}
+                          {sale?.clientFirstName || 'Client'} - {sale?.productsSummary || 'Product'}
                         </span>
                         <div className="type-detail-caption text-success">
-                          ${sale.totalCommission} commission
+                          ${sale?.totalCommission || 0} commission
                         </div>
                       </div>
                     </div>
                     <span className="type-detail-caption text-tertiary">
-                      {formatTime(sale.timestamp)}
+                      {formatTime(sale?.timestamp)}
                     </span>
                   </div>
                 ))}
@@ -257,7 +280,7 @@ export default function SalesTracker() {
           {stats.todaySales >= 5 && (
             <div className="text-center py-4 border-t border-ink-100 mt-6">
               <p className="type-list-body text-success font-semibold">
-                🏆 Outstanding! {stats.todaySales} sales today! You're crushing it!
+                🏆 Outstanding! {stats.todaySales} sales today! You&apos;re crushing it!
               </p>
             </div>
           )}

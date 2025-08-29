@@ -97,6 +97,12 @@ export default function TeamCommissionOverview() {
       setSalesData(salesByUser)
     } catch (error) {
       console.error('Error loading team data:', error)
+      // Handle Firestore index errors gracefully
+      if (error.code === 'failed-precondition' && error.message?.includes('index')) {
+        console.info('Firestore index is being created. Team data will be available soon.')
+      }
+      // Set empty state on error
+      setSalesData({})
     } finally {
       setIsLoading(false)
     }

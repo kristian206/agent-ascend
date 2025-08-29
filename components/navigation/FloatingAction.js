@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const QUICK_ACTIONS = [
-  { id: 'lead', label: 'New Lead', icon: '👤', color: 'from-blue-500 to-blue-600', href: '/leads/new' },
-  { id: 'quote', label: 'Create Quote', icon: '💰', color: 'from-green-500 to-green-600', href: '/quotes/new' },
-  { id: 'call', label: 'Log Call', icon: '📞', color: 'from-purple-500 to-purple-600', action: 'log-call' },
-  { id: 'sale', label: 'Ring Bell', icon: '🔔', color: 'from-yellow-500 to-yellow-600', action: 'ring-bell' },
-  { id: 'task', label: 'Add Task', icon: '✅', color: 'from-pink-500 to-pink-600', href: '/tasks/new' },
+  { id: 'sale', label: 'Log Sale', icon: '💰', color: 'from-green-500 to-green-600', action: 'log-sale' },
+  { id: 'checkin', label: 'Daily Check-in', icon: '☀️', color: 'from-yellow-500 to-yellow-600', href: '/daily-intentions' },
+  { id: 'team', label: 'View Team', icon: '👥', color: 'from-blue-500 to-blue-600', href: '/team' },
+  { id: 'bell', label: 'Ring Bell', icon: '🔔', color: 'from-purple-500 to-purple-600', action: 'ring-bell' },
+  { id: 'leaderboard', label: 'Leaderboard', icon: '🏆', color: 'from-pink-500 to-pink-600', href: '/leaderboard' },
 ]
 
 export default function FloatingAction() {

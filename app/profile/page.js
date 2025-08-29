@@ -16,10 +16,16 @@ export default function ProfilePage() {
   useEffect(() => {
     if (userData) {
       setDisplayName(userData.name || '')
+    }
+  }, [userData])
+  
+  useEffect(() => {
+    if (user && userData) {
       loadStats()
       loadRecentActivity()
     }
-  }, [userData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, userData])
 
   const loadStats = async () => {
     if (!user) return
@@ -155,9 +161,10 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     <h2 className="text-2xl font-bold text-white mb-2">{userData?.name || 'Agent'}</h2>
+                    <p className="text-gray-400 text-sm">ID: {userData?.userId || '------'}</p>
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="text-sm text-gray-400 hover:text-white transition"
+                      className="text-sm text-gray-400 hover:text-white transition mt-2"
                     >
                       Edit Name
                     </button>
