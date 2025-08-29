@@ -4,6 +4,7 @@ import { useAuth } from '@/components/AuthProvider'
 import AppShell from '@/components/navigation/AppShell'
 import DashboardCard, { ListCard } from '@/components/dashboard/DashboardCard'
 import PerformanceHUD from '@/components/performance/PerformanceHUD'
+import { HelpIcon, CoachMarks, useIsFirstRun } from '@/components/help/HelpSystem'
 
 // Sample data - in production this would come from Firebase/API
 const SAMPLE_DATA = {
@@ -60,6 +61,7 @@ export default function DashboardV2() {
   const { user, userData } = useAuth()
   const [density, setDensity] = useState('default')
   const [data, setData] = useState(SAMPLE_DATA)
+  const { isFirstRun, markAsSeen } = useIsFirstRun('dashboard-onboarding')
 
   // Load user preference for density
   useEffect(() => {
@@ -118,7 +120,12 @@ export default function DashboardV2() {
         </header>
 
         {/* Row 1: KPIs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="type-list-heading text-primary">Key Metrics</h2>
+            <HelpIcon section="dashboard-kpis" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis-section">
           {/* Monthly Goal */}
           <DashboardCard
             title="Monthly Goal"
@@ -246,9 +253,15 @@ export default function DashboardV2() {
             }
           />
         </div>
+        </div>
 
         {/* Performance HUD - Compact View */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="relative mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="type-list-heading text-primary">Performance</h2>
+            <HelpIcon section="dashboard-performance" />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" id="performance-section">
           <div className="lg:col-span-2">
             <PerformanceHUD 
               userId={userData?.uid}
@@ -274,9 +287,15 @@ export default function DashboardV2() {
             </div>
           </div>
         </div>
+        </div>
 
         {/* Row 3: Work Queue */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="relative mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="type-list-heading text-primary">Work Queue</h2>
+            <HelpIcon section="dashboard-work-queue" />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" id="work-queue-section">
           {/* Due Follow-ups */}
           <ListCard
             title="Due Follow-ups"
@@ -303,9 +322,15 @@ export default function DashboardV2() {
             emptyMessage="No hot leads at the moment"
           />
         </div>
+        </div>
 
-        {/* Row 3: Recent Activity */}
-        <div className="mb-6">
+        {/* Row 4: Recent Activity */}
+        <div className="relative mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="type-list-heading text-primary">Recent Activity</h2>
+            <HelpIcon section="dashboard-activity" />
+          </div>
+          <div id="activity-section">
           <ListCard
             title="Recent Activity"
             items={data.recentActivity}
@@ -317,6 +342,7 @@ export default function DashboardV2() {
             }}
             emptyMessage="No recent activity"
           />
+        </div>
         </div>
 
         {/* Quick Stats Bar */}
@@ -347,6 +373,59 @@ export default function DashboardV2() {
           </div>
         </div>
       </div>
+      
+      {/* Coach Marks for first-time users */}
+      {isFirstRun && (
+        <CoachMarks
+          marks={[
+            {
+              id: 'welcome',
+              title: 'Welcome to Your Dashboard!',
+              description: 'This is your command center. Let me show you around the key features.',
+              tooltipTop: '20%',
+              tooltipLeft: '50%',
+              tooltipRight: 'auto'
+            },
+            {
+              id: 'kpis',
+              element: '#kpis-section',
+              title: 'Track Your Key Metrics',
+              description: 'Monitor your progress toward monthly and weekly goals. Click any card for more details.',
+              top: '200px',
+              left: '20px',
+              right: '20px',
+              height: '180px',
+              tooltipTop: '400px',
+              tooltipLeft: '50px'
+            },
+            {
+              id: 'performance',
+              element: '#performance-section',
+              title: 'Performance HUD',
+              description: 'Get AI-powered coaching suggestions based on your real-time performance metrics.',
+              tooltipTop: '450px',
+              tooltipLeft: '50px'
+            },
+            {
+              id: 'work-queue',
+              element: '#work-queue-section',
+              title: 'Your Work Queue',
+              description: 'See your prioritized tasks and follow-ups. Hot leads appear at the top.',
+              tooltipTop: '550px',
+              tooltipLeft: '50px'
+            },
+            {
+              id: 'activity',
+              element: '#activity-section',
+              title: 'Recent Activity',
+              description: 'Track your interactions and their outcomes. Use this to identify patterns in what works.',
+              tooltipTop: '650px',
+              tooltipLeft: '50px'
+            }
+          ]}
+          onComplete={markAsSeen}
+        />
+      )}
     </AppShell>
   )
 }

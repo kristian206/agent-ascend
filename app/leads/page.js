@@ -4,6 +4,7 @@ import { useAuth } from '@/components/AuthProvider'
 import AppShell from '@/components/navigation/AppShell'
 import DataTable from '@/components/ui/DataTable'
 import InspectorDrawer, { DrawerSection, DrawerInfo, DrawerActions } from '@/components/ui/InspectorDrawer'
+import { HelpIcon, CoachMarks, useIsFirstRun } from '@/components/help/HelpSystem'
 
 // Sample lead data
 const SAMPLE_LEADS = [
@@ -181,6 +182,7 @@ export default function LeadsPage() {
   const [sortBy, setSortBy] = useState('status')
   const [sortDirection, setSortDirection] = useState('desc')
   const [searchQuery, setSearchQuery] = useState('')
+  const { isFirstRun, markAsSeen } = useIsFirstRun('leads-onboarding')
 
   // Sort leads
   const sortedLeads = [...leads].sort((a, b) => {
@@ -296,23 +298,30 @@ export default function LeadsPage() {
         <header className="mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="type-dashboard-title text-primary">Leads</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="type-dashboard-title text-primary">Leads</h1>
+                <HelpIcon section="leads-table" />
+              </div>
               <p className="type-detail-body text-secondary mt-1">
                 {filteredLeads.length} active leads
               </p>
             </div>
-            <button 
-              onClick={() => window.location.href = '/leads/create'}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-brand-500 to-brand-600 text-white type-list-body font-medium hover:shadow-lg transition-all"
-            >
-              + Add Lead
-            </button>
+            <div className="flex items-center gap-2">
+              <HelpIcon section="leads-create" />
+              <button 
+                onClick={() => window.location.href = '/leads/create'}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-brand-500 to-brand-600 text-white type-list-body font-medium hover:shadow-lg transition-all"
+                id="add-lead-button"
+              >
+                + Add Lead
+              </button>
+            </div>
           </div>
         </header>
 
         {/* Search Bar */}
         <div className="mb-4">
-          <div className="relative max-w-md">
+          <div className="relative max-w-md" id="search-section">
             <input
               type="text"
               placeholder="Search leads..."
@@ -327,7 +336,12 @@ export default function LeadsPage() {
         </div>
 
         {/* Data Table */}
-        <div className="glass radius-lg overflow-hidden">
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="type-list-heading text-primary">Lead Management</h2>
+            <HelpIcon section="leads-actions" />
+          </div>
+          <div className="glass radius-lg overflow-hidden" id="table-section">
           <DataTable
             columns={COLUMNS}
             data={filteredLeads}
@@ -339,6 +353,7 @@ export default function LeadsPage() {
             bulkActions={bulkActions}
             preferencesKey="leads-table"
           />
+        </div>
         </div>
 
         {/* Inspector Drawer */}
@@ -453,6 +468,53 @@ export default function LeadsPage() {
           )}
         </InspectorDrawer>
       </div>
+      
+      {/* Coach Marks for first-time users */}
+      {isFirstRun && (
+        <CoachMarks
+          marks={[
+            {
+              id: 'leads-welcome',
+              title: 'Welcome to Lead Management!',
+              description: 'This is where you manage all your leads from initial contact to closing. Let me show you the key features.',
+              tooltipTop: '20%',
+              tooltipLeft: '50%'
+            },
+            {
+              id: 'leads-search',
+              element: '#search-section',
+              title: 'Quick Search',
+              description: 'Find leads instantly by name, email, or product. The search updates in real-time as you type.',
+              tooltipTop: '250px',
+              tooltipLeft: '50px'
+            },
+            {
+              id: 'leads-table',
+              element: '#table-section',
+              title: 'Lead Table',
+              description: 'Click column headers to sort. Hover over rows for quick actions. Select multiple leads for bulk operations.',
+              tooltipTop: '400px',
+              tooltipLeft: '50px'
+            },
+            {
+              id: 'leads-add',
+              element: '#add-lead-button',
+              title: 'Add New Leads',
+              description: 'Click here to add a new lead. The multi-step form guides you through capturing all necessary information.',
+              tooltipTop: '150px',
+              tooltipRight: '200px'
+            },
+            {
+              id: 'leads-actions',
+              title: 'Quick Actions',
+              description: 'Hover over any lead row to see action buttons. You can call, email, or add notes without leaving this page.',
+              tooltipTop: '450px',
+              tooltipLeft: '300px'
+            }
+          ]}
+          onComplete={markAsSeen}
+        />
+      )}
     </AppShell>
   )
 }
