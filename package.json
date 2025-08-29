@@ -6,7 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "branch:create": "git checkout -b",
+    "branch:switch": "git checkout",
+    "branch:list": "git branch",
+    "commit": "git add . && git commit -m",
+    "push": "git push origin HEAD",
+    "pull": "git pull origin",
+    "status": "git status",
+    "log": "git log --oneline -10"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
