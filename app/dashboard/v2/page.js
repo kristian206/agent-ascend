@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/components/AuthProvider'
 import AppShell from '@/components/navigation/AppShell'
 import DashboardCard, { ListCard } from '@/components/dashboard/DashboardCard'
+import PerformanceHUD from '@/components/performance/PerformanceHUD'
 
 // Sample data - in production this would come from Firebase/API
 const SAMPLE_DATA = {
@@ -246,7 +247,35 @@ export default function DashboardV2() {
           />
         </div>
 
-        {/* Row 2: Work Queue */}
+        {/* Performance HUD - Compact View */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-2">
+            <PerformanceHUD 
+              userId={userData?.uid}
+              view="personal"
+              compact={true}
+              showCoaching={true}
+            />
+          </div>
+          <div className="lg:col-span-1">
+            <div className="glass-xl rounded-lg p-4 h-full">
+              <h3 className="type-list-heading text-primary mb-3">Quick Actions</h3>
+              <div className="space-y-2">
+                <button className="w-full px-4 py-2 rounded-lg glass hover:glass-brand text-left type-list-body text-ink-700 hover:text-white transition-all">
+                  📞 Start Call Session
+                </button>
+                <button className="w-full px-4 py-2 rounded-lg glass hover:glass-brand text-left type-list-body text-ink-700 hover:text-white transition-all">
+                  📧 Send Follow-ups
+                </button>
+                <button className="w-full px-4 py-2 rounded-lg glass hover:glass-brand text-left type-list-body text-ink-700 hover:text-white transition-all">
+                  📊 View Full HUD
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 3: Work Queue */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Due Follow-ups */}
           <ListCard

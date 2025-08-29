@@ -7,6 +7,7 @@ import JoinTeamModal from '@/components/JoinTeamModal'
 import TeamRoster from '@/components/TeamRoster'
 import TeamSettings from '@/components/TeamSettings'
 import TeamStats from '@/components/TeamStats'
+import PerformanceHUD from '@/components/performance/PerformanceHUD'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { leaveTeam } from '@/lib/teamUtils'
@@ -187,6 +188,16 @@ export default function TeamPage() {
             Roster
           </button>
           <button
+            onClick={() => setActiveTab('performance')}
+            className={`flex-1 py-2 px-4 rounded-lg font-bold transition ${
+              activeTab === 'performance'
+                ? 'bg-white/10 text-white'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            Performance
+          </button>
+          <button
             onClick={() => setActiveTab('stats')}
             className={`flex-1 py-2 px-4 rounded-lg font-bold transition ${
               activeTab === 'stats'
@@ -220,6 +231,17 @@ export default function TeamPage() {
                 currentUserRole={userData.teamRole}
                 onUpdate={loadTeamData}
               />
+            )}
+            
+            {activeTab === 'performance' && (
+              <div className="bg-white/5 rounded-2xl p-6">
+                <PerformanceHUD 
+                  userId={userData?.uid}
+                  view="team"
+                  compact={false}
+                  showCoaching={true}
+                />
+              </div>
             )}
             
             {activeTab === 'stats' && (
