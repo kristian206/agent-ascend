@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useAuth } from './AuthProvider'
 import { db } from '@/lib/firebase'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { addNotification } from '@/lib/notifications'
+import { createNotification } from '@/lib/notifications'
 import { awardPoints } from '@/lib/gamification'
 
 // Product types with commission values
@@ -92,7 +92,7 @@ export default function SalesLogger({ onSaleLogged }) {
       await awardPoints(user.uid, points, `Sale logged: ${formatProductsSold()}`)
 
       // Create notification
-      await addNotification(
+      await createNotification(
         user.uid,
         `💰 Sale logged! ${formatProductsSold()} - $${calculateTotalCommission()} commission earned!`,
         'success'
@@ -112,7 +112,7 @@ export default function SalesLogger({ onSaleLogged }) {
       }
     } catch (error) {
       console.error('Error logging sale:', error)
-      await addNotification(user.uid, 'Error logging sale. Please try again.', 'error')
+      await createNotification(user.uid, 'Error logging sale. Please try again.', 'error')
     } finally {
       setIsSubmitting(false)
     }
