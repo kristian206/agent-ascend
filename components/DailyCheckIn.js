@@ -34,7 +34,7 @@ export default function DailyCheckIn() {
     return (
       <div className="bg-white/5 backdrop-blur p-6 rounded-2xl border border-white/10">
         <h2 className="text-xl font-black text-white mb-4">Daily Check-In ✅</h2>
-        <p className="text-green-400">Great job! You've set your intentions for today.</p>
+        <p className="text-green-400">Great job! You&apos;ve set your intentions for today.</p>
         <div className="mt-4 space-y-2">
           {intentions.map((intention, i) => (
             <div key={i} className="p-3 bg-white/5 rounded-lg text-gray-300">

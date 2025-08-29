@@ -105,7 +105,7 @@ export default function TeamPage() {
               <div className="text-4xl mb-4">🚀</div>
               <h2 className="text-2xl font-bold text-white mb-4">Create a Team</h2>
               <p className="text-gray-300 mb-6">
-                Start your own team and invite others to join. As the leader, you'll manage members and set the team direction.
+                Start your own team and invite others to join. As the leader, you&apos;ll manage members and set the team direction.
               </p>
               <button
                 onClick={() => setShowCreateModal(true)}

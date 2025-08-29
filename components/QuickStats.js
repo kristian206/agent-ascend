@@ -2,7 +2,7 @@ export default function QuickStats({ userData }) {
   return (
     <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div className="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
-        <div className="text-xs text-gray-400 uppercase tracking-wide">Today's Points</div>
+        <div className="text-xs text-gray-400 uppercase tracking-wide">Today&apos;s Points</div>
         <div className="text-3xl font-black text-green-400 mt-1">
           {userData?.todayPoints || 0}
         </div>

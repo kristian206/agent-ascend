@@ -278,7 +278,7 @@ export default function LeaderboardPage() {
           {/* Motivational Message */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-400">
-              Remember: It's not about being #1, it's about being better than yesterday! 🚀
+              Remember: It&apos;s not about being #1, it&apos;s about being better than yesterday! 🚀
             </p>
           </div>
         </div>

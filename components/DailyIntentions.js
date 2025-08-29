@@ -131,7 +131,7 @@ export default function DailyIntentions() {
         <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-8 text-center">
           <div className="text-6xl mb-4">✅</div>
           <h2 className="text-2xl font-bold text-green-400 mb-2">Intentions Set!</h2>
-          <p className="text-gray-300">You're ready to tackle the day.</p>
+          <p className="text-gray-300">You&apos;re ready to tackle the day.</p>
           
           <div className="mt-6 space-y-3 text-left">
             <div className="bg-white/5 rounded-lg p-3">
@@ -158,13 +158,13 @@ export default function DailyIntentions() {
       
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">{greeting}! ☀️</h1>
-        <p className="text-gray-400 text-sm mt-1">Let's set your intentions</p>
+        <p className="text-gray-400 text-sm mt-1">Let&apos;s set your intentions</p>
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="bg-white/5 rounded-xl p-4 border border-white/10 focus-within:border-yellow-500/50 transition">
           <label className="block text-sm text-gray-300 mb-2">
-            What's a victory from yesterday? 🏆
+            What&apos;s a victory from yesterday? 🏆
           </label>
           <textarea
             ref={firstInputRef}
@@ -179,7 +179,7 @@ export default function DailyIntentions() {
         
         <div className="bg-white/5 rounded-xl p-4 border border-white/10 focus-within:border-yellow-500/50 transition">
           <label className="block text-sm text-gray-300 mb-2">
-            What's your main focus today? 🎯
+            What&apos;s your main focus today? 🎯
           </label>
           <textarea
             value={formData.focus}

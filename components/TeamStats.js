@@ -112,7 +112,7 @@ export default function TeamStats({ teamId, teamData }) {
             ? '💪 Great team engagement this week!'
             : stats.weeklyActive >= stats.memberCount * 0.5
             ? '📈 Good momentum, keep it up!'
-            : '🚀 Let\'s boost our team activity!'}
+            : '🚀 Let&apos;s boost our team activity!'}
         </p>
       </div>
     </div>

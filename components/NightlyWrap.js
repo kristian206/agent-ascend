@@ -169,7 +169,7 @@ export default function NightlyWrap() {
         <div className="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-8 text-center">
           <div className="text-6xl mb-4">🌙</div>
           <h2 className="text-2xl font-bold text-purple-400 mb-2">Day Complete!</h2>
-          <p className="text-gray-300">Rest well, you've earned it.</p>
+          <p className="text-gray-300">Rest well, you&apos;ve earned it.</p>
           
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div className="bg-white/5 rounded-lg p-4">
@@ -183,7 +183,7 @@ export default function NightlyWrap() {
           </div>
           
           <div className="mt-4 bg-white/5 rounded-lg p-4 text-left">
-            <p className="text-xs text-gray-400 mb-1">Tomorrow's Focus</p>
+            <p className="text-xs text-gray-400 mb-1">Tomorrow&apos;s Focus</p>
             <p className="text-white">{todayEntry.tomorrow}</p>
           </div>
         </div>
@@ -312,7 +312,7 @@ export default function NightlyWrap() {
         
         <div className="bg-white/5 rounded-xl p-4 border border-white/10 focus-within:border-purple-500/50 transition">
           <label className="block text-sm text-gray-300 mb-2">
-            What's priority #1 tomorrow? 🚀
+            What&apos;s priority #1 tomorrow? 🚀
           </label>
           <textarea
             value={formData.tomorrow}
