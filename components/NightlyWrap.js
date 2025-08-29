@@ -5,9 +5,12 @@ import { db } from '@/lib/firebase'
 import { useAuth } from '@/components/AuthProvider'
 import { calculateStreakForToday } from '@/lib/gamification'
 import MicroCelebration from '@/components/MicroCelebration'
+import { useNotification } from '@/components/NotificationProvider'
+import { createNotification, NOTIFICATION_TYPES } from '@/lib/notifications'
 
 export default function NightlyWrap() {
   const { user } = useAuth()
+  const { showToast } = useNotification()
   const [morningData, setMorningData] = useState(null)
   const [formData, setFormData] = useState({
     victoryDone: false,
@@ -135,11 +138,46 @@ export default function NightlyWrap() {
       
       if (result.newStreak) {
         console.log('streak_incremented', { user_id: user.uid, streak: result.streak })
+        
+        // Check for streak milestones
+        if ([3, 7, 14, 30, 60, 90, 100].includes(result.streak)) {
+          await createNotification(user.uid, NOTIFICATION_TYPES.STREAK_MILESTONE, {
+            days: result.streak
+          })
+          showToast({
+            icon: '🔥',
+            title: `${result.streak} Day Streak!`,
+            message: `Amazing consistency! Keep it up!`
+          })
+        }
       }
       
       if (result.newAchievements?.length > 0) {
-        result.newAchievements.forEach(achievement => {
+        for (const achievement of result.newAchievements) {
           console.log('achievement_unlocked', { user_id: user.uid, achievement })
+          await createNotification(user.uid, NOTIFICATION_TYPES.ACHIEVEMENT_UNLOCKED, {
+            achievementName: achievement
+          })
+          showToast({
+            icon: '🏆',
+            title: 'Achievement Unlocked!',
+            message: `You earned "${achievement}"!`
+          })
+        }
+      }
+      
+      // Check for level up
+      const prevLevel = Math.floor((result.previousXp || 0) / 100)
+      const currentLevel = Math.floor((result.xp || 0) / 100)
+      if (currentLevel > prevLevel) {
+        await createNotification(user.uid, NOTIFICATION_TYPES.LEVEL_UP, {
+          level: currentLevel,
+          xp: result.xp
+        })
+        showToast({
+          icon: '⭐',
+          title: `Level ${currentLevel} Reached!`,
+          message: `You're making great progress!`
         })
       }
       

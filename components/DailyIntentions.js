@@ -5,9 +5,12 @@ import { db } from '@/lib/firebase'
 import { useAuth } from '@/components/AuthProvider'
 import { calculateStreakForToday } from '@/lib/gamification'
 import MicroCelebration from '@/components/MicroCelebration'
+import { useNotification } from '@/components/NotificationProvider'
+import { createNotification, NOTIFICATION_TYPES } from '@/lib/notifications'
 
 export default function DailyIntentions() {
   const { user } = useAuth()
+  const { showToast } = useNotification()
   const [formData, setFormData] = useState({
     victory: '',
     focus: '',
@@ -104,6 +107,20 @@ export default function DailyIntentions() {
       
       // Log event
       console.log('intentions_submitted', { user_id: user.uid, streak: result.streak })
+      
+      // Check for milestones and create notifications
+      if (result.newAchievements?.length > 0) {
+        for (const achievement of result.newAchievements) {
+          await createNotification(user.uid, NOTIFICATION_TYPES.ACHIEVEMENT_UNLOCKED, {
+            achievementName: achievement
+          })
+          showToast({
+            icon: '🏆',
+            title: 'Achievement Unlocked!',
+            message: `You earned "${achievement}"!`
+          })
+        }
+      }
       
       setTodayEntry(intentionsData)
       setShowCelebration(true)

@@ -3,6 +3,7 @@ import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import NotificationBell from '@/components/NotificationBell'
 
 export default function Navigation({ user }) {
   const router = useRouter()
@@ -84,6 +85,8 @@ export default function Navigation({ user }) {
         </div>
         
         <div className="flex items-center gap-4">
+          <NotificationBell />
+          
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-orange-500/20 border border-orange-500/50">
             <span className="text-orange-400">🔥</span>
             <span className="text-sm font-bold text-orange-400">{user?.streak || 0} day streak</span>
