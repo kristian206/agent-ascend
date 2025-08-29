@@ -17,11 +17,17 @@ export default function Dashboard() {
   
   // Check if new UI is enabled
   const isNewUI = searchParams.get('ui') === 'v2'
+  
+  // Redirect to v2 dashboard if enabled
+  if (isNewUI && typeof window !== 'undefined') {
+    window.location.href = '/dashboard/v2'
+    return null
+  }
 
   if (!user) return null
 
-  // New UI with AppShell
-  if (isNewUI) {
+  // New UI with AppShell (keeping for backwards compatibility)
+  if (false) {
     return (
       <AppShell user={userData}>
         <div className="max-w-7xl mx-auto">
