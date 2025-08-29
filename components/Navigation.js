@@ -74,6 +74,16 @@ export default function Navigation({ user }) {
             Achievements
           </Link>
           <Link 
+            href="/metrics" 
+            className={`px-4 py-2 rounded-lg font-bold transition ${
+              isActive('/metrics') 
+                ? 'bg-white/20 text-white' 
+                : 'text-gray-300 hover:bg-white/10 hover:text-white'
+            }`}
+          >
+            Analytics
+          </Link>
+          <Link 
             href="/profile" 
             className={`px-4 py-2 rounded-lg font-bold transition ${
               isActive('/profile') 
