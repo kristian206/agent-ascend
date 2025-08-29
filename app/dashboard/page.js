@@ -15,19 +15,20 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('home')
   const searchParams = useSearchParams()
   
-  // Check if new UI is enabled
-  const isNewUI = searchParams.get('ui') === 'v2'
+  // Check UI version preference (default to new UI)
+  const uiVersion = searchParams.get('ui')
+  const useClassicUI = uiVersion === 'v1'
   
-  // Redirect to v2 dashboard if enabled
-  if (isNewUI && typeof window !== 'undefined') {
+  // Redirect to v2 dashboard if explicitly requested
+  if (uiVersion === 'v2' && typeof window !== 'undefined') {
     window.location.href = '/dashboard/v2'
     return null
   }
 
   if (!user) return null
 
-  // New UI with AppShell (keeping for backwards compatibility)
-  if (false) {
+  // Use new UI by default, classic UI only if explicitly requested
+  if (!useClassicUI) {
     return (
       <AppShell user={userData}>
         <div className="max-w-7xl mx-auto">

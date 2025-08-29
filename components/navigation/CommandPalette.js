@@ -265,7 +265,7 @@ export default function CommandPalette({ isOpen, onClose }) {
             ) : (
               <div className="px-3 py-8 text-center">
                 <div className="type-list-body text-ink-400">
-                  No results found for "{query}"
+                  No results found for &ldquo;{query}&rdquo;
                 </div>
               </div>
             )}

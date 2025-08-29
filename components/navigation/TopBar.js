@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import NotificationBell from '@/components/NotificationBell'
 import CommandPalette from './CommandPalette'
+import { ThemeToggle, UiVersionToggle } from '@/components/theme/ThemeProvider'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
@@ -51,6 +52,12 @@ export default function TopBar({ user, onOpenCommand }) {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-3">
+          {/* UI Version Toggle */}
+          <UiVersionToggle />
+          
+          {/* Theme Toggle */}
+          <ThemeToggle />
+          
           {/* Help */}
           <div className="relative">
             <button
