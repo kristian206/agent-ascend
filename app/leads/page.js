@@ -301,7 +301,10 @@ export default function LeadsPage() {
                 {filteredLeads.length} active leads
               </p>
             </div>
-            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-brand-500 to-brand-600 text-white type-list-body font-medium hover:shadow-lg transition-all">
+            <button 
+              onClick={() => window.location.href = '/leads/create'}
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-brand-500 to-brand-600 text-white type-list-body font-medium hover:shadow-lg transition-all"
+            >
               + Add Lead
             </button>
           </div>
