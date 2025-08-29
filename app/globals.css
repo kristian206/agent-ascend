@@ -1,3 +1,7 @@
+/* Import design tokens first */
+@import '../styles/design-tokens.css';
+@import '../styles/utilities.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -112,18 +116,12 @@ html {
 }
 
 body {
-  color: rgb(var(--text-primary));
-  background: linear-gradient(
-    135deg,
-    rgb(var(--primary-50)) 0%,
-    rgb(var(--surface-primary)) 25%,
-    rgb(var(--surface-secondary)) 75%,
-    rgb(var(--primary-100)) 100%
-  );
+  color: var(--text-primary);
+  background: var(--surface-base);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  font-family: var(--font-system);
 }
 
 /* Liquid Glass Components */
