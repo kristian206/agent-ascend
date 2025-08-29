@@ -11,8 +11,8 @@ export default function AppShell({ children, user }) {
   const [isCommandOpen, setIsCommandOpen] = useState(false)
   const [isRailCollapsed, setIsRailCollapsed] = useState(false)
   
-  // Check if new UI is enabled via query param
-  const isNewUI = searchParams.get('ui') === 'v2'
+  // Check if classic UI is requested (default to new UI)
+  const useClassicUI = searchParams.get('ui') === 'v1'
 
   // Load rail state from localStorage
   useEffect(() => {
@@ -55,8 +55,8 @@ export default function AppShell({ children, user }) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  // If not using new UI, return children as-is
-  if (!isNewUI) {
+  // If using classic UI, return children with old Navigation
+  if (useClassicUI) {
     return <>{children}</>
   }
 

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/components/AuthProvider'
-import Navigation from '@/components/Navigation'
+import PageLayout from '@/components/PageLayout'
 import TeamCreationModal from '@/components/TeamCreationModal'
 import JoinTeamModal from '@/components/JoinTeamModal'
 import TeamRoster from '@/components/TeamRoster'
@@ -76,22 +76,17 @@ export default function TeamPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-        <Navigation user={userData} />
-        <div className="container mx-auto p-4 md:p-8">
-          <p className="text-gray-400">Loading team data...</p>
-        </div>
-      </div>
+      <PageLayout user={userData}>
+        <p className="text-gray-400">Loading team data...</p>
+      </PageLayout>
     )
   }
 
   // No team - show create/join options
   if (!teamData || !userData?.teamId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-        <Navigation user={userData} />
-        
-        <div className="container mx-auto p-4 md:p-8">
+      <PageLayout user={userData}>
+        <div>
           <header className="mb-8 text-center">
             <h1 className="text-4xl font-black text-white mb-2">
               Join or Create a Team
@@ -145,16 +140,14 @@ export default function TeamPage() {
             onSuccess={handleJoinSuccess}
           />
         )}
-      </div>
+      </PageLayout>
     )
   }
 
   // Has team - show team management
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-      <Navigation user={userData} />
-      
-      <div className="container mx-auto p-4 md:p-8">
+    <PageLayout user={userData}>
+      <div>
         <header className="mb-8">
           <div className="flex items-center justify-between">
             <div>
@@ -312,6 +305,6 @@ export default function TeamPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }
