@@ -1,0 +1,283 @@
+/* Accessibility and Motion Preferences */
+
+/* Focus States - Consistent across all interactive elements */
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--brand-500);
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --ink-900: #000000;
+    --ink-800: #1a1a1a;
+    --ink-700: #333333;
+    --ink-600: #4d4d4d;
+    --ink-500: #666666;
+    --ink-400: #808080;
+    --ink-300: #999999;
+    --ink-200: #b3b3b3;
+    --ink-100: #cccccc;
+    --ink-50: #e6e6e6;
+    --ink-0: #ffffff;
+    
+    --brand-500: #0040a0; /* Darker blue for better contrast */
+    --brand-600: #003080;
+    
+    --glass-white: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.3);
+  }
+  
+  .glass,
+  .glass-lg,
+  .glass-xl {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable backdrop blur for performance */
+  .glass,
+  .glass-lg,
+  .glass-xl,
+  .glass-brand {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--surface-100);
+  }
+  
+  /* Remove parallax effects */
+  .parallax {
+    transform: none !important;
+  }
+  
+  /* Instant state changes */
+  .transition-all,
+  .transition-colors,
+  .transition-transform,
+  .transition-opacity {
+    transition: none !important;
+  }
+}
+
+/* Reduced Motion - Subtle animations only */
+@media (prefers-reduced-motion: no-preference) {
+  /* Micro-interactions for buttons */
+  button,
+  .btn,
+  [role="button"] {
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  button:hover,
+  .btn:hover,
+  [role="button"]:hover {
+    transform: translateY(-1px);
+  }
+  
+  button:active,
+  .btn:active,
+  [role="button"]:active {
+    transform: translateY(0);
+  }
+  
+  /* Subtle hover for cards */
+  .hover\:elev-2:hover {
+    transform: translateY(-2px);
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Focus Visible Polyfill for older browsers */
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}
+
+/* Screen Reader Only Text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Keyboard Navigation Indicators */
+.keyboard-navigating *:focus {
+  outline: 3px solid var(--brand-500);
+  outline-offset: 2px;
+}
+
+/* Color Contrast Improvements */
+.text-primary {
+  color: var(--ink-900); /* #0A0A0A - Contrast ratio 20.43:1 on white */
+}
+
+.text-secondary {
+  color: var(--ink-700); /* #404040 - Contrast ratio 10.37:1 on white */
+}
+
+.text-tertiary {
+  color: var(--ink-600); /* #525252 - Contrast ratio 7.85:1 on white */
+}
+
+/* Ensure minimum tap target size for mobile */
+@media (pointer: coarse) {
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [role="link"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Exception for inline text links */
+  p a,
+  span a {
+    min-height: unset;
+    min-width: unset;
+  }
+}
+
+/* Loading States - Accessible */
+.loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-100) 25%,
+    var(--surface-200) 50%,
+    var(--surface-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-skeleton {
+    animation: none;
+    background: var(--surface-200);
+  }
+}
+
+/* Accessible Form States */
+input:invalid:not(:focus):not(:placeholder-shown),
+select:invalid:not(:focus),
+textarea:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: var(--error);
+  background-color: var(--error-50);
+}
+
+input:valid:not(:focus):not(:placeholder-shown),
+select:valid:not(:focus),
+textarea:valid:not(:focus):not(:placeholder-shown) {
+  border-color: var(--success);
+}
+
+/* Accessible Error Messages */
+.error-message {
+  color: var(--error-700); /* Darker red for better contrast */
+  font-weight: 500;
+}
+
+/* Accessible Links */
+a {
+  text-decoration-skip-ink: auto;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Ensure interactive elements are distinguishable */
+button:not(:disabled),
+a,
+input:not(:disabled),
+select:not(:disabled),
+textarea:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Print Styles */
+@media print {
+  .no-print,
+  nav,
+  aside,
+  footer,
+  .glass,
+  .glass-lg,
+  .glass-xl {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+  
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+  }
+}

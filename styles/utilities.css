@@ -82,18 +82,38 @@
   box-shadow: var(--elevation-4);
 }
 
-/* Interactive elevation */
+/* Interactive elevation with micro-interactions */
 .elev-interactive {
   box-shadow: var(--elevation-1);
-  transition: box-shadow var(--duration-fast) var(--ease-out);
+  transition: all var(--duration-fast) var(--ease-out);
+  transform: translateY(0);
 }
 
 .elev-interactive:hover {
   box-shadow: var(--elevation-2);
+  transform: translateY(-1px);
 }
 
 .elev-interactive:active {
   box-shadow: var(--elevation-1);
+  transform: translateY(0);
+}
+
+/* Focus states for keyboard navigation */
+.elev-interactive:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  box-shadow: var(--elevation-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elev-interactive {
+    transition: box-shadow 0.01ms;
+    transform: none !important;
+  }
+  .elev-interactive:hover {
+    transform: none !important;
+  }
 }
 
 /* =================================================================
@@ -264,7 +284,7 @@
 .radius-full { border-radius: var(--radius-full); }
 
 /* =================================================================
-   Animation Utilities
+   Animation Utilities with Reduced Motion Support
    ================================================================= */
 .transition-fast {
   transition: all var(--duration-fast) var(--ease-out);
@@ -284,6 +304,20 @@
 
 .animate-slide-up {
   animation: slideUp var(--duration-normal) var(--ease-out);
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .transition-fast,
+  .transition-normal,
+  .transition-slow {
+    transition-duration: 0.01ms !important;
+  }
+  
+  .animate-fade-in,
+  .animate-slide-up {
+    animation-duration: 0.01ms !important;
+  }
 }
 
 @keyframes fadeIn {

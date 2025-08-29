@@ -1,6 +1,7 @@
 /* Import design tokens first */
 @import '../styles/design-tokens.css';
 @import '../styles/utilities.css';
+@import '../styles/accessibility.css';
 
 @tailwind base;
 @tailwind components;
