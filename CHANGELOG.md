@@ -5,6 +5,38 @@ All notable changes to Agency Ascent will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2024-12-29
+
+### Added
+
+#### Enhanced Streak System with Sales Requirement
+- **Two Streak Types**:
+  - **Full Streak** (🔥): Morning + Evening + At least 1 sale
+  - **Participation Streak** (✨): Morning + Evening check-ins only
+- **Conversation Tracking**:
+  - Morning: "How many conversations will you have today?" (optional goal)
+  - Evening: Track actual conversations had
+- **Smart Streak Display**:
+  - Shows Full Streak when active (with sales)
+  - Falls back to Participation Streak when no sales
+  - Both displayed in navigation when applicable
+- **Enhanced Achievements**:
+  - Sales streak achievements (3, 7, 14, 30 days)
+  - Participation achievements (week, month)
+- **Motivational Messaging**:
+  - Different toast messages for Full vs Participation streaks
+  - Encourages sales to upgrade from participation to full streak
+
+### Updated
+- **Daily Intentions**: Added optional conversation goal field
+- **Nightly Wrap**: Added conversation count tracking
+- **Navigation**: New StreakDisplay component showing streak types
+- **Streak Calculation**: New enhanced algorithm requiring sales for full streak
+
+### Changed
+- Streak now requires sales to be "full" - participation streak for check-ins only
+- More nuanced progress tracking to encourage both consistency AND sales
+
 ## [1.3.0] - 2024-12-29
 
 ### Added

@@ -4,6 +4,7 @@ import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/components/AuthProvider'
 import { calculateStreakForToday } from '@/lib/gamification'
+import { calculateEnhancedStreak } from '@/lib/streaks'
 import MicroCelebration from '@/components/MicroCelebration'
 import { useNotification } from '@/components/NotificationProvider'
 import { createNotification, NOTIFICATION_TYPES } from '@/lib/notifications'
@@ -17,6 +18,7 @@ export default function NightlyWrap() {
     focusDone: false,
     stuckDone: false,
     accomplished: '',
+    conversations: '',  // New field for conversation count
     quotes: '',
     sales: '',
     tomorrow: ''
@@ -61,7 +63,8 @@ export default function NightlyWrap() {
           setMorningData({
             victory: data.victory,
             focus: data.focus,
-            stuck: data.stuck
+            stuck: data.stuck,
+            todaysFocus: data.todaysFocus
           })
         }
         
@@ -75,6 +78,7 @@ export default function NightlyWrap() {
             focusDone: data.focusDone || false,
             stuckDone: data.stuckDone || false,
             accomplished: data.accomplished || '',
+            conversations: data.conversations || '',
             quotes: data.quotes || '',
             sales: data.sales || '',
             tomorrow: data.tomorrow || ''
@@ -116,6 +120,7 @@ export default function NightlyWrap() {
         focusDone: formData.focusDone,
         stuckDone: formData.stuckDone,
         accomplished: formData.accomplished,
+        conversations: parseInt(formData.conversations) || 0,
         quotes: parseInt(formData.quotes) || 0,
         sales: parseInt(formData.sales) || 0,
         tomorrow: formData.tomorrow,
@@ -125,29 +130,48 @@ export default function NightlyWrap() {
       
       await setDoc(doc(db, 'checkins', `${user.uid}_${todayKey}`), wrapData, { merge: true })
       
-      // Calculate streak and achievements
-      const result = await calculateStreakForToday(user.uid)
+      // Calculate enhanced streak (with sales requirement)
+      const result = await calculateEnhancedStreak(user.uid)
       
       // Log events
       console.log('wrap_submitted', { 
         user_id: user.uid, 
-        streak: result.streak,
+        fullStreak: result.fullStreak,
+        participationStreak: result.participationStreak,
         sales: wrapData.sales,
-        quotes: wrapData.quotes
+        quotes: wrapData.quotes,
+        conversations: wrapData.conversations
       })
       
-      if (result.newStreak) {
-        console.log('streak_incremented', { user_id: user.uid, streak: result.streak })
+      // Show appropriate streak message
+      if (result.hasFullStreakToday) {
+        showToast({
+          icon: '🔥',
+          title: `Full Streak Day ${result.fullStreak}!`,
+          message: 'Check-ins + Sales = Perfect day!',
+          duration: 5000
+        })
+      } else if (result.hasParticipationToday) {
+        showToast({
+          icon: '✨',
+          title: `Participation Streak Day ${result.participationStreak}!`,
+          message: 'Great consistency! Ring a bell tomorrow for full streak!',
+          duration: 5000
+        })
+      }
+      
+      if (result.fullStreak > 0) {
+        console.log('full_streak_active', { user_id: user.uid, streak: result.fullStreak })
         
         // Check for streak milestones
-        if ([3, 7, 14, 30, 60, 90, 100].includes(result.streak)) {
+        if ([3, 7, 14, 30, 60, 90, 100].includes(result.fullStreak)) {
           await createNotification(user.uid, NOTIFICATION_TYPES.STREAK_MILESTONE, {
-            days: result.streak
+            days: result.fullStreak
           })
           showToast({
             icon: '🔥',
-            title: `${result.streak} Day Streak!`,
-            message: `Amazing consistency! Keep it up!`
+            title: `${result.fullStreak} Day Full Streak!`,
+            message: `Amazing consistency with sales! Keep it up!`
           })
         }
       }
@@ -316,6 +340,27 @@ export default function NightlyWrap() {
             placeholder="Closed 2 deals, helped team member, cleared inbox..."
             required
           />
+        </div>
+        
+        {/* Conversation Count Field */}
+        <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl p-4 border border-purple-500/20">
+          <label className="block text-sm text-purple-400 mb-2">
+            💬 How many conversations did you have today?
+          </label>
+          <input
+            type="number"
+            value={formData.conversations}
+            onChange={(e) => setFormData({...formData, conversations: e.target.value})}
+            className="w-full bg-transparent text-white placeholder-gray-400 focus:outline-none text-2xl font-bold"
+            placeholder="0"
+            min="0"
+            max="999"
+          />
+          {morningData?.todaysFocus && (
+            <p className="text-xs text-gray-500 mt-2">
+              Your goal was: {morningData.todaysFocus}
+            </p>
+          )}
         </div>
         
         <div className="grid grid-cols-2 gap-4">

@@ -14,7 +14,8 @@ export default function DailyIntentions() {
   const [formData, setFormData] = useState({
     victory: '',
     focus: '',
-    stuck: ''
+    stuck: '',
+    todaysFocus: ''  // New simple focus field
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [todayEntry, setTodayEntry] = useState(null)
@@ -57,7 +58,8 @@ export default function DailyIntentions() {
         setFormData({
           victory: data.victory || '',
           focus: data.focus || '',
-          stuck: data.stuck || ''
+          stuck: data.stuck || '',
+          todaysFocus: data.todaysFocus || ''
         })
       }
     } catch (error) {
@@ -74,6 +76,7 @@ export default function DailyIntentions() {
         victory: formData.victory,
         focus: formData.focus,
         stuck: formData.stuck,
+        todaysFocus: formData.todaysFocus,
         intentions_completed: false,
         updated_at: serverTimestamp()
       }, { merge: true })
@@ -95,6 +98,7 @@ export default function DailyIntentions() {
         victory: formData.victory,
         focus: formData.focus,
         stuck: formData.stuck,
+        todaysFocus: formData.todaysFocus,
         intentions_completed: true,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp()
@@ -220,6 +224,22 @@ export default function DailyIntentions() {
             placeholder="Difficult client situation, learning new system, time management..."
             required
           />
+        </div>
+        
+        {/* New Simple Focus Question */}
+        <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl p-4 border border-yellow-500/20">
+          <label className="block text-sm text-yellow-400 mb-2">
+            💬 How many conversations will you have today?
+          </label>
+          <input
+            type="text"
+            value={formData.todaysFocus}
+            onChange={(e) => setFormData({...formData, todaysFocus: e.target.value})}
+            className="w-full bg-transparent text-white placeholder-gray-400 focus:outline-none text-lg font-semibold"
+            placeholder="Set a target (e.g., Talk to 10 people)"
+            maxLength={50}
+          />
+          <p className="text-xs text-gray-500 mt-1">Optional: Set your conversation goal</p>
         </div>
         
         <button
