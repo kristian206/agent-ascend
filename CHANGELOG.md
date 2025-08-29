@@ -5,6 +5,51 @@ All notable changes to Agency Ascent will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-12-29
+
+### Added
+
+#### Notification System
+- **Toast Notifications** - In-app celebrations that appear bottom-right
+  - Auto-dismiss after 5 seconds with progress bar
+  - Smooth animations and manual dismiss option
+- **Persistent Notifications** - Stored in Firebase with 30-day expiration
+  - Read/unread status tracking
+  - Real-time updates via Firestore subscriptions
+- **Notification Bell** - Navigation bar icon with unread count badge
+  - Animated pulse effect for unread notifications
+  - Shows up to 9+ for large counts
+- **Notification Panel** - Dropdown panel showing all notifications
+  - Mark individual or all as read
+  - Time-relative display (just now, 5m ago, etc.)
+  - Highlighted unread notifications
+- **System Notifications Only** - No social features
+  - Streak milestones (3, 7, 14, 30, 60, 90, 100 days)
+  - Achievement unlocked celebrations
+  - Level up notifications
+  - Team milestone notifications (foundation for future)
+  - Weekly summary generation
+- **Test Page** - `/test-notifications` for demonstration
+- **Integration** - Automatic triggers in Daily Intentions and Nightly Wrap
+
+### Fixed
+- **Build Errors** - Fixed all unescaped apostrophes in JSX
+- **Vercel Deployment** - Resolved React no-unescaped-entities errors
+- **Navigation Links** - Fixed Profile and Leaderboard page routing
+
+## [1.1.0] - 2024-12-29
+
+### Added
+
+#### Navigation Updates
+- **Active State Detection** - Visual indication of current page
+- **Profile Page** - Complete user profile with stats and achievements
+- **Leaderboard Page** - Three types: streaks, points, sales with timeframe filtering
+
+### Fixed
+- **Navigation Component** - Proper Link components and active state styling
+- **Missing Pages** - Created Profile and Leaderboard pages
+
 ## [1.0.0] - 2024-12-29
 
 ### Added
