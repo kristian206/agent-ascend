@@ -22,7 +22,8 @@ export default function PageLayout({ children, user }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
       <Navigation user={user} />
-      <div className="container mx-auto p-4 md:p-8 pt-20">
+      {/* Add proper padding-top to account for fixed navigation */}
+      <div className="container mx-auto px-4 md:px-8 pt-24 pb-8">
         {children}
       </div>
     </div>

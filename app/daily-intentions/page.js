@@ -1,6 +1,6 @@
 'use client'
 import { useAuth } from '@/components/AuthProvider'
-import Navigation from '@/components/Navigation'
+import PageLayout from '@/components/PageLayout'
 import DailyIntentions from '@/components/DailyIntentions'
 
 export default function DailyIntentionsPage() {
@@ -9,10 +9,8 @@ export default function DailyIntentionsPage() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-      <Navigation user={userData} />
-      
-      <div className="container mx-auto p-4 md:p-8">
+    <PageLayout user={userData}>
+      <div>
         <header className="mb-8 text-center">
           <h1 className="text-4xl font-black text-white">
             Start Your Day Right
@@ -24,6 +22,6 @@ export default function DailyIntentionsPage() {
 
         <DailyIntentions />
       </div>
-    </div>
+    </PageLayout>
   )
 }
