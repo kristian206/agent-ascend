@@ -5,6 +5,55 @@ All notable changes to Agency Ascent will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2024-12-29
+
+### Added
+
+#### Sales Celebration System - "Ring the Bell"
+- **Quick Sale Log** - Prominent "Ring the Bell 🔔" button on dashboard
+  - One-tap access from dashboard
+  - Single screen with policy type selection
+  - Optional customer name field
+  - Total interaction time: <15 seconds
+- **Epic Celebrations** - Full-screen 3-second animations
+  - Bell ringing animation with confetti burst
+  - Points display (+10, +15, or +20 based on policy type)
+  - Milestone celebrations for 1st, 10th, 25th, 50th, 100th+ sales
+  - Smooth fade-in/out transitions
+- **Policy Types** - Quick selection buttons
+  - Auto (🚗) - 10 points
+  - Home (🏠) - 15 points  
+  - Life (❤️) - 20 points
+  - Other (📋) - 10 points
+- **Sales Tracker Widget** - Real-time dashboard stats
+  - Today's bells counter
+  - Weekly bells counter
+  - Team bells today (if in team)
+  - Weekly progress bar (goal: 20 sales)
+  - Recent team bells feed
+- **Team Integration** - Automatic team updates
+  - Team feed: "[Name] just rang the bell! 🔔"
+  - Team daily total updates
+  - Recent bells display (last 5)
+- **Database Structure** - Efficient sales tracking
+  - Sales collection with all relevant data
+  - Real-time stat updates
+  - Team feed for activity stream
+- **Mobile Optimized** - Perfect on all devices
+  - Large touch targets
+  - Responsive animations
+  - Fast load times
+
+### Fixed
+- **Firebase Index Error** - Simplified queries to avoid composite index requirement
+  - Moved expiry filtering to client-side
+  - All notification queries now work without indexes
+
+## [1.2.1] - 2024-12-29
+
+### Fixed
+- **Firebase Index Error** - Fixed notification queries requiring composite indexes
+
 ## [1.2.0] - 2024-12-29
 
 ### Added

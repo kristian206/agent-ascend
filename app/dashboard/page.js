@@ -4,6 +4,7 @@ import Navigation from '@/components/Navigation'
 import QuickStats from '@/components/QuickStats'
 import DailyCheckIn from '@/components/DailyCheckIn'
 import RecentActivity from '@/components/RecentActivity'
+import SalesTracker from '@/components/SalesTracker'
 import { useState } from 'react'
 
 export default function Dashboard() {
@@ -27,6 +28,11 @@ export default function Dashboard() {
         </header>
 
         <QuickStats userData={userData} />
+        
+        {/* Sales Tracker - Prominent Position */}
+        <div className="mt-8">
+          <SalesTracker />
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
           <a href="/daily-intentions" className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 p-6 rounded-2xl border border-yellow-500/30 hover:border-yellow-500/50 transition group">
