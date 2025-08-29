@@ -42,7 +42,7 @@ export default function RingTheBell({ onClose, onSaleLogged }) {
           showToast({
             icon: '🏆',
             title: `${result.milestoneHit} Sales Milestone!`,
-            message: `Incredible achievement! You've made ${result.milestoneHit} sales!`,
+            message: `Incredible achievement! You&apos;ve made ${result.milestoneHit} sales!`,
             duration: 7000
           })
         }, 3000)

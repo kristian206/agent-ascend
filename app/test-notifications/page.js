@@ -46,17 +46,17 @@ export default function TestNotificationsPage() {
       [NOTIFICATION_TYPES.STREAK_MILESTONE]: {
         icon: '🔥',
         title: `${test.data.days} Day Streak!`,
-        message: `Amazing! You've maintained a ${test.data.days} day streak.`
+        message: `Amazing! You&apos;ve maintained a ${test.data.days} day streak.`
       },
       [NOTIFICATION_TYPES.ACHIEVEMENT_UNLOCKED]: {
         icon: '🏆',
         title: 'Achievement Unlocked!',
-        message: `You've earned "${test.data.achievementName}"!`
+        message: `You&apos;ve earned "${test.data.achievementName}"!`
       },
       [NOTIFICATION_TYPES.LEVEL_UP]: {
         icon: '⭐',
         title: `Level ${test.data.level} Reached!`,
-        message: `Congratulations! You're now level ${test.data.level}.`
+        message: `Congratulations! You&apos;re now level ${test.data.level}.`
       },
       [NOTIFICATION_TYPES.TEAM_MILESTONE]: {
         icon: '🎯',
