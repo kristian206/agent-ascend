@@ -4,6 +4,7 @@ import AuthProvider from '@/components/AuthProvider'
 import NotificationProvider from '@/components/NotificationProvider'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import DailyCheckInModal from '@/components/DailyCheckInModal'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
           <ThemeProvider>
             <AuthProvider>
               <NotificationProvider>
+                <DailyCheckInModal />
                 <div className="min-h-screen relative">
                   {/* Background Gradient Orbs */}
                   <div className="fixed inset-0 overflow-hidden pointer-events-none">

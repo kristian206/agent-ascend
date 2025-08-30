@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const CORE_MODULES = [
+const CORE_NAVIGATION = [
   {
     id: 'dashboard',
     label: 'Dashboard',
     icon: '📊',
     href: '/dashboard',
-    description: 'Overview & metrics',
+    description: 'Overview & stats',
   },
   {
     id: 'team',
@@ -26,13 +26,6 @@ const CORE_MODULES = [
     description: 'Rankings & competition',
   },
   {
-    id: 'achievements',
-    label: 'Achievements',
-    icon: '🎯',
-    href: '/achievement-wall',
-    description: 'Badges & milestones',
-  },
-  {
     id: 'profile',
     label: 'Profile',
     icon: '👤',
@@ -42,9 +35,8 @@ const CORE_MODULES = [
 ]
 
 const DEFAULT_SHORTCUTS = [
-  { id: 'daily-intentions', label: 'Daily Check-in', icon: '☀️', href: '/daily-intentions' },
-  { id: 'achievement-wall', label: 'Achievements', icon: '🏆', href: '/achievement-wall' },
-  { id: 'metrics', label: 'My Metrics', icon: '📊', href: '/metrics' },
+  { id: 'nightly-wrap', label: 'Nightly Wrap', icon: '🌙', href: '/nightly-wrap' },
+  { id: 'team', label: 'Team Overview', icon: '👥', href: '/team' },
 ]
 
 export default function LeftRail({ isCollapsed = false, onToggle }) {
@@ -175,10 +167,10 @@ export default function LeftRail({ isCollapsed = false, onToggle }) {
       {/* Core Modules */}
       <div className="flex-1 px-4 pb-4 overflow-y-auto">
         {!isCollapsed && (
-          <span className="type-list-label text-ink-400 block mb-2">MODULES</span>
+          <span className="type-list-label text-ink-400 block mb-2">NAVIGATION</span>
         )}
         <nav className="space-y-1">
-          {CORE_MODULES.map(module => (
+          {CORE_NAVIGATION.map(module => (
             <div key={module.id} className="relative">
               <Link
                 href={module.href}

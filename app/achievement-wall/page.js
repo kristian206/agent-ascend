@@ -1,6 +1,6 @@
 'use client'
 import { useAuth } from '@/components/AuthProvider'
-import Navigation from '@/components/Navigation'
+import PageLayout from '@/components/PageLayout'
 import { useState, useEffect } from 'react'
 import { collection, query, getDocs, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
@@ -110,9 +110,7 @@ export default function AchievementWallPage() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-      <Navigation user={userData} />
-      
+    <PageLayout user={userData}>
       <div className="container mx-auto p-4 md:p-8">
         <header className="mb-8 text-center">
           <h1 className="text-4xl font-black text-white">Achievement Wall</h1>
@@ -244,6 +242,6 @@ export default function AchievementWallPage() {
           )}
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

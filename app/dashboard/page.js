@@ -1,9 +1,7 @@
 'use client'
 import { useAuth } from '@/components/AuthProvider'
-import Navigation from '@/components/Navigation'
-import AppShell from '@/components/navigation/AppShell'
+import PageLayout from '@/components/PageLayout'
 import QuickStats from '@/components/QuickStats'
-import DailyCheckIn from '@/components/DailyCheckIn'
 import RecentActivity from '@/components/RecentActivity'
 import SalesTracker from '@/components/SalesTracker'
 import PersonalProgress from '@/components/PersonalProgress'
@@ -28,11 +26,10 @@ export default function Dashboard() {
 
   if (!user) return null
 
-  // Use new UI by default, classic UI only if explicitly requested
-  if (!useClassicUI) {
-    return (
-      <AppShell user={userData}>
-        <div className="max-w-7xl mx-auto">
+  // Use PageLayout which handles both UI versions
+  return (
+    <PageLayout user={userData}>
+      <div className="max-w-7xl mx-auto p-4 md:p-8">
           {/* Hero Section - What Matters Now */}
           <header className="mb-8">
             <h1 className="type-dashboard-title text-primary mb-2">
@@ -137,73 +134,10 @@ export default function Dashboard() {
             </a>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            <DailyCheckIn />
+          <div className="mt-8">
             <RecentActivity />
           </div>
-        </div>
-      </AppShell>
-    )
-  }
-
-  // Original UI (fallback)
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-      <Navigation user={userData} />
-      
-      <div className="container mx-auto px-4 md:px-8 pt-24 pb-8">
-        <header className="mb-6">
-          <h1 className="text-3xl font-black text-white">
-            Welcome back, {userData?.name || 'Agent'}!
-          </h1>
-          <p className="text-gray-400 mt-1">
-            Level {userData?.level || 1} • {userData?.xp || 0} XP
-          </p>
-        </header>
-
-        {/* Sales Actions Bar */}
-        <div className="flex flex-wrap gap-4 mb-8">
-          <SalesLogger onSaleLogged={() => window.location.reload()} />
-        </div>
-
-        <QuickStats userData={userData} />
-        
-        {/* Team Commission Overview - Only for Leaders */}
-        {userData?.isLeader && (
-          <div className="mt-8">
-            <TeamCommissionOverview />
-          </div>
-        )}
-        
-        {/* Personal Progress and Sales Tracker */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-          <PersonalProgress />
-          <SalesTracker />
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-          <a href="/daily-intentions" className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 p-6 rounded-2xl border border-yellow-500/30 hover:border-yellow-500/50 transition group">
-            <h3 className="text-xl font-bold text-white mb-2">☀️ Morning Intentions</h3>
-            <p className="text-gray-400">Start your day with clarity and purpose</p>
-            <div className="mt-4 text-yellow-400 group-hover:translate-x-2 transition-transform">
-              Set intentions →
-            </div>
-          </a>
-          
-          <a href="/nightly-wrap" className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-6 rounded-2xl border border-purple-500/30 hover:border-purple-500/50 transition group">
-            <h3 className="text-xl font-bold text-white mb-2">🌙 Nightly Wrap</h3>
-            <p className="text-gray-400">Reflect on your wins and plan tomorrow</p>
-            <div className="mt-4 text-purple-400 group-hover:translate-x-2 transition-transform">
-              Complete wrap →
-            </div>
-          </a>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <DailyCheckIn />
-          <RecentActivity />
-        </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }
