@@ -62,6 +62,7 @@ const US_STATES = [
 
 export default function AuthPage() {
   const router = useRouter()
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
   const [mode, setMode] = useState('login') // 'login', 'signup', 'forgot'
   const [showPassword, setShowPassword] = useState(false)
   const [rememberUsername, setRememberUsername] = useState(false)
@@ -71,6 +72,11 @@ export default function AuthPage() {
   const [passwordStrength, setPasswordStrength] = useState(0)
   const [emailExists, setEmailExists] = useState(false)
   const [checkingEmail, setCheckingEmail] = useState(false)
+  
+  // Rate limiting state
+  const [loginAttempts, setLoginAttempts] = useState(0)
+  const [lastAttemptTime, setLastAttemptTime] = useState(null)
+  const [lockoutEndTime, setLockoutEndTime] = useState(null)
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -86,25 +92,106 @@ export default function AuthPage() {
     state: ''
   })
 
-  // Load remembered username on mount
+  // Load remembered username and check lockout status on mount
   useEffect(() => {
+    // Check for session expiration message
+    if (searchParams.get('sessionExpired') === 'true' || localStorage.getItem('sessionExpired') === 'true') {
+      setError('Your session has expired due to inactivity. Please log in again.')
+      localStorage.removeItem('sessionExpired')
+    }
+    
     const remembered = localStorage.getItem('rememberedUsername')
     if (remembered) {
       setFormData(prev => ({ ...prev, email: remembered }))
       setRememberUsername(true)
     }
+    
+    // Check if user is locked out
+    const lockout = localStorage.getItem('authLockoutEnd')
+    if (lockout) {
+      const lockoutTime = parseInt(lockout)
+      if (lockoutTime > Date.now()) {
+        setLockoutEndTime(lockoutTime)
+      } else {
+        localStorage.removeItem('authLockoutEnd')
+        localStorage.removeItem('authAttempts')
+      }
+    }
+    
+    // Load previous attempts count
+    const attempts = localStorage.getItem('authAttempts')
+    if (attempts) {
+      setLoginAttempts(parseInt(attempts))
+    }
   }, [])
+  
+  // Check if user is currently locked out
+  const isLockedOut = () => {
+    if (!lockoutEndTime) return false
+    if (Date.now() >= lockoutEndTime) {
+      setLockoutEndTime(null)
+      setLoginAttempts(0)
+      localStorage.removeItem('authLockoutEnd')
+      localStorage.removeItem('authAttempts')
+      return false
+    }
+    return true
+  }
+  
+  // Handle rate limiting
+  const handleFailedAttempt = () => {
+    const newAttempts = loginAttempts + 1
+    setLoginAttempts(newAttempts)
+    setLastAttemptTime(Date.now())
+    localStorage.setItem('authAttempts', newAttempts.toString())
+    
+    // Lockout after 5 failed attempts
+    if (newAttempts >= 5) {
+      const lockoutDuration = 15 * 60 * 1000 // 15 minutes
+      const lockoutEnd = Date.now() + lockoutDuration
+      setLockoutEndTime(lockoutEnd)
+      localStorage.setItem('authLockoutEnd', lockoutEnd.toString())
+      setError('Too many failed attempts. Account locked for 15 minutes.')
+      return true
+    } else if (newAttempts >= 3) {
+      setError(`Invalid credentials. ${5 - newAttempts} attempts remaining before lockout.`)
+    }
+    return false
+  }
+  
+  // Clear attempts on successful login
+  const clearAttempts = () => {
+    setLoginAttempts(0)
+    setLastAttemptTime(null)
+    setLockoutEndTime(null)
+    localStorage.removeItem('authAttempts')
+    localStorage.removeItem('authLockoutEnd')
+  }
 
   // Calculate password strength
   useEffect(() => {
     if (mode === 'signup' && formData.password) {
       let strength = 0
-      if (formData.password.length >= 6) strength++
-      if (formData.password.length >= 8) strength++
-      if (/[A-Z]/.test(formData.password)) strength++
-      if (/[0-9]/.test(formData.password)) strength++
-      if (/[^A-Za-z0-9]/.test(formData.password)) strength++
-      setPasswordStrength(strength)
+      const pass = formData.password
+      
+      // Length checks
+      if (pass.length >= 8) strength++
+      if (pass.length >= 12) strength++
+      if (pass.length >= 16) strength++
+      
+      // Character type checks
+      if (/[a-z]/.test(pass)) strength++
+      if (/[A-Z]/.test(pass)) strength++
+      if (/[0-9]/.test(pass)) strength++
+      if (/[!@#$%^&*(),.?":{}|<>]/.test(pass)) strength++
+      
+      // Complexity bonus for meeting all requirements
+      if (pass.length >= 12 && /[a-z]/.test(pass) && /[A-Z]/.test(pass) && 
+          /[0-9]/.test(pass) && /[!@#$%^&*(),.?":{}|<>]/.test(pass)) {
+        strength = Math.min(5, strength + 1)
+      }
+      
+      setPasswordStrength(Math.min(5, strength))
     }
   }, [formData.password, mode])
 
@@ -148,8 +235,25 @@ export default function AuthPage() {
       case 'password':
         if (!value) {
           error = 'Password is required'
-        } else if (mode === 'signup' && value.length < 6) {
-          error = 'Password must be at least 6 characters'
+        } else if (mode === 'signup') {
+          // Enhanced password requirements for new users only
+          if (value.length < 12) {
+            error = 'Password must be at least 12 characters'
+          } else if (!/[A-Z]/.test(value)) {
+            error = 'Password must contain at least one uppercase letter'
+          } else if (!/[a-z]/.test(value)) {
+            error = 'Password must contain at least one lowercase letter'
+          } else if (!/[0-9]/.test(value)) {
+            error = 'Password must contain at least one number'
+          } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+            error = 'Password must contain at least one special character'
+          }
+        } else if (mode === 'login') {
+          // For existing users, allow legacy passwords (min 6 chars)
+          // They'll be prompted to update after login
+          if (value.length < 6) {
+            error = 'Password must be at least 6 characters'
+          }
         }
         break
       case 'state':
@@ -174,6 +278,13 @@ export default function AuthPage() {
   const handleLogin = async (e) => {
     e.preventDefault()
     
+    // Check if user is locked out
+    if (isLockedOut()) {
+      const remainingTime = Math.ceil((lockoutEndTime - Date.now()) / 1000 / 60)
+      setError(`Account is locked. Please try again in ${remainingTime} minutes.`)
+      return
+    }
+    
     // Validate
     const emailValid = validateField('email', formData.email)
     const passwordValid = validateField('password', formData.password)
@@ -186,6 +297,9 @@ export default function AuthPage() {
     try {
       await signInWithEmailAndPassword(auth, formData.email, formData.password)
       
+      // Clear rate limiting on successful login
+      clearAttempts()
+      
       // Save username if remember is checked
       if (rememberUsername) {
         localStorage.setItem('rememberedUsername', formData.email)
@@ -196,14 +310,23 @@ export default function AuthPage() {
       router.push('/dashboard')
     } catch (err) {
       console.error('Login error:', err)
-      if (err.code === 'auth/user-not-found') {
-        setError('No account found with this email')
-      } else if (err.code === 'auth/wrong-password') {
-        setError('Incorrect password')
-      } else if (err.code === 'auth/invalid-email') {
-        setError('Invalid email address')
-      } else {
-        setError('Login failed. Please try again.')
+      
+      // Handle rate limiting for failed attempts
+      const isLocked = handleFailedAttempt()
+      
+      if (!isLocked) {
+        // Only show specific error if not locked out
+        if (err.code === 'auth/user-not-found') {
+          setError('No account found with this email')
+        } else if (err.code === 'auth/wrong-password') {
+          setError('Incorrect password')
+        } else if (err.code === 'auth/invalid-email') {
+          setError('Invalid email address')
+        } else if (err.code === 'auth/too-many-requests') {
+          setError('Too many failed attempts. Please try again later.')
+        } else {
+          setError('Login failed. Please try again.')
+        }
       }
     } finally {
       setLoading(false)
@@ -340,9 +463,7 @@ export default function AuthPage() {
       <div className="w-full max-w-md p-8">
         {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-navy-600 rounded-2xl mb-4">
-            <span className="text-4xl font-bold text-white">AA</span>
-          </div>
+          <img src="/images/logo/agent-ascend-logo.svg" alt="Agent Ascend" className="w-20 h-20 mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-gray-900">Agent Ascend</h1>
           <p className="text-gray-600 mt-2">Sales Performance Platform</p>
         </div>

@@ -8,7 +8,39 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Brand colors from design tokens
+        // LiquidGlass Agent Ascend colors
+        'aa-blue': {
+          700: '#073B7A',
+          600: '#0C4DA2',
+          500: '#2E6FD6',
+          300: '#7FA9F5',
+        },
+        'surface': {
+          50: '#F7FAFF',
+          100: '#EEF5FF',
+          primary: 'rgb(var(--surface-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--surface-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--surface-tertiary) / <alpha-value>)',
+        },
+        'ink': {
+          900: '#0A1220',
+          0: 'var(--ink-0)',
+          50: 'var(--ink-50)',
+          100: 'var(--ink-100)',
+          200: 'var(--ink-200)',
+          300: 'var(--ink-300)',
+          400: 'var(--ink-400)',
+          500: 'var(--ink-500)',
+          600: 'var(--ink-600)',
+          700: 'var(--ink-700)',
+          800: 'var(--ink-800)',
+        },
+        'accent': {
+          lavender: '#E6D9FF',
+          lime: '#DFF2B2',
+          seafoam: '#CDEFE6',
+        },
+        // Brand colors from design tokens (backward compatibility)
         brand: {
           50: 'var(--brand-50)',
           100: 'var(--brand-100)',
@@ -20,20 +52,6 @@ module.exports = {
           700: 'var(--brand-700)',
           800: 'var(--brand-800)',
           900: 'var(--brand-900)',
-        },
-        // Ink neutrals from design tokens
-        ink: {
-          0: 'var(--ink-0)',
-          50: 'var(--ink-50)',
-          100: 'var(--ink-100)',
-          200: 'var(--ink-200)',
-          300: 'var(--ink-300)',
-          400: 'var(--ink-400)',
-          500: 'var(--ink-500)',
-          600: 'var(--ink-600)',
-          700: 'var(--ink-700)',
-          800: 'var(--ink-800)',
-          900: 'var(--ink-900)',
         },
         // Keep existing primary for backward compatibility
         primary: {
@@ -81,6 +99,12 @@ module.exports = {
           DEFAULT: '#ef4444',
           dark: '#dc2626',
         },
+      },
+      backgroundImage: {
+        'liquid-gradient': 'radial-gradient(120% 120% at 10% 0%, rgba(255,255,255,.25) 0%, rgba(255,255,255,0) 60%), radial-gradient(100% 100% at 90% 10%, rgba(226,214,255,.35) 0%, rgba(226,214,255,0) 45%), linear-gradient(180deg, #0C4DA2 0%, #073B7A 100%)',
+      },
+      dropShadow: {
+        glow: '0 0 10px rgba(255,255,255,0.6)',
       },
       animation: {
         'slide-in': 'slide-in 0.3s ease-out',

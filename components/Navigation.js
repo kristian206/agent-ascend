@@ -6,10 +6,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import NotificationBell from '@/components/NotificationBell'
 import StreakDisplay from '@/components/StreakDisplay'
+import { useAuth } from '@/components/AuthProvider'
+import SalesLogger from '@/components/SalesLogger'
 
 export default function Navigation({ user }) {
   const router = useRouter()
   const pathname = usePathname()
+  const { userData } = useAuth()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   
@@ -21,6 +24,29 @@ export default function Navigation({ user }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
   
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    if (!isMobileMenuOpen) return
+    
+    const handleClickOutside = (e) => {
+      const nav = document.querySelector('.mobile-menu-container')
+      const toggleButton = document.querySelector('.mobile-menu-toggle')
+      if (nav && !nav.contains(e.target) && !toggleButton.contains(e.target)) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+    
+    // Add small delay to prevent immediate close
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside)
+    }, 100)
+    
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMobileMenuOpen])
+  
   const handleLogout = async () => {
     await signOut(auth)
     router.push('/')
@@ -31,37 +57,44 @@ export default function Navigation({ user }) {
   }
 
   const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
-    { href: '/daily-intentions', label: 'Morning', icon: '☀️' },
-    { href: '/nightly-wrap', label: 'Evening', icon: '🌙' },
-    { href: '/team', label: 'Team', icon: '👥' },
-    { href: '/achievement-wall', label: 'Achievements', icon: '🏆' },
-    { href: '/metrics', label: 'Analytics', icon: '📊' },
-    { href: '/profile', label: 'Profile', icon: '👤' },
+    { href: '/dashboard', label: 'Dashboard', icon: '/images/icons/menu/dashboard.svg' },
+    { href: '/daily-intentions', label: 'Morning', icon: '/images/icons/menu/daily-intentions.svg' },
+    { href: '/nightly-wrap', label: 'Evening', icon: '/images/icons/menu/nightly-wrap.svg' },
+    { href: '/team', label: 'Team', icon: '/images/icons/menu/team.svg' },
+    { href: '/achievement-wall', label: 'Achievements', icon: '/images/icons/menu/achievements.svg' },
+    { href: '/leaderboard', label: 'Leaderboard', icon: '/images/icons/menu/leaderboard.svg' },
+    { href: '/profile', label: 'Profile', icon: '/images/icons/menu/profile.svg' },
+    ...(userData?.role === 'god' ? [
+      { href: '/admin', label: 'Admin', icon: '/images/badges/streaks/gold.svg' }
+    ] : [])
   ]
 
   return (
     <nav className={`
-      fixed top-0 left-0 right-0 z-sticky
+      fixed top-0 left-0 right-0 z-50
       transition-all duration-300 ease-out
       ${isScrolled 
-        ? 'glass-strong shadow-elevation-medium py-3' 
-        : 'glass py-4'
+        ? 'bg-black/95 backdrop-blur-xl border-b border-white/10 py-3' 
+        : 'bg-black border-b border-white/5 py-4'
       }
     `}>
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex justify-between items-center">
-          {/* Logo/Brand */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-lg">A</span>
-            </div>
-            <span className="text-title-2 font-bold text-primary-900 hidden sm:block">
-              Agent Ascend
-            </span>
+          {/* Left Section - Logo & Log Sale Button */}
+          <div className="flex items-center gap-4">
+            {/* Logo/Brand */}
+            <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <img src="/images/logo/agent-ascend-logo.svg" alt="Agent Ascend" className="w-10 h-10" />
+              <span className="text-xl font-bold text-white hidden sm:block">
+                Agent Ascend
+              </span>
+            </Link>
+            
+            {/* Log Sale Button with SalesLogger Modal */}
+            <SalesLogger />
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Center - Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <Link
@@ -71,19 +104,22 @@ export default function Navigation({ user }) {
                   relative px-4 py-2.5 rounded-xl font-medium
                   transition-all duration-200 ease-out
                   ${isActive(item.href)
-                    ? 'text-primary-600'
-                    : 'text-text-secondary hover:text-primary-500'
+                    ? 'bg-white/10 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }
-                  ${isActive(item.href) ? 'glass' : 'hover:glass-subtle'}
                   group
                 `}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-base">{item.icon}</span>
+                  <img 
+                    src={item.icon} 
+                    alt={item.label} 
+                    className={`w-5 h-5 ${isActive(item.href) ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}
+                  />
                   <span className="text-sm">{item.label}</span>
                 </div>
                 {isActive(item.href) && (
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full" />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full" />
                 )}
               </Link>
             ))}
@@ -101,35 +137,50 @@ export default function Navigation({ user }) {
               <StreakDisplay />
             </div>
             
-            {/* User Menu */}
+            {/* User Info */}
             <div className="flex items-center gap-3">
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl glass-subtle">
-                <div className="w-2 h-2 bg-success-light rounded-full animate-pulse" />
-                <span className="text-sm font-medium text-text-secondary">
+              {/* Level & XP */}
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span className="text-sm font-medium text-gray-300">
                   Level {user?.level || 1}
                 </span>
-                <div className="text-xs text-primary-600 font-bold bg-primary-100/50 px-2 py-0.5 rounded-full">
+                <div className="text-xs text-blue-400 font-bold bg-blue-500/20 px-2 py-0.5 rounded-full">
                   {user?.xp || 0} XP
                 </div>
               </div>
               
-              {/* User Avatar & Logout */}
+              {/* User Avatar & Actions */}
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">
-                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                  </span>
-                </div>
+                {/* God Mode Indicator */}
+                {userData?.role === 'god' && (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 transition-all"
+                    title="Admin Panel"
+                  >
+                    <img src="/images/badges/streaks/gold.svg" alt="Admin" className="w-4 h-4" />
+                    <span className="text-xs font-bold text-white">GOD</span>
+                  </Link>
+                )}
                 
+                {/* User Avatar */}
+                <img 
+                  src="/images/avatars/agent-03.svg" 
+                  alt="Agent Avatar" 
+                  className="w-10 h-10 rounded-xl ring-2 ring-white/20"
+                />
+                
+                {/* Sign Out Button */}
                 <button
                   onClick={handleLogout}
                   className="
                     hidden sm:flex items-center gap-1.5
                     px-3 py-1.5 rounded-xl
-                    text-sm font-medium text-error-dark
-                    glass-subtle hover:glass
+                    text-sm font-medium text-red-400
+                    bg-red-500/10 border border-red-500/20
+                    hover:bg-red-500/20 hover:text-red-300
                     transition-all duration-200
-                    hover:shadow-elevation-low
                   "
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,10 +196,10 @@ export default function Navigation({ user }) {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl glass-subtle hover:glass transition-all"
+              className="mobile-menu-toggle lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
               aria-label="Toggle menu"
             >
-              <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -161,7 +212,7 @@ export default function Navigation({ user }) {
         
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 py-4 border-t border-primary-200/20 animate-fade-in">
+          <div className="mobile-menu-container lg:hidden mt-4 py-4 border-t border-white/20 bg-black/95 backdrop-blur-xl animate-fade-in">
             <div className="grid grid-cols-2 gap-2">
               {navItems.map((item) => (
                 <Link
@@ -172,12 +223,12 @@ export default function Navigation({ user }) {
                     flex items-center gap-2 px-4 py-3 rounded-xl
                     font-medium transition-all duration-200
                     ${isActive(item.href)
-                      ? 'glass text-primary-600 shadow-elevation-low'
-                      : 'glass-subtle text-text-secondary hover:glass hover:text-primary-500'
+                      ? 'bg-white/20 text-white border border-white/20'
+                      : 'bg-black/70 text-gray-300 hover:bg-white/10 hover:text-white border border-white/10'
                     }
                   `}
                 >
-                  <span className="text-lg">{item.icon}</span>
+                  <img src={item.icon} alt={item.label} className="w-5 h-5 opacity-80" />
                   <span className="text-sm">{item.label}</span>
                 </Link>
               ))}
@@ -188,8 +239,9 @@ export default function Navigation({ user }) {
               onClick={handleLogout}
               className="
                 sm:hidden w-full mt-3 px-4 py-3 rounded-xl
-                text-sm font-medium text-error-dark
-                glass-subtle hover:glass
+                text-sm font-medium text-red-400
+                bg-red-500/10 border border-red-500/20
+                hover:bg-red-500/20 hover:text-red-300
                 transition-all duration-200
                 flex items-center justify-center gap-2
               "

@@ -20,7 +20,7 @@ export default function PageLayout({ children, user }) {
   
   // For classic UI, use the old Navigation component
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
+    <div className="min-h-screen bg-black">
       <Navigation user={user} />
       {/* Add proper padding-top to account for fixed navigation */}
       <div className="container mx-auto px-4 md:px-8 pt-24 pb-8">

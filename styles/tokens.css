@@ -1,0 +1,17 @@
+:root {
+  --aa-blue-700: #073B7A;
+  --aa-blue-600: #0C4DA2;
+  --aa-blue-500: #2E6FD6;
+  --aa-blue-300: #7FA9F5;
+  --surface-50:  #F7FAFF;
+  --surface-100: #EEF5FF;
+  --ink-900:     #0A1220;
+  --lavender-200:#E6D9FF;
+  --powder-lime-200:#DFF2B2;
+  --seafoam-200: #CDEFE6;
+  --glass-stroke:#FFFFFF80;
+  --glass-fill:  #FFFFFF40;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --shadow-glass: 0 8px 24px rgba(10,18,32,.18);
+}

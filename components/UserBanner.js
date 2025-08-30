@@ -8,10 +8,10 @@ import Link from 'next/link'
 
 // Role badge configurations
 const ROLE_BADGES = {
-  leader: { label: 'Leader', color: 'from-yellow-500 to-orange-500', icon: '👑' },
-  coLeader: { label: 'Co-Leader', color: 'from-purple-500 to-pink-500', icon: '⭐' },
-  senior: { label: 'Senior', color: 'from-blue-500 to-cyan-500', icon: '💎' },
-  member: { label: 'Member', color: 'from-gray-500 to-gray-600', icon: '🔷' }
+  leader: { label: 'Leader', color: 'from-yellow-500 to-orange-500', icon: '/images/badges/streaks/gold.svg' },
+  coLeader: { label: 'Co-Leader', color: 'from-purple-500 to-pink-500', icon: '/images/badges/streaks/silver.svg' },
+  senior: { label: 'Senior', color: 'from-blue-500 to-cyan-500', icon: '/images/badges/engagement/gold.svg' },
+  member: { label: 'Member', color: 'from-gray-500 to-gray-600', icon: '/images/badges/engagement/bronze.svg' }
 }
 
 // Season rank tiers
@@ -26,14 +26,14 @@ const SEASON_RANKS = {
 
 // Achievement badges
 const ACHIEVEMENT_BADGES = {
-  topSeller: { icon: '🏆', label: 'Top Seller', color: 'bg-yellow-500' },
-  streak30: { icon: '🔥', label: '30 Day Streak', color: 'bg-orange-500' },
-  teamPlayer: { icon: '🤝', label: 'Team Player', color: 'bg-blue-500' },
-  closer: { icon: '💼', label: 'Deal Closer', color: 'bg-green-500' },
-  rising: { icon: '📈', label: 'Rising Star', color: 'bg-purple-500' },
-  veteran: { icon: '🎖️', label: 'Veteran', color: 'bg-gray-600' },
-  mentor: { icon: '🎓', label: 'Mentor', color: 'bg-indigo-500' },
-  champion: { icon: '🥇', label: 'Champion', color: 'bg-red-500' }
+  topSeller: { icon: '/images/badges/volume/gold.svg', label: 'Top Seller', color: 'bg-yellow-500' },
+  streak30: { icon: '/images/badges/streaks/gold.svg', label: '30 Day Streak', color: 'bg-orange-500' },
+  teamPlayer: { icon: '/images/badges/engagement/gold.svg', label: 'Team Player', color: 'bg-blue-500' },
+  closer: { icon: '/images/badges/home/gold.svg', label: 'Deal Closer', color: 'bg-green-500' },
+  rising: { icon: '/images/badges/volume/silver.svg', label: 'Rising Star', color: 'bg-purple-500' },
+  veteran: { icon: '/images/badges/life/gold.svg', label: 'Veteran', color: 'bg-gray-600' },
+  mentor: { icon: '/images/badges/engagement/silver.svg', label: 'Mentor', color: 'bg-indigo-500' },
+  champion: { icon: '/images/badges/auto/gold.svg', label: 'Champion', color: 'bg-red-500' }
 }
 
 // Banner border styles
@@ -44,16 +44,26 @@ const BORDER_STYLES = {
   animated: 'border-2 border-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 bg-clip-border animate-gradient-x'
 }
 
-// Banner background gradients
-const BACKGROUND_GRADIENTS = {
-  default: 'from-surface-100 to-surface-200',
-  midnight: 'from-gray-900 to-black',
-  ocean: 'from-blue-900 to-cyan-900',
-  sunset: 'from-orange-900 to-pink-900',
-  forest: 'from-green-900 to-emerald-900',
-  royal: 'from-purple-900 to-indigo-900',
-  crimson: 'from-red-900 to-rose-900',
-  cosmic: 'from-violet-900 via-purple-900 to-pink-900'
+// Banner background gradients and images
+const BACKGROUND_OPTIONS = {
+  default: { type: 'gradient', value: 'from-surface-100 to-surface-200' },
+  midnight: { type: 'gradient', value: 'from-gray-900 to-black' },
+  ocean: { type: 'gradient', value: 'from-blue-900 to-cyan-900' },
+  sunset: { type: 'gradient', value: 'from-orange-900 to-pink-900' },
+  forest: { type: 'gradient', value: 'from-green-900 to-emerald-900' },
+  royal: { type: 'gradient', value: 'from-purple-900 to-indigo-900' },
+  crimson: { type: 'gradient', value: 'from-red-900 to-rose-900' },
+  cosmic: { type: 'gradient', value: 'from-violet-900 via-purple-900 to-pink-900' },
+  banner1: { type: 'image', value: '/images/banners/banner-1.svg' },
+  banner2: { type: 'image', value: '/images/banners/banner-2.svg' },
+  banner3: { type: 'image', value: '/images/banners/banner-3.svg' },
+  banner4: { type: 'image', value: '/images/banners/banner-4.svg' },
+  banner5: { type: 'image', value: '/images/banners/banner-5.svg' },
+  banner6: { type: 'image', value: '/images/banners/banner-6.svg' },
+  banner7: { type: 'image', value: '/images/banners/banner-7.svg' },
+  banner8: { type: 'image', value: '/images/banners/banner-8.svg' },
+  banner9: { type: 'image', value: '/images/banners/banner-9.svg' },
+  banner10: { type: 'image', value: '/images/banners/banner-10.svg' }
 }
 
 const UserBanner = memo(({ 

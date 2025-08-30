@@ -141,19 +141,26 @@ export default function SalesLogger({ onSaleLogged }) {
 
   return (
     <>
-      {/* Trigger Button */}
+      {/* Trigger Button - Matches Header Style */}
       <button
         onClick={() => setIsOpen(true)}
-        className="glass-brand radius-lg px-6 py-3 flex items-center gap-3 hover:scale-105 transition-all group"
+        className="
+          flex items-center gap-2 px-4 py-2 rounded-xl
+          bg-gradient-to-r from-blue-500 to-blue-600
+          hover:from-blue-600 hover:to-blue-700
+          text-white font-semibold text-sm
+          shadow-lg shadow-blue-500/25
+          transition-all duration-200
+          hover:shadow-xl hover:shadow-blue-500/30
+          hover:scale-105
+        "
       >
-        <span className="text-2xl">💰</span>
-        <div className="text-left">
-          <div className="type-list-heading text-white">Log Sale</div>
-          <div className="type-detail-caption text-white/80">Track commission</div>
-        </div>
-        <svg className="w-5 h-5 text-white/60 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
+          />
         </svg>
+        <span>Log Sale</span>
       </button>
 
       {/* Modal */}
@@ -161,19 +168,19 @@ export default function SalesLogger({ onSaleLogged }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
           
-          <div className="relative glass-xl radius-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto elev-3">
+          <div className="relative bg-gray-900 rounded-2xl border border-white/10 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             {/* Header */}
-            <div className="sticky top-0 glass-strong p-6 border-b border-ink-100">
+            <div className="sticky top-0 bg-black/90 backdrop-blur-xl p-6 border-b border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="type-dashboard-title text-primary">Log New Sale</h2>
-                  <p className="type-detail-body text-secondary mt-1">Record products sold and track commission</p>
+                  <h2 className="text-2xl font-bold text-white">Log New Sale</h2>
+                  <p className="text-gray-400 mt-1">Record products sold and track commission</p>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-lg hover:bg-surface-100 transition-colors"
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  <svg className="w-5 h-5 text-ink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -182,12 +189,12 @@ export default function SalesLogger({ onSaleLogged }) {
 
             {/* Success Message */}
             {showSuccess && (
-              <div className="p-4 bg-success/10 border-l-4 border-success">
+              <div className="p-4 bg-green-500/10 border-l-4 border-green-500">
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">🎉</span>
                   <div>
-                    <div className="type-list-heading text-success">Sale Logged Successfully!</div>
-                    <div className="type-detail-body text-success-dark">
+                    <div className="font-semibold text-green-400">Sale Logged Successfully!</div>
+                    <div className="text-sm text-green-300">
                       Commission earned: ${calculateTotalCommission()}
                     </div>
                   </div>
@@ -199,7 +206,7 @@ export default function SalesLogger({ onSaleLogged }) {
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               {/* Client Name */}
               <div>
-                <label className="type-list-label text-secondary mb-2 block">
+                <label className="text-sm font-medium text-gray-300 mb-2 block">
                   Client First Name
                 </label>
                 <input
@@ -207,25 +214,25 @@ export default function SalesLogger({ onSaleLogged }) {
                   value={clientFirstName}
                   onChange={(e) => setClientFirstName(e.target.value)}
                   placeholder="Enter client's first name"
-                  className="w-full px-4 py-3 rounded-lg glass border border-ink-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 type-list-body"
+                  className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/10 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                   required
                 />
               </div>
 
               {/* Product Selection */}
               <div>
-                <label className="type-list-label text-secondary mb-3 block">
+                <label className="text-sm font-medium text-gray-300 mb-3 block">
                   Products Sold
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {Object.entries(PRODUCTS).map(([key, product]) => (
-                    <div key={key} className="glass radius-lg p-4 border border-ink-100">
+                    <div key={key} className="bg-black/50 rounded-xl p-4 border border-white/10">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <span className="text-2xl">{product.icon}</span>
                           <div>
-                            <div className="type-list-heading text-primary">{product.name}</div>
-                            <div className="type-detail-caption text-success">${product.commission} commission</div>
+                            <div className="font-medium text-white">{product.name}</div>
+                            <div className="text-xs text-green-400">${product.commission} commission</div>
                           </div>
                         </div>
                         <input
@@ -235,7 +242,7 @@ export default function SalesLogger({ onSaleLogged }) {
                           value={selectedProducts[key] || ''}
                           onChange={(e) => handleProductChange(key, e.target.value)}
                           placeholder="0"
-                          className="w-20 px-3 py-2 rounded-lg glass border border-ink-200 text-center type-list-body focus:border-brand-500 focus:outline-none"
+                          className="w-20 px-3 py-2 rounded-lg bg-black/50 border border-white/10 text-center text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         />
                       </div>
                     </div>
@@ -245,14 +252,14 @@ export default function SalesLogger({ onSaleLogged }) {
 
               {/* Commission Preview */}
               {calculateTotalItems() > 0 && (
-                <div className="glass-brand radius-lg p-4">
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="type-list-label text-white/80">Products Summary</span>
-                    <span className="type-list-body text-white">{formatProductsSold()}</span>
+                    <span className="text-sm text-gray-400">Products Summary</span>
+                    <span className="text-sm text-white">{formatProductsSold()}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="type-list-heading text-white">Total Commission</span>
-                    <span className="type-dashboard-metric text-white">${calculateTotalCommission()}</span>
+                    <span className="font-semibold text-white">Total Commission</span>
+                    <span className="text-2xl font-bold text-blue-400">${calculateTotalCommission()}</span>
                   </div>
                 </div>
               )}
@@ -262,14 +269,14 @@ export default function SalesLogger({ onSaleLogged }) {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-6 py-3 rounded-lg glass hover:bg-surface-100 type-list-body text-ink-600 transition-colors"
+                  className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 font-medium transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || calculateTotalItems() === 0 || !clientFirstName.trim()}
-                  className="px-6 py-3 rounded-lg glass-brand type-list-body text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
                 >
                   {isSubmitting ? 'Logging...' : `Log Sale (${calculateTotalItems()} items)`}
                 </button>

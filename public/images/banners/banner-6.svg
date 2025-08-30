@@ -1,0 +1,27 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200">
+  <defs>
+    <linearGradient id="gradBG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E6FD6"/>
+      <stop offset="1" stop-color="#073B7A"/>
+    </linearGradient>
+    <linearGradient id="gradbronze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cd7f32"/>
+      <stop offset="1" stop-color="#8c4c23"/>
+    </linearGradient>
+    <linearGradient id="gradsilver" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c0c0c0"/>
+      <stop offset="1" stop-color="#7d7d7d"/>
+    </linearGradient>
+    <linearGradient id="gradgold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd700"/>
+      <stop offset="1" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="800" height="200" rx="28" fill="url(#gradBG)" stroke="white" stroke-width="6" stroke-opacity=".6"/>
+  <circle cx="100" cy="100" r="60" fill="white" fill-opacity=".2" stroke="white" stroke-width="4"/>
+  <text x="180" y="90" font-size="28" font-family="sans-serif" fill="white" font-weight="bold">Riley Patel</text>
+  <text x="180" y="120" font-size="18" font-family="sans-serif" fill="white" opacity="0.85">Account Manager</text>
+  <text x="650" y="40" font-size="18" font-family="sans-serif" fill="white" text-anchor="end">Aurora Team</text>
+  <circle cx="600" cy="100" r="32" fill="url(#gradbronze)" stroke="white" stroke-width="4" stroke-opacity=".6"/><circle cx="670" cy="100" r="32" fill="url(#gradsilver)" stroke="white" stroke-width="4" stroke-opacity=".6"/><circle cx="740" cy="100" r="32" fill="url(#gradgold)" stroke="white" stroke-width="4" stroke-opacity=".6"/>
+</svg>

@@ -5,31 +5,28 @@ import QuickStats from '@/components/QuickStats'
 import RecentActivity from '@/components/RecentActivity'
 import SalesTracker from '@/components/SalesTracker'
 import PersonalProgress from '@/components/PersonalProgress'
-// Removed unused useState import
-import { useSearchParams } from 'next/navigation'
 import SalesLogger from '@/components/SalesLogger'
 import TeamCommissionOverview from '@/components/TeamCommissionOverview'
+import PasswordMigration from '@/components/PasswordMigration'
 
 export default function Dashboard() {
   const { user, userData } = useAuth()
-  const searchParams = useSearchParams()
-  
-  // Check UI version preference (default to new UI)
-  const uiVersion = searchParams.get('ui')
-  const useClassicUI = uiVersion === 'v1'
-  
-  // Redirect to v2 dashboard if explicitly requested
-  if (uiVersion === 'v2' && typeof window !== 'undefined') {
-    window.location.href = '/dashboard/v2'
-    return null
-  }
 
   if (!user) return null
 
-  // Use PageLayout which handles both UI versions
   return (
     <PageLayout user={userData}>
       <div className="max-w-7xl mx-auto p-4 md:p-8">
+          {/* Password Migration Banner */}
+          <PasswordMigration 
+            user={user} 
+            onComplete={() => {
+              console.log('Password updated successfully')
+            }}
+            onDismiss={() => {
+              console.log('Password update dismissed')
+            }}
+          />
           {/* Hero Section - What Matters Now */}
           <header className="mb-8">
             <h1 className="type-dashboard-title text-primary mb-2">
@@ -43,9 +40,9 @@ export default function Dashboard() {
           {/* Priority Cards - Instagram-style focus on action */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             {/* Daily Streak Card */}
-            <div className="glass radius-xl p-6 elev-1 hover:elev-2 transition-all">
+            <div className="liquid-glass p-6 hover:scale-105 transition-all bg-[url('/images/bg/noise.svg')]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-3xl">🔥</span>
+                <img src="/images/badges/star.svg" alt="Streak" className="w-8 h-8" />
                 <span className="type-list-label text-brand-500">STREAK</span>
               </div>
               <div className="type-dashboard-metric text-primary">{userData?.streak || 0} days</div>
@@ -55,9 +52,9 @@ export default function Dashboard() {
             </div>
 
             {/* Today's Points */}
-            <div className="glass radius-xl p-6 elev-1 hover:elev-2 transition-all">
+            <div className="liquid-glass p-6 hover:scale-105 transition-all bg-[url('/images/bg/noise.svg')]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-3xl">⚡</span>
+                <img src="/images/badges/trophy.svg" alt="Points" className="w-8 h-8" />
                 <span className="type-list-label text-success">TODAY</span>
               </div>
               <div className="type-dashboard-metric text-primary">{userData?.todayPoints || 0} pts</div>
@@ -74,18 +71,18 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Quick Actions - TikTok-style prominent CTA */}
-            <div className="glass-brand radius-xl p-6 elev-1 hover:elev-2 transition-all">
+            {/* Quick Actions - High Contrast CTA */}
+            <div className="relative p-6 rounded-2xl overflow-hidden hover:scale-105 transition-all liquid-stroke" style={{ backgroundImage: "url('/images/ui/cta-bg.svg')", backgroundSize: "cover" }}>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-3xl">🎯</span>
-                <span className="type-list-label text-ink-0">QUICK WIN</span>
+                <img src="/images/badges/shield.svg" alt="Quick Win" className="w-8 h-8" />
+                <span className="text-xs font-bold text-white/90 uppercase tracking-wider">QUICK WIN</span>
               </div>
-              <p className="type-list-body text-ink-0 mb-4">
+              <p className="text-white font-medium text-lg mb-4">
                 Complete your daily check-in
               </p>
               <a 
                 href="/daily-intentions"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors type-list-body font-medium text-white"
+                className="liquid-stroke inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 transition-all font-semibold text-white"
               >
                 Start Now
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,16 +114,22 @@ export default function Dashboard() {
           
           {/* Quick Links Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-            <a href="/daily-intentions" className="glass radius-xl p-6 hover:glass-brand transition-all group">
-              <h3 className="type-list-heading text-primary mb-2">☀️ Morning Intentions</h3>
+            <a href="/daily-intentions" className="liquid-glass p-6 hover:scale-105 transition-all group bg-[url('/images/bg/noise.svg')]">
+              <h3 className="type-list-heading text-primary mb-2 flex items-center gap-2">
+                <img src="/images/icons/menu/daily-intentions.svg" alt="Morning" className="w-5 h-5" />
+                Morning Intentions
+              </h3>
               <p className="type-detail-body text-secondary">Start your day with clarity and purpose</p>
               <div className="mt-4 text-brand-500 group-hover:translate-x-2 transition-transform">
                 Set intentions →
               </div>
             </a>
             
-            <a href="/nightly-wrap" className="glass radius-xl p-6 hover:glass-brand transition-all group">
-              <h3 className="type-list-heading text-primary mb-2">🌙 Nightly Wrap</h3>
+            <a href="/nightly-wrap" className="liquid-glass p-6 hover:scale-105 transition-all group bg-[url('/images/bg/noise.svg')]">
+              <h3 className="type-list-heading text-primary mb-2 flex items-center gap-2">
+                <img src="/images/icons/menu/nightly-wrap.svg" alt="Evening" className="w-5 h-5" />
+                Nightly Wrap
+              </h3>
               <p className="type-detail-body text-secondary">Reflect on your wins and plan tomorrow</p>
               <div className="mt-4 text-brand-500 group-hover:translate-x-2 transition-transform">
                 Complete wrap →

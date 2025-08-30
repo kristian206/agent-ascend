@@ -42,9 +42,9 @@ export default function NotificationPanel({ notifications, onClose, onNotificati
   const unreadCount = notifications.filter(n => !n.read).length
 
   return (
-    <div className="w-96 bg-gray-900 rounded-xl shadow-2xl border border-white/10 overflow-hidden">
+    <div className="w-96 bg-black/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-4 border-b border-white/10">
+      <div className="bg-gradient-to-r from-gray-900 to-black p-4 border-b border-white/20">
         <div className="flex items-center justify-between">
           <h3 className="text-white font-bold">Notifications</h3>
           <div className="flex items-center gap-2">
@@ -80,15 +80,15 @@ export default function NotificationPanel({ notifications, onClose, onNotificati
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-white/10">
             {notifications.map((notification) => (
               <div
                 key={notification.id}
                 onClick={() => !notification.read && handleMarkAsRead(notification.id)}
                 className={`p-4 transition cursor-pointer ${
                   notification.read 
-                    ? 'bg-transparent' 
-                    : 'bg-yellow-500/5 hover:bg-yellow-500/10'
+                    ? 'bg-black/50' 
+                    : 'bg-yellow-500/10 hover:bg-yellow-500/15'
                 }`}
               >
                 <div className="flex gap-3">
@@ -126,7 +126,7 @@ export default function NotificationPanel({ notifications, onClose, onNotificati
       
       {/* Footer */}
       {notifications.length > 0 && (
-        <div className="p-3 border-t border-white/10 bg-gray-800/50">
+        <div className="p-3 border-t border-white/20 bg-black/70">
           <p className="text-xs text-center text-gray-500">
             Notifications expire after 30 days
           </p>

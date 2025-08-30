@@ -6,6 +6,7 @@ import { auth, db } from '@/lib/firebase'
 import { useRouter, usePathname } from 'next/navigation'
 import { generateUniqueId } from '@/lib/idGenerator'
 import LoadingScreen from '@/components/LoadingScreen'
+import SessionManager from '@/components/SessionManager'
 
 const AuthContext = createContext({})
 
@@ -91,7 +92,11 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, userData, loading }}>
-      {loading ? <LoadingScreen /> : children}
+      {loading ? <LoadingScreen /> : (
+        <SessionManager>
+          {children}
+        </SessionManager>
+      )}
     </AuthContext.Provider>
   )
 }

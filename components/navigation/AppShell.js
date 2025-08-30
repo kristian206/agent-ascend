@@ -61,7 +61,7 @@ export default function AppShell({ children, user }) {
   }
 
   return (
-    <div className="min-h-screen bg-surface-base">
+    <div className="min-h-screen bg-black">
       {/* Top Bar */}
       <TopBar 
         user={user}

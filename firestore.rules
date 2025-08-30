@@ -1,0 +1,215 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isGod() {
+      return isAuthenticated() && 
+        request.auth.token.email == 'kristian.suson@gmail.com';
+    }
+    
+    function isTeamMember(teamId) {
+      return isAuthenticated() && 
+        request.auth.uid in get(/databases/$(database)/documents/teams/$(teamId)).data.members;
+    }
+    
+    function isTeamLeader(teamId) {
+      return isAuthenticated() && 
+        request.auth.uid == get(/databases/$(database)/documents/teams/$(teamId)).data.leaderId;
+    }
+    
+    // Validate data types and required fields
+    function hasRequiredUserFields() {
+      return request.resource.data.keys().hasAll(['email', 'name', 'userId']) &&
+        request.resource.data.email is string &&
+        request.resource.data.name is string &&
+        request.resource.data.userId is string;
+    }
+    
+    // Rate limiting helper (basic implementation)
+    function withinRateLimit() {
+      return request.time > resource.data.lastModified + duration.value(1, 's');
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own data, gods can read all
+      allow read: if isOwner(userId) || isGod();
+      
+      // Allow users to create their own document on first login
+      allow create: if isAuthenticated() && 
+        request.auth.uid == userId &&
+        request.resource.data.email == request.auth.token.email;
+      
+      // Users can update their own profile (except role), gods can update all
+      allow update: if (isOwner(userId) && 
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'userId', 'email'])) 
+        || isGod();
+      
+      // Only gods can delete users
+      allow delete: if isGod();
+    }
+    
+    // Members collection (legacy support)
+    match /members/{userId} {
+      // Users can read their own data
+      allow read: if isOwner(userId) || isGod();
+      
+      // Allow users to create their own document on first login
+      allow create: if isAuthenticated() && 
+        request.auth.uid == userId &&
+        request.resource.data.email == request.auth.token.email;
+      
+      // Users can update their own profile (except protected fields)
+      allow update: if (isOwner(userId) && 
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'userId', 'email'])) 
+        || isGod();
+      
+      // Only gods can delete
+      allow delete: if isGod();
+    }
+    
+    // Teams collection
+    match /teams/{teamId} {
+      // Allow read if document doesn't exist, or if member/public
+      allow read: if isAuthenticated() && (
+        resource == null || 
+        isTeamMember(teamId) || 
+        isGod() || 
+        (resource.data.isPublic == true)
+      );
+      
+      // Only team leaders can update
+      allow update: if isTeamLeader(teamId) || isGod();
+      
+      // Authenticated users can create teams
+      allow create: if isAuthenticated() && 
+        request.resource.data.leaderId == request.auth.uid &&
+        request.resource.data.members.hasAll([request.auth.uid]);
+      
+      // Only team leaders or gods can delete
+      allow delete: if isTeamLeader(teamId) || isGod();
+    }
+    
+    // Activities collection
+    match /activities/{activityId} {
+      // Users can read their own activities or if document doesn't exist yet
+      allow read: if isAuthenticated() && 
+        (resource == null || resource.data.userId == request.auth.uid || isGod());
+      
+      // Users can create their own activities
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      // Activities cannot be updated
+      allow update: if false;
+      
+      // Only gods can delete activities
+      allow delete: if isGod();
+    }
+    
+    // Notifications collection
+    match /notifications/{notificationId} {
+      // Users can read their own notifications or if document doesn't exist
+      allow read: if isAuthenticated() && 
+        (resource == null || resource.data.recipientId == request.auth.uid);
+      
+      // Users can create notifications
+      allow create: if isAuthenticated() &&
+        request.resource.data.recipientId != null;
+      
+      // Users can mark their own as read
+      allow update: if isAuthenticated() && 
+        resource.data.recipientId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt']);
+      
+      // Users can delete their own notifications
+      allow delete: if isAuthenticated() && 
+        resource.data.recipientId == request.auth.uid;
+    }
+    
+    // Achievements collection
+    match /achievements/{achievementId} {
+      // All authenticated users can read achievements
+      allow read: if isAuthenticated();
+      
+      // Only gods can manage achievements
+      allow create, update, delete: if isGod();
+    }
+    
+    // Sales collection
+    match /sales/{saleId} {
+      // Users can read their own sales or if document doesn't exist
+      allow read: if isAuthenticated() && 
+        (resource == null || resource.data.userId == request.auth.uid || 
+         (resource.data.teamId != null && isTeamLeader(resource.data.teamId)) || 
+         isGod());
+      
+      // Users can log their own sales
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own recent sales, leaders can verify
+      allow update: if (isAuthenticated() && 
+        resource.data.userId == request.auth.uid &&
+        resource.data.timestamp > request.time - duration.value(24, 'h')) ||
+        (resource.data.teamId != null && isTeamLeader(resource.data.teamId)) ||
+        isGod();
+      
+      // Only gods can delete sales
+      allow delete: if isGod();
+    }
+    
+    // Daily check-ins collection
+    match /checkins/{checkinId} {
+      // Users can read their own check-ins or if document doesn't exist
+      allow read: if isAuthenticated() && 
+        (resource == null || resource.data.userId == request.auth.uid);
+      
+      // Users can create check-ins
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      // Check-ins cannot be updated
+      allow update: if false;
+      
+      // Only gods can delete
+      allow delete: if isGod();
+    }
+    
+    // System settings (read-only for users)
+    match /settings/{document=**} {
+      allow read: if isAuthenticated();
+      allow write: if isGod();
+    }
+    
+    // Audit logs (write-only for system, read for gods)
+    match /audit/{logId} {
+      allow read: if isGod();
+      allow create: if isAuthenticated() &&
+        request.resource.data.timestamp == request.time &&
+        request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+    
+    // Rate limits collection (for Cloud Functions)
+    match /rateLimits/{email} {
+      // Cloud Functions service account can read/write
+      // Regular users cannot access this collection
+      allow read, write: if false;
+    }
+    
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

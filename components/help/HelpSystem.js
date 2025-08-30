@@ -139,10 +139,10 @@ export function HelpIcon({ section, className = '' }) {
     <>
       <button
         onClick={handleClick}
-        className={`inline-flex items-center justify-center w-5 h-5 rounded-full glass hover:glass-brand text-ink-400 hover:text-white transition-all ${className}`}
+        className={`inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white/70 hover:text-white transition-all ${className}`}
         title="Get help"
       >
-        <span className="text-xs font-bold">?</span>
+        <span className="text-sm font-bold">?</span>
       </button>
       
       {showPanel && (
@@ -165,13 +165,32 @@ export function HelpPanel({ section, onClose }) {
   }
   
   useEffect(() => {
+    // Handle Escape key
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
         onClose()
       }
     }
+    
+    // Handle click outside
+    const handleClickOutside = (e) => {
+      // Check if click is on the panel or its children
+      const panel = document.querySelector('.help-panel-container')
+      if (panel && !panel.contains(e.target)) {
+        onClose()
+      }
+    }
+    
     document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    // Add small delay to prevent immediate close on open
+    setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside)
+    }, 100)
+    
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [onClose])
   
   // Create portal to render at root level
@@ -181,24 +200,24 @@ export function HelpPanel({ section, onClose }) {
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-ink-900/20 backdrop-blur-sm z-40 animate-fade-in"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 animate-fade-in"
         onClick={onClose}
       />
       
       {/* Panel */}
-      <div className="fixed top-0 right-0 bottom-0 w-96 glass-xl border-l border-ink-100 z-50 animate-slide-in-right overflow-y-auto">
+      <div className="help-panel-container fixed top-0 right-0 bottom-0 w-96 bg-black/95 backdrop-blur-xl border-l border-white/10 z-50 animate-slide-in-right overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 glass-lg border-b border-ink-100 p-6 z-10">
+        <div className="sticky top-0 bg-black/90 backdrop-blur-xl border-b border-white/10 p-6 z-10">
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="type-list-heading text-primary">{content.title}</h2>
-              <p className="type-detail-caption text-ink-500 mt-1">Quick Help</p>
+              <h2 className="text-xl font-semibold text-white">{content.title}</h2>
+              <p className="text-sm text-gray-400 mt-1">Quick Help</p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-surface-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
             >
-              <svg className="w-5 h-5 text-ink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -209,22 +228,22 @@ export function HelpPanel({ section, onClose }) {
         <div className="p-6 space-y-6">
           {/* Description */}
           <div>
-            <h3 className="type-list-label text-ink-500 mb-2">ABOUT</h3>
-            <p className="type-list-body text-ink-700">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">ABOUT</h3>
+            <p className="text-sm text-gray-300">
               {content.description}
             </p>
           </div>
           
           {/* Tips */}
           <div>
-            <h3 className="type-list-label text-ink-500 mb-3">QUICK TIPS</h3>
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">QUICK TIPS</h3>
             <div className="space-y-3">
               {content.tips.map((tip, index) => (
                 <div key={index} className="flex gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center type-detail-caption font-medium">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs font-medium">
                     {index + 1}
                   </span>
-                  <p className="type-list-body text-ink-700 flex-1">{tip}</p>
+                  <p className="text-sm text-gray-300 flex-1">{tip}</p>
                 </div>
               ))}
             </div>
@@ -234,7 +253,7 @@ export function HelpPanel({ section, onClose }) {
           <div>
             <a 
               href={content.docLink}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg glass hover:glass-brand text-ink-700 hover:text-white type-list-body font-medium transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-gray-300 hover:text-white text-sm font-medium transition-all"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -245,15 +264,15 @@ export function HelpPanel({ section, onClose }) {
           
           {/* Related Topics */}
           <div>
-            <h3 className="type-list-label text-ink-500 mb-3">RELATED TOPICS</h3>
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">RELATED TOPICS</h3>
             <div className="space-y-2">
-              <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-surface-100 type-list-body text-ink-700 transition-colors">
+              <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm text-gray-300 transition-colors">
                 Getting Started Guide →
               </button>
-              <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-surface-100 type-list-body text-ink-700 transition-colors">
+              <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm text-gray-300 transition-colors">
                 Keyboard Shortcuts →
               </button>
-              <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-surface-100 type-list-body text-ink-700 transition-colors">
+              <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm text-gray-300 transition-colors">
                 Best Practices →
               </button>
             </div>
@@ -261,12 +280,12 @@ export function HelpPanel({ section, onClose }) {
         </div>
         
         {/* Footer */}
-        <div className="sticky bottom-0 glass-lg border-t border-ink-100 p-6">
+        <div className="sticky bottom-0 bg-black/90 backdrop-blur-xl border-t border-white/10 p-6">
           <div className="flex items-center justify-between">
-            <p className="type-detail-caption text-ink-500">
+            <p className="text-sm text-gray-400">
               Need more help?
             </p>
-            <button className="type-list-body text-brand-500 hover:text-brand-600 font-medium">
+            <button className="text-sm text-blue-400 hover:text-blue-300 font-medium">
               Contact Support
             </button>
           </div>
