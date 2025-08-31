@@ -1,7 +1,7 @@
 'use client'
-import { useAuth } from '@/components/AuthProvider'
-import PageLayout from '@/components/PageLayout'
-import DailyIntentions from '@/components/DailyIntentions'
+import { useAuth } from '@/src/components/auth/AuthProvider'
+import PageLayout from '@/src/components/layout/PageLayout'
+import DailyIntentions from '@/src/components/sales/DailyIntentions'
 
 export default function DailyIntentionsPage() {
   const { user, userData } = useAuth()
@@ -15,7 +15,7 @@ export default function DailyIntentionsPage() {
           <h1 className="text-4xl font-black text-white">
             Start Your Day Right
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-gray-300 mt-2">
             Set clear intentions and watch your productivity soar
           </p>
         </header>

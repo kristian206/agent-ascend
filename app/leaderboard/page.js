@@ -1,7 +1,7 @@
 'use client'
-import PageLayout from '@/components/PageLayout'
-import EnhancedLeaderboard from '@/components/EnhancedLeaderboard'
-import { useAuth } from '@/components/AuthProvider'
+import PageLayout from '@/src/components/layout/PageLayout'
+import EnhancedLeaderboard from '@/src/components/performance/EnhancedLeaderboard'
+import { useAuth } from '@/src/components/auth/AuthProvider'
 
 export default function LeaderboardPage() {
   const { userData } = useAuth()

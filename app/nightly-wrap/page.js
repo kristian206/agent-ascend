@@ -1,7 +1,7 @@
 'use client'
-import { useAuth } from '@/components/AuthProvider'
-import PageLayout from '@/components/PageLayout'
-import NightlyWrap from '@/components/NightlyWrap'
+import { useAuth } from '@/src/components/auth/AuthProvider'
+import PageLayout from '@/src/components/layout/PageLayout'
+import NightlyWrap from '@/src/components/performance/NightlyWrap'
 
 export default function NightlyWrapPage() {
   const { user, userData } = useAuth()
@@ -15,7 +15,7 @@ export default function NightlyWrapPage() {
           <h1 className="text-4xl font-black text-white">
             Wrap Up Your Day
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-gray-300 mt-2">
             Reflect on your wins and set yourself up for tomorrow
           </p>
         </header>

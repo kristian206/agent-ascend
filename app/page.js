@@ -1,10 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
-import { auth, db } from '@/lib/firebase'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from 'firebase/auth'
+import { auth, db } from '@/src/services/firebase'
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Mail, Lock, User, MapPin, AlertCircle, CheckCircle } from 'lucide-react'
+import EmailVerification from '@/src/components/auth/EmailVerification'
 
 // U.S. States list
 const US_STATES = [
@@ -63,7 +64,7 @@ const US_STATES = [
 export default function AuthPage() {
   const router = useRouter()
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
-  const [mode, setMode] = useState('login') // 'login', 'signup', 'forgot'
+  const [mode, setMode] = useState('login') // 'login', 'signup', 'forgot', 'verify'
   const [showPassword, setShowPassword] = useState(false)
   const [rememberUsername, setRememberUsername] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -72,6 +73,7 @@ export default function AuthPage() {
   const [passwordStrength, setPasswordStrength] = useState(0)
   const [emailExists, setEmailExists] = useState(false)
   const [checkingEmail, setCheckingEmail] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
   
   // Rate limiting state
   const [loginAttempts, setLoginAttempts] = useState(0)
@@ -205,7 +207,7 @@ export default function AuthPage() {
           // For MVP, we'll just show it's available
           setEmailExists(false)
         } catch (err) {
-          console.error('Error checking email:', err)
+          // Email check failed silently
         }
         setCheckingEmail(false)
       }
@@ -295,7 +297,16 @@ export default function AuthPage() {
     setError('')
     
     try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password)
+      const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password)
+      const user = userCredential.user
+      
+      // Check if email is verified
+      if (!user.emailVerified) {
+        setCurrentUser(user)
+        setMode('verify')
+        setLoading(false)
+        return
+      }
       
       // Clear rate limiting on successful login
       clearAttempts()
@@ -307,7 +318,13 @@ export default function AuthPage() {
         localStorage.removeItem('rememberedUsername')
       }
       
-      router.push('/dashboard')
+      // Check if user has completed onboarding
+      const userDoc = await getDoc(doc(db, 'users', user.uid))
+      if (userDoc.exists() && userDoc.data().onboardingCompleted) {
+        router.push('/dashboard')
+      } else {
+        router.push('/onboarding')
+      }
     } catch (err) {
       console.error('Login error:', err)
       
@@ -358,6 +375,12 @@ export default function AuthPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
       const user = userCredential.user
       
+      // Send email verification
+      await sendEmailVerification(user, {
+        url: `${window.location.origin}/dashboard`,
+        handleCodeInApp: false
+      })
+      
       // Generate 6-digit ID
       const userId = Math.floor(100000 + Math.random() * 900000).toString()
       
@@ -373,6 +396,7 @@ export default function AuthPage() {
         lifetimePoints: 0,
         monthPoints: 0,
         weekPoints: 0,
+        onboardingCompleted: false,
         createdAt: serverTimestamp(),
         lastActivityDate: serverTimestamp()
       })
@@ -392,7 +416,9 @@ export default function AuthPage() {
         createdAt: serverTimestamp()
       })
       
-      router.push('/dashboard')
+      // Show email verification screen
+      setCurrentUser(user)
+      setMode('verify')
     } catch (err) {
       console.error('Signup error:', err)
       if (err.code === 'auth/email-already-in-use') {
@@ -418,18 +444,11 @@ export default function AuthPage() {
     setSuccess('')
     
     try {
-      // For MVP, just show a temporary password
-      // In production, use sendPasswordResetEmail(auth, formData.email)
-      
-      // Check if user exists first
-      const tempPassword = 'TempPass123!'
-      
-      setSuccess(`For testing purposes, use this temporary password: ${tempPassword}\n\nIn production, a reset link would be sent to ${formData.email}`)
-      
-      // Uncomment for production:
-      // await sendPasswordResetEmail(auth, formData.email)
-      // setSuccess(`Password reset link sent to ${formData.email}`)
-      
+      await sendPasswordResetEmail(auth, formData.email, {
+        url: `${window.location.origin}/?mode=login`,
+        handleCodeInApp: false
+      })
+      setSuccess(`Password reset link sent to ${formData.email}. Please check your email.`)
     } catch (err) {
       console.error('Password reset error:', err)
       if (err.code === 'auth/user-not-found') {
@@ -439,6 +458,19 @@ export default function AuthPage() {
       }
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Handle email verification complete
+  const handleVerificationComplete = async () => {
+    if (!currentUser) return
+    
+    // Check if user has completed onboarding
+    const userDoc = await getDoc(doc(db, 'users', currentUser.uid))
+    if (userDoc.exists() && userDoc.data().onboardingCompleted) {
+      router.push('/dashboard')
+    } else {
+      router.push('/onboarding')
     }
   }
 
@@ -458,27 +490,39 @@ export default function AuthPage() {
     return 'Very Strong'
   }
 
+  // Show email verification screen if needed
+  if (mode === 'verify' && currentUser) {
+    return <EmailVerification user={currentUser} onVerified={handleVerificationComplete} />
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="w-full max-w-md p-8">
-        {/* Logo and Title */}
+        {/* Logo */}
         <div className="text-center mb-8">
-          <img src="/images/logo/agent-ascend-logo.svg" alt="Agent Ascend" className="w-20 h-20 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900">Agent Ascend</h1>
-          <p className="text-gray-600 mt-2">Sales Performance Platform</p>
+          <picture>
+            <source srcSet="/images/logo/agency-max-plus-transparent-sm.webp" type="image/webp" />
+            <img 
+              src="/images/logo/agency-max-plus-transparent-sm.png" 
+              alt="Agency Max+" 
+              className="w-full max-w-xs mx-auto object-contain"
+              loading="eager"
+            />
+          </picture>
+          <p className="text-gray-300 mt-4">Sales Performance Platform</p>
         </div>
 
         {/* Auth Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
           {/* Mode Tabs */}
           {mode !== 'forgot' && (
-            <div className="flex space-x-1 mb-6 bg-gray-100 rounded-lg p-1">
+            <div className="flex space-x-1 mb-6 bg-gray-700 rounded-lg p-1">
               <button
                 onClick={() => setMode('login')}
                 className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
                   mode === 'login' 
-                    ? 'bg-white text-navy-600 shadow-sm' 
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-gray-900 text-white shadow-sm' 
+                    : 'text-gray-300 hover:text-gray-100'
                 }`}
               >
                 Sign In
@@ -487,8 +531,8 @@ export default function AuthPage() {
                 onClick={() => setMode('signup')}
                 className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
                   mode === 'signup' 
-                    ? 'bg-white text-navy-600 shadow-sm' 
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-gray-900 text-white shadow-sm' 
+                    : 'text-gray-300 hover:text-gray-100'
                 }`}
               >
                 Create Account
@@ -501,7 +545,7 @@ export default function AuthPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               {/* Email Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-200 mb-1">
                   Email Address
                 </label>
                 <div className="relative">
@@ -510,8 +554,8 @@ export default function AuthPage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-navy-500 ${
-                      validationErrors.email ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full pl-10 pr-4 py-3 bg-gray-700 text-white border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 ${
+                      validationErrors.email ? 'border-red-500' : 'border-gray-600'
                     }`}
                     placeholder="you@example.com"
                   />
@@ -523,7 +567,7 @@ export default function AuthPage() {
 
               {/* Password Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-200 mb-1">
                   Password
                 </label>
                 <div className="relative">
@@ -532,15 +576,15 @@ export default function AuthPage() {
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={(e) => handleChange('password', e.target.value)}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-navy-500 ${
-                      validationErrors.password ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full pl-10 pr-12 py-3 bg-gray-700 text-white border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 ${
+                      validationErrors.password ? 'border-red-500' : 'border-gray-600'
                     }`}
                     placeholder="Enter your password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -557,14 +601,14 @@ export default function AuthPage() {
                     type="checkbox"
                     checked={rememberUsername}
                     onChange={(e) => setRememberUsername(e.target.checked)}
-                    className="w-4 h-4 text-navy-600 border-gray-300 rounded focus:ring-navy-500"
+                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Remember username</span>
+                  <span className="ml-2 text-sm text-gray-200">Remember username</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => setMode('forgot')}
-                  className="text-sm text-navy-600 hover:text-navy-700 font-medium"
+                  className="text-sm text-blue-400 hover:text-blue-300 font-medium"
                 >
                   Forgot Password?
                 </button>
@@ -582,7 +626,7 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-navy-600 hover:bg-navy-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Signing in...' : 'Sign In'}
               </button>
@@ -594,7 +638,7 @@ export default function AuthPage() {
             <form onSubmit={handleSignup} className="space-y-4">
               {/* First Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-200 mb-1">
                   First Name <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -603,8 +647,8 @@ export default function AuthPage() {
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => handleChange('firstName', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-navy-500 ${
-                      validationErrors.firstName ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full pl-10 pr-4 py-3 bg-gray-700 text-white border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 ${
+                      validationErrors.firstName ? 'border-red-500' : 'border-gray-600'
                     }`}
                     placeholder="John"
                   />
@@ -616,7 +660,7 @@ export default function AuthPage() {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-200 mb-1">
                   Email Address <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -625,14 +669,14 @@ export default function AuthPage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-navy-500 ${
-                      validationErrors.email || emailExists ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full pl-10 pr-4 py-3 bg-gray-700 text-white border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 ${
+                      validationErrors.email ? 'border-red-500' : 'border-gray-600'
                     }`}
                     placeholder="you@example.com"
                   />
                   {checkingEmail && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="animate-spin w-5 h-5 border-2 border-navy-500 border-t-transparent rounded-full"></div>
+                      <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
                     </div>
                   )}
                 </div>
@@ -646,7 +690,7 @@ export default function AuthPage() {
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-200 mb-1">
                   Password <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -655,15 +699,15 @@ export default function AuthPage() {
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={(e) => handleChange('password', e.target.value)}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-navy-500 ${
-                      validationErrors.password ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full pl-10 pr-12 py-3 bg-gray-700 text-white border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 ${
+                      validationErrors.password ? 'border-red-500' : 'border-gray-600'
                     }`}
                     placeholder="Minimum 6 characters"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -676,16 +720,16 @@ export default function AuthPage() {
                 {formData.password && (
                   <div className="mt-2">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-gray-600">Password strength:</span>
-                      <span className="text-xs font-medium text-gray-700">{getPasswordStrengthText()}</span>
+                      <span className="text-xs text-gray-300">Password strength:</span>
+                      <span className="text-xs font-medium text-gray-200">{getPasswordStrengthText()}</span>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-600 rounded-full overflow-hidden">
                       <div 
                         className={`h-full transition-all ${getPasswordStrengthColor()}`}
                         style={{ width: `${(passwordStrength / 5) * 100}%` }}
                       />
                     </div>
-                    <ul className="mt-2 text-xs text-gray-600 space-y-1">
+                    <ul className="mt-2 text-xs text-gray-300 space-y-1">
                       <li className={formData.password.length >= 6 ? 'text-green-600' : ''}>
                         • At least 6 characters
                       </li>
@@ -702,7 +746,7 @@ export default function AuthPage() {
 
               {/* State */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-200 mb-1">
                   State <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -710,8 +754,8 @@ export default function AuthPage() {
                   <select
                     value={formData.state}
                     onChange={(e) => handleChange('state', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-navy-500 appearance-none ${
-                      validationErrors.state ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full pl-10 pr-4 py-3 bg-gray-700 text-white border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none ${
+                      validationErrors.state ? 'border-red-500' : 'border-gray-600'
                     }`}
                   >
                     <option value="">Select your state</option>
@@ -739,7 +783,7 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading || emailExists}
-                className="w-full bg-navy-600 hover:bg-navy-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Creating Account...' : 'Create Account'}
               </button>
@@ -750,15 +794,15 @@ export default function AuthPage() {
           {mode === 'forgot' && (
             <form onSubmit={handleForgotPassword} className="space-y-4">
               <div className="mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Reset Password</h2>
-                <p className="text-sm text-gray-600 mt-1">
+                <h2 className="text-xl font-semibold text-white">Reset Password</h2>
+                <p className="text-sm text-gray-300 mt-1">
                   Enter your email address and we'll help you reset your password.
                 </p>
               </div>
 
               {/* Email Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-200 mb-1">
                   Email Address
                 </label>
                 <div className="relative">
@@ -767,8 +811,8 @@ export default function AuthPage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-navy-500 ${
-                      validationErrors.email ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full pl-10 pr-4 py-3 bg-gray-700 text-white border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 ${
+                      validationErrors.email ? 'border-red-500' : 'border-gray-600'
                     }`}
                     placeholder="you@example.com"
                   />
@@ -803,7 +847,7 @@ export default function AuthPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-navy-600 hover:bg-navy-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Processing...' : 'Reset Password'}
                 </button>
@@ -814,7 +858,7 @@ export default function AuthPage() {
                     setSuccess('')
                     setError('')
                   }}
-                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-lg transition-colors"
+                  className="w-full bg-gray-700 hover:bg-gray-600 text-gray-100 font-semibold py-3 rounded-lg transition-colors"
                 >
                   Back to Sign In
                 </button>
@@ -824,33 +868,37 @@ export default function AuthPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-600 mt-6">
-          © 2024 Agent Ascend. All rights reserved.
+        <p className="text-center text-sm text-gray-400 mt-6">
+          © 2024 Agency Max+. All rights reserved.
         </p>
       </div>
 
-      {/* Add navy color to Tailwind classes */}
+      {/* Add custom colors for dark theme */}
       <style jsx>{`
-        .bg-navy-600 {
-          background-color: #1e3a8a;
+        .bg-blue-600 {
+          background-color: #2563eb;
         }
-        .bg-navy-700 {
-          background-color: #1e3075;
+        .bg-blue-700 {
+          background-color: #1d4ed8;
         }
-        .text-navy-600 {
-          color: #1e3a8a;
+        .text-blue-600 {
+          color: #2563eb;
         }
-        .text-navy-700 {
-          color: #1e3075;
+        .text-blue-700 {
+          color: #1d4ed8;
         }
-        .focus\\:ring-navy-500:focus {
-          --tw-ring-color: #2563eb;
+        .focus\:ring-blue-500:focus {
+          --tw-ring-color: #3b82f6;
         }
-        .focus\\:border-navy-500:focus {
-          border-color: #2563eb;
+        .focus\:border-blue-500:focus {
+          border-color: #3b82f6;
         }
-        .border-navy-500 {
-          border-color: #2563eb;
+        .border-blue-500 {
+          border-color: #3b82f6;
+        }
+        select option {
+          background-color: #374151;
+          color: white;
         }
       `}</style>
     </div>

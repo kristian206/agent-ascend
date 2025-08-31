@@ -1,13 +1,22 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
+        gray: {
+          ...defaultTheme.colors.gray,
+          650: '#3f4553',
+          750: '#2d3340',
+          850: '#1a1f2c',
+        },
         // LiquidGlass Agent Ascend colors
         'aa-blue': {
           700: '#073B7A',

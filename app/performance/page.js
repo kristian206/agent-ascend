@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
-import { useAuth } from '@/components/AuthProvider'
-import AppShell from '@/components/navigation/AppShell'
-import PerformanceHUD from '@/components/performance/PerformanceHUD'
+import { useAuth } from '@/src/components/auth/AuthProvider'
+import AppShell from '@/src/components/layout/AppShell'
+import PerformanceHUD from '@/src/components/performance/PerformanceHUD'
 
 export default function PerformancePage() {
   const { user, userData } = useAuth()
@@ -20,7 +20,7 @@ export default function PerformancePage() {
               <h1 className="type-dashboard-title text-primary">
                 Performance Center
               </h1>
-              <p className="type-detail-body text-secondary mt-1">
+              <p className="type-detail-body text-gray-300 mt-1">
                 Track your progress and get personalized coaching
               </p>
             </div>
@@ -32,7 +32,7 @@ export default function PerformancePage() {
                 className={`px-4 py-2 rounded-lg type-list-body font-medium transition-all ${
                   view === 'personal' 
                     ? 'glass-brand text-white' 
-                    : 'text-ink-600 hover:bg-surface-100'
+                    : 'text-ink-600 hover:bg-gray-800'
                 }`}
               >
                 Personal
@@ -42,7 +42,7 @@ export default function PerformancePage() {
                 className={`px-4 py-2 rounded-lg type-list-body font-medium transition-all ${
                   view === 'team' 
                     ? 'glass-brand text-white' 
-                    : 'text-ink-600 hover:bg-surface-100'
+                    : 'text-ink-600 hover:bg-gray-800'
                 }`}
               >
                 Team

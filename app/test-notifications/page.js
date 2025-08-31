@@ -1,8 +1,8 @@
 'use client'
-import { useAuth } from '@/components/AuthProvider'
-import PageLayout from '@/components/PageLayout'
-import { useNotification } from '@/components/NotificationProvider'
-import { createNotification, NOTIFICATION_TYPES, generateWeeklySummary } from '@/lib/notifications'
+import { useAuth } from '@/src/components/auth/AuthProvider'
+import PageLayout from '@/src/components/layout/PageLayout'
+import { useNotification } from '@/src/components/notifications/NotificationProvider'
+import { createNotification, NOTIFICATION_TYPES, generateWeeklySummary } from '@/src/services/notifications'
 import { useState } from 'react'
 
 export default function TestNotificationsPage() {
@@ -88,12 +88,12 @@ export default function TestNotificationsPage() {
       <div className="container mx-auto p-4 md:p-8">
         <header className="mb-8">
           <h1 className="text-4xl font-black text-white">Test Notifications</h1>
-          <p className="text-gray-400 mt-2">Click any button to trigger a test notification</p>
+          <p className="text-gray-300 mt-2">Click any button to trigger a test notification</p>
         </header>
         
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Test Individual Notifications */}
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+          <div className="bg-gray-800 bg-gray-900 rounded-2xl p-6 border border-gray-700">
             <h2 className="text-xl font-bold text-white mb-4">System Notifications</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {testNotifications.map((test, index) => (
@@ -101,18 +101,18 @@ export default function TestNotificationsPage() {
                   key={index}
                   onClick={() => handleTestNotification(test)}
                   disabled={loading}
-                  className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-4 text-left transition disabled:opacity-50"
+                  className="bg-gray-800 hover:bg-gray-750 border border-gray-700 rounded-xl p-4 text-left transition disabled:opacity-50"
                 >
                   <div className="text-2xl mb-2">{test.type === NOTIFICATION_TYPES.STREAK_MILESTONE ? '🔥' : test.type === NOTIFICATION_TYPES.ACHIEVEMENT_UNLOCKED ? '🏆' : test.type === NOTIFICATION_TYPES.LEVEL_UP ? '⭐' : '🎯'}</div>
                   <p className="text-white font-semibold">{test.label}</p>
-                  <p className="text-xs text-gray-400 mt-1">Click to test</p>
+                  <p className="text-xs text-gray-300 mt-1">Click to test</p>
                 </button>
               ))}
             </div>
           </div>
           
           {/* Weekly Summary */}
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+          <div className="bg-gray-800 bg-gray-900 rounded-2xl p-6 border border-gray-700">
             <h2 className="text-xl font-bold text-white mb-4">Weekly Summary</h2>
             <button
               onClick={handleWeeklySummary}
@@ -121,7 +121,7 @@ export default function TestNotificationsPage() {
             >
               Generate Weekly Summary
             </button>
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="text-xs text-gray-300 mt-2">
               This will analyze your last 7 days of activity
             </p>
           </div>
@@ -129,7 +129,7 @@ export default function TestNotificationsPage() {
           {/* Instructions */}
           <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-6">
             <h3 className="text-lg font-bold text-yellow-400 mb-2">How it works</h3>
-            <ul className="space-y-2 text-sm text-gray-300">
+            <ul className="space-y-2 text-sm text-gray-200">
               <li>• Click any button to trigger a notification</li>
               <li>• Toast notifications appear in the bottom-right corner</li>
               <li>• All notifications are saved and viewable in the bell icon</li>

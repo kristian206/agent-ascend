@@ -1,9 +1,9 @@
 'use client'
-import { useAuth } from '@/components/AuthProvider'
-import PageLayout from '@/components/PageLayout'
+import { useAuth } from '@/src/components/auth/AuthProvider'
+import PageLayout from '@/src/components/layout/PageLayout'
 import { useState, useEffect } from 'react'
 import { collection, query, getDocs, where } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { db } from '@/src/services/firebase'
 
 export default function AchievementWallPage() {
   const { user, userData } = useAuth()
@@ -114,13 +114,13 @@ export default function AchievementWallPage() {
       <div className="container mx-auto p-4 md:p-8">
         <header className="mb-8 text-center">
           <h1 className="text-4xl font-black text-white">Achievement Wall</h1>
-          <p className="text-gray-400 mt-2">Celebrating collective success</p>
+          <p className="text-gray-300 mt-2">Celebrating collective success</p>
         </header>
         
         <div className="max-w-4xl mx-auto">
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-gray-400">Loading achievements...</p>
+              <p className="text-gray-300">Loading achievements...</p>
             </div>
           ) : (
             <>
@@ -142,7 +142,7 @@ export default function AchievementWallPage() {
               {/* Achievement Stats Grid */}
               <div className="grid md:grid-cols-2 gap-6 mb-8">
                 {/* Weekly Goal Progress */}
-                <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+                <div className="bg-gray-800 bg-gray-900 rounded-2xl p-6 border border-gray-700">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-white">Weekly Goals</h3>
                     <span className="text-3xl">🎯</span>
@@ -151,14 +151,14 @@ export default function AchievementWallPage() {
                     <p className="text-4xl font-black text-green-400">
                       {getPercentage(stats.weeklyGoalAchievers, stats.totalMembers)}%
                     </p>
-                    <p className="text-sm text-gray-400 mt-2">
+                    <p className="text-sm text-gray-300 mt-2">
                       of team has achieved their weekly goal
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-400 mt-1">
                       {stats.weeklyGoalAchievers} out of {stats.totalMembers} members
                     </p>
                   </div>
-                  <div className="mt-4 h-3 bg-white/10 rounded-full overflow-hidden">
+                  <div className="mt-4 h-3 bg-gray-750 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-500"
                       style={{ width: `${getPercentage(stats.weeklyGoalAchievers, stats.totalMembers)}%` }}
@@ -167,7 +167,7 @@ export default function AchievementWallPage() {
                 </div>
                 
                 {/* Monthly Goal Progress */}
-                <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+                <div className="bg-gray-800 bg-gray-900 rounded-2xl p-6 border border-gray-700">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-white">Monthly Goals</h3>
                     <span className="text-3xl">📈</span>
@@ -176,14 +176,14 @@ export default function AchievementWallPage() {
                     <p className="text-4xl font-black text-blue-400">
                       {getPercentage(stats.monthlyGoalAchievers, stats.totalMembers)}%
                     </p>
-                    <p className="text-sm text-gray-400 mt-2">
+                    <p className="text-sm text-gray-300 mt-2">
                       of team has achieved their monthly goal
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-400 mt-1">
                       {stats.monthlyGoalAchievers} out of {stats.totalMembers} members
                     </p>
                   </div>
-                  <div className="mt-4 h-3 bg-white/10 rounded-full overflow-hidden">
+                  <div className="mt-4 h-3 bg-gray-750 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
                       style={{ width: `${getPercentage(stats.monthlyGoalAchievers, stats.totalMembers)}%` }}
@@ -193,36 +193,36 @@ export default function AchievementWallPage() {
               </div>
               
               {/* Streak Champions */}
-              <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 mb-8">
+              <div className="bg-gray-800 bg-gray-900 rounded-2xl p-6 border border-gray-700 mb-8">
                 <h3 className="text-xl font-bold text-white mb-6 text-center">Streak Champions</h3>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <div className="text-4xl mb-2">🔥</div>
                     <p className="text-2xl font-black text-orange-400">{stats.fireStreaks}</p>
-                    <p className="text-xs text-gray-400">Fire Streaks</p>
-                    <p className="text-xs text-gray-500">(7+ days with sales)</p>
+                    <p className="text-xs text-gray-300">Fire Streaks</p>
+                    <p className="text-xs text-gray-400">(7+ days with sales)</p>
                   </div>
                   <div>
                     <div className="text-4xl mb-2">⚡</div>
                     <p className="text-2xl font-black text-yellow-400">{stats.activeStreaks}</p>
-                    <p className="text-xs text-gray-400">Active Streaks</p>
-                    <p className="text-xs text-gray-500">(Any streak)</p>
+                    <p className="text-xs text-gray-300">Active Streaks</p>
+                    <p className="text-xs text-gray-400">(Any streak)</p>
                   </div>
                   <div>
                     <div className="text-4xl mb-2">✨</div>
                     <p className="text-2xl font-black text-purple-400">{stats.participationStreaks}</p>
-                    <p className="text-xs text-gray-400">Participation</p>
-                    <p className="text-xs text-gray-500">(Check-ins only)</p>
+                    <p className="text-xs text-gray-300">Participation</p>
+                    <p className="text-xs text-gray-400">(Check-ins only)</p>
                   </div>
                 </div>
               </div>
               
               {/* Today's Activity */}
-              <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur rounded-2xl p-6 border border-yellow-500/20">
+              <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 bg-gray-900 rounded-2xl p-6 border border-yellow-500/20">
                 <div className="text-center">
                   <div className="text-5xl mb-4">🔔</div>
                   <p className="text-3xl font-black text-yellow-400">{stats.bellsRungToday}</p>
-                  <p className="text-sm text-gray-400">bells rung today by the team</p>
+                  <p className="text-sm text-gray-300">bells rung today by the team</p>
                   {stats.bellsRungToday > 10 && (
                     <p className="text-xs text-green-400 mt-2">🎉 Amazing team energy!</p>
                   )}
@@ -231,10 +231,10 @@ export default function AchievementWallPage() {
               
               {/* Motivational Footer */}
               <div className="mt-8 text-center">
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-300 text-sm">
                   Success is a team sport. Every bell rung, every goal hit, every streak maintained
                 </p>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-300 text-sm">
                   contributes to our collective achievement. Keep pushing forward! 💪
                 </p>
               </div>

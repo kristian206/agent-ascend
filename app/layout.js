@@ -1,10 +1,10 @@
 import { Inter } from 'next/font/google'
 import './globals.css'
-import AuthProvider from '@/components/AuthProvider'
-import NotificationProvider from '@/components/NotificationProvider'
-import { ThemeProvider } from '@/components/theme/ThemeProvider'
-import ErrorBoundary from '@/components/ErrorBoundary'
-import DailyCheckInModal from '@/components/DailyCheckInModal'
+import AuthProvider from '@/src/components/auth/AuthProvider'
+import NotificationProvider from '@/src/components/notifications/NotificationProvider'
+import { ThemeProvider } from '@/src/components/common/ThemeProvider'
+import ErrorBoundary from '@/src/components/common/ErrorBoundary'
+import DailyCheckInModal from '@/src/components/sales/DailyCheckInModal'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -13,10 +13,10 @@ const inter = Inter({
 })
 
 export const metadata = {
-  title: 'Agent Ascend - Performance Gamification Platform',
+  title: 'Agency Max+ - Performance Gamification Platform',
   description: 'Elevate your performance with intelligent gamification and team collaboration',
   keywords: 'performance, gamification, team collaboration, productivity, goals',
-  authors: [{ name: 'Agent Ascend Team' }],
+  authors: [{ name: 'Agency Max+ Team' }],
 }
 
 export const viewport = {

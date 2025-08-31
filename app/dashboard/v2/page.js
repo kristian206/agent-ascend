@@ -1,10 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/components/AuthProvider'
-import AppShell from '@/components/navigation/AppShell'
-import DashboardCard, { ListCard } from '@/components/dashboard/DashboardCard'
-import PerformanceHUD from '@/components/performance/PerformanceHUD'
-import { HelpIcon, CoachMarks, useIsFirstRun } from '@/components/help/HelpSystem'
+import { useAuth } from '@/src/components/auth/AuthProvider'
+import AppShell from '@/src/components/layout/AppShell'
+import DashboardCard, { ListCard } from '@/src/components/dashboard/DashboardCard'
+import PerformanceHUD from '@/src/components/performance/PerformanceHUD'
+import { HelpIcon, CoachMarks, useIsFirstRun } from '@/src/components/common/HelpSystem'
 
 // Sample data - in production this would come from Firebase/API
 const SAMPLE_DATA = {
@@ -88,14 +88,14 @@ export default function DashboardV2() {
             <h1 className="type-dashboard-title text-primary">
               Dashboard
             </h1>
-            <p className="type-detail-body text-secondary mt-1">
+            <p className="type-detail-body text-gray-300 mt-1">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
           
           {/* Density Toggle */}
           <div className="flex items-center gap-3">
-            <span className="type-list-body text-secondary">View:</span>
+            <span className="type-list-body text-gray-300">View:</span>
             <button
               onClick={toggleDensity}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass hover:glass-brand transition-colors"
@@ -142,7 +142,7 @@ export default function DashboardV2() {
                   <span className="text-ink-600">Progress</span>
                   <span className="font-medium text-primary">{data.kpis.monthlyGoal.percentage}%</span>
                 </div>
-                <div className="h-2 bg-surface-200 rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-750 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-brand-400 to-brand-600"
                     style={{ width: `${data.kpis.monthlyGoal.percentage}%` }}

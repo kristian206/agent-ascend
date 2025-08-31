@@ -1,10 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/components/AuthProvider'
+import { useAuth } from '@/src/components/auth/AuthProvider'
 import { useRouter } from 'next/navigation'
-import { db } from '@/lib/firebase'
+import { db } from '@/src/services/firebase'
 import { collection, getDocs, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore'
-import PageLayout from '@/components/PageLayout'
+import PageLayout from '@/src/components/layout/PageLayout'
 
 export default function AdminPanel() {
   const { user, userData } = useAuth()
@@ -189,30 +189,30 @@ export default function AdminPanel() {
             <img src="/images/logo/agent-ascend-logo.svg" alt="Admin" className="w-10 h-10" />
             <h1 className="text-3xl font-bold text-primary">Admin Panel</h1>
           </div>
-          <p className="text-text-secondary">God Mode Active - Full System Control</p>
+          <p className="text-text-gray-300">God Mode Active - Full System Control</p>
         </header>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
           <div className="glass p-4 rounded-xl">
             <div className="text-2xl font-bold text-primary">{stats.totalUsers}</div>
-            <div className="text-sm text-text-secondary">Total Users</div>
+            <div className="text-sm text-text-gray-300">Total Users</div>
           </div>
           <div className="glass p-4 rounded-xl">
             <div className="text-2xl font-bold text-primary">{stats.totalTeams}</div>
-            <div className="text-sm text-text-secondary">Total Teams</div>
+            <div className="text-sm text-text-gray-300">Total Teams</div>
           </div>
           <div className="glass p-4 rounded-xl">
             <div className="text-2xl font-bold text-success">{stats.activeToday}</div>
-            <div className="text-sm text-text-secondary">Active Today</div>
+            <div className="text-sm text-text-gray-300">Active Today</div>
           </div>
           <div className="glass p-4 rounded-xl">
             <div className="text-2xl font-bold text-warning">{stats.totalXP.toLocaleString()}</div>
-            <div className="text-sm text-text-secondary">Total XP</div>
+            <div className="text-sm text-text-gray-300">Total XP</div>
           </div>
           <div className="glass p-4 rounded-xl">
             <div className="text-2xl font-bold text-primary">${stats.totalSales.toLocaleString()}</div>
-            <div className="text-sm text-text-secondary">Total Sales</div>
+            <div className="text-sm text-text-gray-300">Total Sales</div>
           </div>
         </div>
 
@@ -255,7 +255,7 @@ export default function AdminPanel() {
         {((activeTab === 'users' && selectedUsers.length > 0) || 
           (activeTab === 'teams' && selectedTeams.length > 0)) && (
           <div className="mb-4 p-4 glass rounded-lg flex items-center justify-between">
-            <span className="text-sm text-text-secondary">
+            <span className="text-sm text-text-gray-300">
               {activeTab === 'users' 
                 ? `${selectedUsers.length} users selected`
                 : `${selectedTeams.length} teams selected`
@@ -274,7 +274,7 @@ export default function AdminPanel() {
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-            <p className="mt-4 text-text-secondary">Loading data...</p>
+            <p className="mt-4 text-text-gray-300">Loading data...</p>
           </div>
         ) : (
           <>
@@ -307,8 +307,8 @@ export default function AdminPanel() {
                               <img src="/images/badges/streaks/gold.svg" alt="God" className="w-4 h-4" />
                             )}
                           </div>
-                          <div className="text-sm text-text-secondary">{user.email}</div>
-                          <div className="flex gap-4 mt-1 text-xs text-text-tertiary">
+                          <div className="text-sm text-text-gray-300">{user.email}</div>
+                          <div className="flex gap-4 mt-1 text-xs text-text-gray-400">
                             <span>ID: {user.userId}</span>
                             <span>Level {user.level}</span>
                             <span>{user.xp} XP</span>
@@ -369,8 +369,8 @@ export default function AdminPanel() {
                         />
                         <div>
                           <div className="font-medium text-primary">{team.name}</div>
-                          <div className="text-sm text-text-secondary">{team.description}</div>
-                          <div className="flex gap-4 mt-1 text-xs text-text-tertiary">
+                          <div className="text-sm text-text-gray-300">{team.description}</div>
+                          <div className="flex gap-4 mt-1 text-xs text-text-gray-400">
                             <span>Code: {team.joinCode}</span>
                             <span>Members: {team.members?.length || 0}</span>
                             <span>Points: {team.totalPoints || 0}</span>

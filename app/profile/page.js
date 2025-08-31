@@ -1,8 +1,8 @@
 'use client'
-import { useAuth } from '@/components/AuthProvider'
+import { useAuth } from '@/src/components/auth/AuthProvider'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import PageLayout from '@/components/PageLayout'
+import PageLayout from '@/src/components/layout/PageLayout'
 
 export default function ProfilePage() {
   const { user, userData } = useAuth()

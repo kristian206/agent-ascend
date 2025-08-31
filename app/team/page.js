@@ -1,16 +1,18 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/components/AuthProvider'
-import PageLayout from '@/components/PageLayout'
-import TeamCreationModal from '@/components/TeamCreationModal'
-import JoinTeamModal from '@/components/JoinTeamModal'
-import TeamRoster from '@/components/TeamRoster'
-import TeamSettings from '@/components/TeamSettings'
-import TeamStats from '@/components/TeamStats'
-import PerformanceHUD from '@/components/performance/PerformanceHUD'
+import { useAuth } from '@/src/components/auth/AuthProvider'
+import PageLayout from '@/src/components/layout/PageLayout'
+import TeamCreationModal from '@/src/components/team/TeamCreationModal'
+import JoinTeamModal from '@/src/components/team/JoinTeamModal'
+import TeamRoster from '@/src/components/team/TeamRoster'
+import TeamSettings from '@/src/components/team/TeamSettings'
+import TeamStats from '@/src/components/team/TeamStats'
+import PerformanceHUD from '@/src/components/performance/PerformanceHUD'
+import TeamGoalManager from '@/src/components/team/TeamGoalManager'
+import MemberGoalView from '@/src/components/team/MemberGoalView'
 import { doc, getDoc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
-import { leaveTeam } from '@/lib/teamUtils'
+import { db } from '@/src/services/firebase'
+import { leaveTeam } from '@/src/utils/teamUtils'
 import { useRouter } from 'next/navigation'
 
 export default function TeamPage() {
@@ -97,7 +99,7 @@ export default function TeamPage() {
   if (loading) {
     return (
       <PageLayout user={userData}>
-        <p className="text-gray-400">Loading team data...</p>
+        <p className="text-gray-300">Loading team data...</p>
       </PageLayout>
     )
   }
@@ -111,16 +113,16 @@ export default function TeamPage() {
             <h1 className="text-4xl font-black text-white mb-2">
               Join or Create a Team
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-300">
               Collaborate, compete, and grow together
             </p>
           </header>
           
           <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-8 border border-white/10 hover:border-yellow-500/30 transition">
+            <div className="bg-gray-800 bg-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-yellow-500/30 transition">
               <div className="text-4xl mb-4">🚀</div>
               <h2 className="text-2xl font-bold text-white mb-4">Create a Team</h2>
-              <p className="text-gray-300 mb-6">
+              <p className="text-gray-200 mb-6">
                 Start your own team and invite others to join. As the leader, you&apos;ll manage members and set the team direction.
               </p>
               <button
@@ -131,10 +133,10 @@ export default function TeamPage() {
               </button>
             </div>
             
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-8 border border-white/10 hover:border-purple-500/30 transition">
+            <div className="bg-gray-800 bg-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-purple-500/30 transition">
               <div className="text-4xl mb-4">🤝</div>
               <h2 className="text-2xl font-bold text-white mb-4">Join a Team</h2>
-              <p className="text-gray-300 mb-6">
+              <p className="text-gray-200 mb-6">
                 Have a team code? Join an existing team and start collaborating with your colleagues right away.
               </p>
               <button
@@ -174,7 +176,7 @@ export default function TeamPage() {
               <h1 className="text-4xl font-black text-white">
                 {teamData.name}
               </h1>
-              <p className="text-gray-400 mt-1">
+              <p className="text-gray-300 mt-1">
                 Team ID: {teamData.teamNumber || '------'} • {teamData.description || 'Working together to achieve greatness'}
               </p>
             </div>
@@ -189,23 +191,33 @@ export default function TeamPage() {
         </header>
         
         {/* Tab Navigation */}
-        <div className="flex gap-2 mb-6 bg-white/5 p-1 rounded-xl">
+        <div className="flex gap-2 mb-6 bg-gray-800 p-1 rounded-xl">
           <button
             onClick={() => setActiveTab('roster')}
             className={`flex-1 py-2 px-4 rounded-lg font-bold transition ${
               activeTab === 'roster'
-                ? 'bg-white/10 text-white'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-gray-750 text-white'
+                : 'text-gray-300 hover:text-white'
             }`}
           >
             Roster
           </button>
           <button
+            onClick={() => setActiveTab('goals')}
+            className={`flex-1 py-2 px-4 rounded-lg font-bold transition ${
+              activeTab === 'goals'
+                ? 'bg-gray-750 text-white'
+                : 'text-gray-300 hover:text-white'
+            }`}
+          >
+            Goals
+          </button>
+          <button
             onClick={() => setActiveTab('performance')}
             className={`flex-1 py-2 px-4 rounded-lg font-bold transition ${
               activeTab === 'performance'
-                ? 'bg-white/10 text-white'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-gray-750 text-white'
+                : 'text-gray-300 hover:text-white'
             }`}
           >
             Performance
@@ -214,8 +226,8 @@ export default function TeamPage() {
             onClick={() => setActiveTab('stats')}
             className={`flex-1 py-2 px-4 rounded-lg font-bold transition ${
               activeTab === 'stats'
-                ? 'bg-white/10 text-white'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-gray-750 text-white'
+                : 'text-gray-300 hover:text-white'
             }`}
           >
             Stats
@@ -225,8 +237,8 @@ export default function TeamPage() {
               onClick={() => setActiveTab('settings')}
               className={`flex-1 py-2 px-4 rounded-lg font-bold transition ${
                 activeTab === 'settings'
-                  ? 'bg-white/10 text-white'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'bg-gray-750 text-white'
+                  : 'text-gray-300 hover:text-white'
               }`}
             >
               Settings
@@ -246,8 +258,16 @@ export default function TeamPage() {
               />
             )}
             
+            {activeTab === 'goals' && (
+              userData?.teamRole === 'leader' || userData?.teamRole === 'co-leader' ? (
+                <TeamGoalManager teamId={userData.teamId} />
+              ) : (
+                <MemberGoalView teamId={userData.teamId} />
+              )
+            )}
+            
             {activeTab === 'performance' && (
-              <div className="bg-white/5 rounded-2xl p-6">
+              <div className="bg-gray-800 rounded-2xl p-6">
                 <PerformanceHUD 
                   userId={userData?.uid}
                   view="team"
@@ -276,30 +296,30 @@ export default function TeamPage() {
           {/* Side Panel - Always visible */}
           <div className="space-y-6">
             {/* Quick Stats */}
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+            <div className="bg-gray-800 bg-gray-900 rounded-2xl p-6 border border-gray-700">
               <h3 className="text-lg font-bold text-white mb-4">Quick Info</h3>
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs text-gray-400">Team ID</p>
+                  <p className="text-xs text-gray-300">Team ID</p>
                   <p className="text-white font-mono text-lg">{teamData.teamNumber || '------'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400">Your Role</p>
+                  <p className="text-xs text-gray-300">Your Role</p>
                   <p className="text-white font-semibold capitalize">{userData?.teamRole}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400">Team Size</p>
+                  <p className="text-xs text-gray-300">Team Size</p>
                   <p className="text-white font-semibold">{teamData.memberCount}/50 members</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400">Join Code</p>
+                  <p className="text-xs text-gray-300">Join Code</p>
                   <p className="text-white font-mono text-lg tracking-wider">{teamData.joinCode}</p>
                 </div>
               </div>
             </div>
             
             {/* Role Permissions */}
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+            <div className="bg-gray-800 bg-gray-900 rounded-2xl p-6 border border-gray-700">
               <h3 className="text-lg font-bold text-white mb-4">Your Permissions</h3>
               <div className="space-y-2">
                 {userData?.teamRole === 'leader' && (
@@ -319,9 +339,9 @@ export default function TeamPage() {
                 )}
                 {userData?.teamRole === 'member' && (
                   <>
-                    <p className="text-sm text-gray-400">• View team roster</p>
-                    <p className="text-sm text-gray-400">• View team progress</p>
-                    <p className="text-sm text-gray-400">• Leave team</p>
+                    <p className="text-sm text-gray-300">• View team roster</p>
+                    <p className="text-sm text-gray-300">• View team progress</p>
+                    <p className="text-sm text-gray-300">• Leave team</p>
                   </>
                 )}
               </div>
