@@ -4,7 +4,7 @@ import { updateTeamSettings, generateUniqueJoinCode } from '@/src/utils/teamUtil
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/src/services/firebase'
-import { Upload, Palette, RefreshCw } from 'lucide-react'
+import { Palette } from 'lucide-react'
 
 export default function TeamSettings({ teamId, teamData, onUpdate }) {
   const { user } = useAuth()
@@ -60,6 +60,7 @@ export default function TeamSettings({ teamId, teamData, onUpdate }) {
       onUpdate()
       alert(`New join code: ${newCode}`)
     } catch (error) {
+      console.error('Error regenerating join code:', error)
       alert('Failed to regenerate join code')
     }
     
@@ -93,6 +94,7 @@ export default function TeamSettings({ teamId, teamData, onUpdate }) {
       
       onUpdate()
     } catch (error) {
+      console.error('Error deleting team:', error)
       alert('Failed to delete team')
     }
   }

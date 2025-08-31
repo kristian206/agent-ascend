@@ -1,11 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import teamGoalService from '@/src/services/teamGoalService'
 import { 
-  Target, Plus, Edit2, Users, Calendar, TrendingUp, 
-  Settings, Eye, EyeOff, UserCheck, UserX, AlertCircle,
-  ChevronDown, ChevronUp, Check, X, Loader2, Info
+  Target, Plus, Edit2, Eye, EyeOff, UserCheck, UserX, AlertCircle,
+  ChevronDown, ChevronUp, Check, Loader2, Info
 } from 'lucide-react'
 
 export default function TeamGoalManager({ teamId, teamData }) {
@@ -26,9 +25,9 @@ export default function TeamGoalManager({ teamId, teamData }) {
       loadGoals()
       loadTeamMembers()
     }
-  }, [teamId])
+  }, [teamId, loadGoals, loadTeamMembers])
 
-  const loadGoals = async () => {
+  const loadGoals = useCallback(async () => {
     try {
       const goalsData = await teamGoalService.getTeamGoals(teamId, user.uid)
       setGoals(goalsData)
@@ -37,9 +36,9 @@ export default function TeamGoalManager({ teamId, teamData }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [teamId, user])
 
-  const loadTeamMembers = async () => {
+  const loadTeamMembers = useCallback(async () => {
     try {
       const { collection, query, where, getDocs } = await import('firebase/firestore')
       const { db } = await import('@/src/services/firebase')
@@ -57,7 +56,7 @@ export default function TeamGoalManager({ teamId, teamData }) {
     } catch (error) {
       console.error('Error loading team members:', error)
     }
-  }
+  }, [teamId])
 
   if (!isLeader) {
     return (

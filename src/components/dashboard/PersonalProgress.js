@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/src/services/firebase'
@@ -26,9 +26,9 @@ export default function PersonalProgress() {
     if (user) {
       loadPersonalStats()
     }
-  }, [user])
+  }, [user, loadPersonalStats])
 
-  const loadPersonalStats = async () => {
+  const loadPersonalStats = useCallback(async () => {
     try {
       const userDoc = await getDoc(doc(db, 'members', user.uid))
       if (userDoc.exists()) {
@@ -49,10 +49,10 @@ export default function PersonalProgress() {
         })
       }
     } catch (error) {
-      // Error loading personal stats
+      console.error('Error loading personal stats:', error)
     }
     setLoading(false)
-  }
+  }, [user])
 
   const calculatePercentage = (current, goal) => {
     if (!goal) return 0

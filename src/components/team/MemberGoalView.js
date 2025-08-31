@@ -1,13 +1,13 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import teamGoalService from '@/src/services/teamGoalService'
 import { 
   Target, TrendingUp, Calendar, Award, ChevronRight,
-  Edit2, Save, X, Info, Users, Lock, Unlock
+  Edit2, Save, X, Info, Users, Lock
 } from 'lucide-react'
 
-export default function MemberGoalView({ teamId }) {
+export default function MemberGoalView() {
   const { user } = useAuth()
   const [memberGoals, setMemberGoals] = useState([])
   const [loading, setLoading] = useState(true)
@@ -18,9 +18,9 @@ export default function MemberGoalView({ teamId }) {
     if (user?.uid) {
       loadMemberGoals()
     }
-  }, [user])
+  }, [user, loadMemberGoals])
 
-  const loadMemberGoals = async () => {
+  const loadMemberGoals = useCallback(async () => {
     try {
       const goals = await teamGoalService.getMemberGoals(user.uid)
       setMemberGoals(goals)
@@ -29,7 +29,7 @@ export default function MemberGoalView({ teamId }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
 
   const handleUpdateTarget = async (goalId) => {
     const goal = memberGoals.find(g => g.id === goalId)

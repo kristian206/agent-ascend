@@ -48,7 +48,7 @@ export default function SessionManager({ children }) {
           localStorage.setItem('sessionExpired', 'true')
           router.push('/?sessionExpired=true')
         } catch (error) {
-          // Error signing out
+          console.error('Error signing out:', error)
         }
       }
     }, SESSION_TIMEOUT)

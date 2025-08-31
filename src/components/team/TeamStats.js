@@ -1,21 +1,21 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getTeamStats } from '@/src/utils/teamUtils'
 
-export default function TeamStats({ teamId, teamData }) {
+export default function TeamStats({ teamId }) {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     loadStats()
-  }, [teamId])
+  }, [teamId, loadStats])
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     setLoading(true)
     const teamStats = await getTeamStats(teamId)
     setStats(teamStats)
     setLoading(false)
-  }
+  }, [teamId])
 
   if (loading) {
     return (

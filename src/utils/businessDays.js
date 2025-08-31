@@ -245,7 +245,7 @@ export function getHolidayName(date) {
   return null
 }
 
-export default {
+export const BusinessDaysUtils = {
   isUSFederalHoliday,
   isBusinessDay,
   getPreviousBusinessDay,
@@ -254,3 +254,4 @@ export default {
   countBusinessDaysBetween,
   getHolidayName
 }
+export default BusinessDaysUtils

@@ -8,8 +8,8 @@ import {
   LOCAL_AVATARS 
 } from '@/src/services/avatarServiceV2'
 import { 
-  RefreshCw, Check, Sparkles, User, Upload, 
-  AlertCircle, Loader2, Camera, Grid, Palette,
+  RefreshCw, Check, Sparkles, Upload, 
+  AlertCircle, Loader2, Camera, Grid,
   Server, HardDrive, Zap
 } from 'lucide-react'
 
@@ -60,7 +60,7 @@ export default function AvatarSelectorV2({
       
       // Fallback to local avatars and initials
       const fallbackOptions = [
-        ...LOCAL_AVATARS.map((avatar, index) => ({
+        ...LOCAL_AVATARS.map((avatar) => ({
           id: `local_${avatar.id}`,
           type: 'local',
           url: avatar.path,

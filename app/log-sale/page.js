@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import PageLayout from '@/src/components/layout/PageLayout'
-import { doc, addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/src/services/firebase'
 import { useRouter } from 'next/navigation'
 

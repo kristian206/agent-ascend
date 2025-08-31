@@ -6,7 +6,7 @@ import PageLayout from '@/src/components/layout/PageLayout'
 import UserBanner from '@/src/components/common/UserBanner'
 import { db } from '@/src/services/firebase'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { Edit, Trophy, TrendingUp, Target, Users, Calendar, Award, Settings } from 'lucide-react'
+import { Edit, Trophy, TrendingUp, Target, Users, Award } from 'lucide-react'
 
 export default function UserProfile() {
   const params = useParams()

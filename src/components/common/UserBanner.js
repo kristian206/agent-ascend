@@ -2,8 +2,6 @@
 import { useState, useEffect, memo, useCallback } from 'react'
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import { useRouter } from 'next/navigation'
-import { db } from '@/src/services/firebase'
-import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import Link from 'next/link'
 
 // Role badge configurations

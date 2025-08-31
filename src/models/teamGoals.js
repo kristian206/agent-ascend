@@ -205,10 +205,11 @@ export const PrivacyFilters = {
   }
 }
 
-export default {
+export const TeamGoalsModels = {
   TeamGoalSchema,
   MemberGoalSchema,
   GoalProgressSchema,
   GoalCalculations,
   PrivacyFilters
 }
+export default TeamGoalsModels

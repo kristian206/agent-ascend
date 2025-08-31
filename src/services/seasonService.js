@@ -25,11 +25,12 @@ import {
   SEASON_TRANSITION,
   SeasonUtils 
 } from '@/src/models/seasonModels'
+import { withFirestoreErrorHandling } from '@/src/utils/firestoreErrorHandler'
 
 class SeasonService {
   // Initialize or get current season
   async getCurrentSeason() {
-    try {
+    return withFirestoreErrorHandling(async () => {
       const seasonId = SeasonUtils.getCurrentSeason()
       const seasonDoc = await getDoc(doc(db, 'seasons', seasonId))
       
@@ -49,15 +50,12 @@ class SeasonService {
       }
       
       return { id: seasonDoc.id, ...seasonData }
-    } catch (error) {
-      console.error('Error getting current season:', error)
-      throw error
-    }
+    }, { collection: 'seasons', operation: 'read' })
   }
   
   // Create a new season
   async createNewSeason() {
-    try {
+    return withFirestoreErrorHandling(async () => {
       const seasonId = SeasonUtils.getCurrentSeason()
       const now = new Date()
       const year = now.getFullYear()
@@ -93,10 +91,7 @@ class SeasonService {
       await this.applySeasonTransition(seasonId)
       
       return newSeason
-    } catch (error) {
-      console.error('Error creating new season:', error)
-      throw error
-    }
+    }, { collection: 'seasons', operation: 'create' })
   }
   
   // End a season
@@ -248,7 +243,7 @@ class SeasonService {
   
   // Award points to user
   async awardPoints(userId, pointType, amount = null, metadata = {}) {
-    try {
+    return withFirestoreErrorHandling(async () => {
       const seasonId = SeasonUtils.getCurrentSeason()
       const userSeasonRef = doc(db, 'userSeasons', `${userId}_${seasonId}`)
       const userSeasonDoc = await getDoc(userSeasonRef)
@@ -348,10 +343,7 @@ class SeasonService {
         newTotal: newTotalPoints,
         newRank: newRankInfo
       }
-    } catch (error) {
-      console.error('Error awarding points:', error)
-      throw error
-    }
+    }, { collection: 'userSeasons', operation: 'write' })
   }
   
   // Update lifetime XP
@@ -440,7 +432,7 @@ class SeasonService {
   
   // Get user's current season progress
   async getUserSeasonProgress(userId) {
-    try {
+    return withFirestoreErrorHandling(async () => {
       const seasonId = SeasonUtils.getCurrentSeason()
       const userSeasonDoc = await getDoc(doc(db, 'userSeasons', `${userId}_${seasonId}`))
       
@@ -457,10 +449,7 @@ class SeasonService {
         progressToNext: progressInfo,
         daysRemaining: SeasonUtils.getDaysRemaining()
       }
-    } catch (error) {
-      console.error('Error getting user season progress:', error)
-      throw error
-    }
+    }, { collection: 'userSeasons', operation: 'read' })
   }
   
   // Get season leaderboard
@@ -542,4 +531,5 @@ class SeasonService {
   }
 }
 
-export default new SeasonService()
+export const seasonService = new SeasonService()
+export default seasonService

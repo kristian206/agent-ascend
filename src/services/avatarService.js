@@ -200,7 +200,7 @@ export function getPresetAvatars() {
   return presets
 }
 
-export default {
+export const AvatarService = {
   AVATAR_STYLES,
   AVATAR_THEMES,
   generateAvatarUrl,
@@ -212,3 +212,4 @@ export default {
   parseAvatarData,
   getPresetAvatars,
 }
+export default AvatarService

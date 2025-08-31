@@ -1,13 +1,13 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { auth, db } from '@/src/services/firebase'
-import { doc, updateDoc, getDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '@/src/services/firebase'
+import { doc, updateDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
 import AvatarSelectorV2 from '@/src/components/common/AvatarSelectorV2'
 import { 
   ChevronRight, ChevronLeft, User, Users, Target, Settings, 
   Sparkles, Trophy, TrendingUp, Bell, Shield, Check, Plus,
-  ArrowRight, Skip, Play, Pause, RefreshCw, Upload, Camera
+  ArrowRight, Play, RefreshCw
 } from 'lucide-react'
 
 const ONBOARDING_STEPS = [
@@ -416,7 +416,7 @@ function WelcomeStep({ user, onNext }) {
       </h1>
       
       <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-        You're about to join a community of high-performing sales professionals 
+        You&apos;re about to join a community of high-performing sales professionals 
         who are crushing their goals and earning rewards every day.
       </p>
       
@@ -450,7 +450,7 @@ function WelcomeStep({ user, onNext }) {
         onClick={onNext}
         className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2"
       >
-        Let's Get Started
+        Let&apos;s Get Started
         <ArrowRight className="w-5 h-5" />
       </button>
       
@@ -462,7 +462,7 @@ function WelcomeStep({ user, onNext }) {
 }
 
 function ProfileStep({ formData, setFormData, onNext }) {
-  const [uploadedAvatar, setUploadedAvatar] = useState(null)
+  // const [uploadedAvatar, setUploadedAvatar] = useState(null)
 
   return (
     <div className="space-y-6">
@@ -472,7 +472,7 @@ function ProfileStep({ formData, setFormData, onNext }) {
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white">Set Up Your Profile</h2>
-          <p className="text-gray-400">Let's personalize your experience</p>
+          <p className="text-gray-400">Let&apos;s personalize your experience</p>
         </div>
       </div>
       
@@ -535,9 +535,9 @@ function ProfileStep({ formData, setFormData, onNext }) {
               avatarData: avatarInfo.data,
               avatarType: avatarInfo.type === 'custom' ? 'uploaded' : 'generated'
             })
-            if (avatarInfo.type === 'custom') {
-              setUploadedAvatar(avatarInfo.url)
-            }
+            // if (avatarInfo.type === 'custom') {
+            //   setUploadedAvatar(avatarInfo.url)
+            // }
           }}
         />
       </div>
@@ -650,7 +650,7 @@ function TeamStep({ formData, setFormData, teams, onNext }) {
           }}
           className="w-full py-3 text-gray-400 hover:text-white transition-colors"
         >
-          Skip for now - I'll join a team later
+          Skip for now - I&apos;ll join a team later
         </button>
       </div>
       
@@ -702,7 +702,7 @@ function GoalsStep({ formData, setFormData, onNext }) {
             className="w-full pl-8 pr-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <p className="text-gray-500 text-sm mt-1">We'll help you track progress toward this goal</p>
+        <p className="text-gray-500 text-sm mt-1">We&apos;ll help you track progress toward this goal</p>
       </div>
       
       <div>
@@ -806,7 +806,7 @@ function TourStep({ tourActive, tourStep, setTourStep, onStart, onSkip, onNext }
       </h2>
       
       <p className="text-gray-300 mb-8 max-w-lg mx-auto">
-        Let us show you around! We'll highlight the key features that will help you succeed.
+        Let us show you around! We&apos;ll highlight the key features that will help you succeed.
       </p>
       
       <div className="flex gap-4 justify-center">
@@ -840,7 +840,7 @@ function FirstActionStep({ onNext }) {
       </h2>
       
       <p className="text-gray-300 mb-8 max-w-lg mx-auto">
-        Let's get you started with your first action. Choose one to begin earning points!
+        Let&apos;s get you started with your first action. Choose one to begin earning points!
       </p>
       
       <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto mb-8">
@@ -861,7 +861,7 @@ function FirstActionStep({ onNext }) {
         onClick={onNext}
         className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
       >
-        I'll Do This Later
+        I&apos;ll Do This Later
       </button>
     </div>
   )

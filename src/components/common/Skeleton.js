@@ -47,4 +47,5 @@ export function SkeletonTeamMember() {
   )
 }
 
-export default { SkeletonStats, SkeletonListItem, SkeletonCard, SkeletonTeamMember }
+export const SkeletonComponents = { SkeletonStats, SkeletonListItem, SkeletonCard, SkeletonTeamMember }
+export default SkeletonComponents

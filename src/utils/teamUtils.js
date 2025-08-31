@@ -423,8 +423,6 @@ export async function getTeamStats(teamId) {
     
     // Get all team members' check-ins for the week
     const today = new Date()
-    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const weekAgoKey = weekAgo.toISOString().split('T')[0]
     
     let totalCheckIns = 0
     let totalSales = 0

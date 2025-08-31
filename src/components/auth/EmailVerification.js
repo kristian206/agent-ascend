@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { auth } from '@/src/services/firebase'
 import { sendEmailVerification } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
-import { Mail, CheckCircle, RefreshCw, ArrowRight, Clock } from 'lucide-react'
+import { Mail, CheckCircle, RefreshCw, Clock } from 'lucide-react'
 
 export default function EmailVerification({ user, onVerified }) {
   const router = useRouter()
@@ -84,6 +84,7 @@ export default function EmailVerification({ user, onVerified }) {
         setMessage('Email not verified yet. Please check your inbox.')
       }
     } catch (err) {
+      console.error('Error checking verification status:', err)
       setError('Error checking verification status.')
     }
     setCheckingVerification(false)
@@ -104,7 +105,7 @@ export default function EmailVerification({ user, onVerified }) {
             <Mail className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Verify Your Email</h1>
-          <p className="text-gray-400">We've sent a verification link to</p>
+          <p className="text-gray-400">We&apos;ve sent a verification link to</p>
           <p className="text-blue-400 font-medium">{user?.email}</p>
         </div>
 
@@ -138,7 +139,7 @@ export default function EmailVerification({ user, onVerified }) {
               </div>
               <div>
                 <p className="text-gray-200 font-medium">Come back here</p>
-                <p className="text-gray-400 text-sm">We'll automatically detect when you're verified</p>
+                <p className="text-gray-400 text-sm">We&apos;ll automatically detect when you&apos;re verified</p>
               </div>
             </div>
           </div>
@@ -225,7 +226,7 @@ export default function EmailVerification({ user, onVerified }) {
           {/* Help Text */}
           <div className="mt-6 pt-6 border-t border-gray-700">
             <p className="text-gray-400 text-sm text-center">
-              Can't find the email? Check your spam folder or{' '}
+              Can&apos;t find the email? Check your spam folder or{' '}
               <button
                 onClick={handleResendEmail}
                 disabled={cooldown > 0}

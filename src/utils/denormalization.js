@@ -1,6 +1,6 @@
 // Data denormalization utilities for performance optimization
 import { db } from '@/src/services/firebase'
-import { doc, setDoc, increment, getDoc, collection, writeBatch, serverTimestamp } from 'firebase/firestore'
+import { doc, setDoc, increment, getDoc, writeBatch, serverTimestamp } from 'firebase/firestore'
 import { withRetry } from './errorHandler'
 
 // Update monthly totals when a sale is logged
@@ -217,8 +217,8 @@ export async function batchUpdateDenormalizedData(updates) {
   
   try {
     for (const update of updates) {
-      const { collection, docId, data } = update
-      const ref = doc(db, collection, docId)
+      const { collection: collectionName, docId, data } = update
+      const ref = doc(db, collectionName, docId)
       batch.set(ref, data, { merge: true })
       
       operationCount++
@@ -243,10 +243,12 @@ export async function batchUpdateDenormalizedData(updates) {
   }
 }
 
-export default {
+export const DenormalizationUtils = {
   updateMonthlyTotals,
   updateUserStats,
   updateLeaderboardCache,
   aggregateDailyMetrics,
   batchUpdateDenormalizedData
 }
+
+export default DenormalizationUtils

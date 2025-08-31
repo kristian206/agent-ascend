@@ -1,11 +1,11 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import { db } from '@/src/services/firebase'
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore'
 
 export default function TeamCommissionOverview() {
-  const { user, userData } = useAuth()
+  const { userData } = useAuth()
   const [teamMembers, setTeamMembers] = useState([])
   const [salesData, setSalesData] = useState({})
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7))
@@ -31,9 +31,9 @@ export default function TeamCommissionOverview() {
     } else {
       setIsLoading(false)
     }
-  }, [userData, selectedMonth])
+  }, [userData, selectedMonth, loadTeamData])
 
-  const loadTeamData = async () => {
+  const loadTeamData = useCallback(async () => {
     if (!userData?.teamId) return
 
     setIsLoading(true)
@@ -105,7 +105,7 @@ export default function TeamCommissionOverview() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [userData?.teamId, selectedMonth])
 
   // Format products sold for display
   const formatProductsSold = (productCounts) => {

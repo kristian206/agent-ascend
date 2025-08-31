@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, serverTimestamp, onSnapshot } from 'firebase/firestore'
+import { collection, doc, setDoc, getDocs, query, where, updateDoc, serverTimestamp, onSnapshot } from 'firebase/firestore'
 import { db } from '@/src/services/firebase'
 
 // Notification types
@@ -24,12 +24,12 @@ const NOTIFICATION_TEMPLATES = {
   },
   [NOTIFICATION_TYPES.TEAM_MILESTONE]: {
     icon: '🎯',
-    getTitle: (data) => 'Team Milestone Achieved!',
+    getTitle: () => 'Team Milestone Achieved!',
     getMessage: (data) => `Your team "${data.teamName}" reached ${data.milestone}!`
   },
   [NOTIFICATION_TYPES.ACHIEVEMENT_UNLOCKED]: {
     icon: '🏆',
-    getTitle: (data) => 'Achievement Unlocked!',
+    getTitle: () => 'Achievement Unlocked!',
     getMessage: (data) => `You&apos;ve earned "${data.achievementName}"!`
   },
   [NOTIFICATION_TYPES.LEVEL_UP]: {
@@ -291,11 +291,11 @@ export async function generateWeeklySummary(userId) {
     let sales = 0
     
     snapshot.forEach((doc) => {
-      const data = doc.data()
-      if (data.intentions_completed) checkIns++
-      if (data.wrap_completed) checkIns++
-      quotes += data.quotes || 0
-      sales += data.sales || 0
+      const docData = doc.data()
+      if (docData.intentions_completed) checkIns++
+      if (docData.wrap_completed) checkIns++
+      quotes += docData.quotes || 0
+      sales += docData.sales || 0
     })
     
     // Only send if there was activity

@@ -1,11 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/src/services/firebase'
 import { leaveTeam, promoteMember, demoteMember } from '@/src/utils/teamUtils'
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import { SkeletonTeamMember } from '@/src/components/common/Skeleton'
-import ErrorBoundary from '@/src/components/common/ErrorBoundary'
 
 export default function TeamRoster({ teamId, teamData, currentUserRole, onUpdate }) {
   const { user } = useAuth()
@@ -15,9 +14,9 @@ export default function TeamRoster({ teamId, teamData, currentUserRole, onUpdate
 
   useEffect(() => {
     loadMembers()
-  }, [teamId, teamData])
+  }, [teamId, teamData, loadMembers])
 
-  const loadMembers = async () => {
+  const loadMembers = useCallback(async () => {
     if (!teamData?.members) {
       setLoading(false)
       return
@@ -71,11 +70,11 @@ export default function TeamRoster({ teamId, teamData, currentUserRole, onUpdate
       
       setMembers(membersList)
     } catch (error) {
-      // Error loading members
+      console.error('Error loading members:', error)
     }
     
     setLoading(false)
-  }
+  }, [teamData?.members, teamData?.leaderId, teamData?.coLeaders])
 
   const handleKick = async (targetId) => {
     if (!confirm('Are you sure you want to remove this member from the team?')) return

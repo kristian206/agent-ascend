@@ -347,7 +347,7 @@ export const SeasonUtils = {
   }
 }
 
-export default {
+export const SeasonModels = {
   SeasonSchema,
   UserSeasonSchema,
   LifetimeProgressionSchema,
@@ -356,3 +356,4 @@ export default {
   SEASON_TRANSITION,
   SeasonUtils
 }
+export default SeasonModels

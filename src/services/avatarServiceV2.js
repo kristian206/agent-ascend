@@ -444,28 +444,8 @@ export async function getAvatarSystemStatus() {
   return status
 }
 
-// Export all functions and constants
+// Export constants only (functions are already exported inline)
 export {
-  generateAvatarUrl,
-  generateInitialsDataUrl,
-  generateAvatarOptions,
-  loadAvatarWithRetry,
-  getAvatar,
-  clearAvatarCache,
-  getAvatarSystemStatus,
-  LOCAL_AVATARS,
-  COLOR_THEMES,
-  AVATAR_APIS
-}
-
-export default {
-  generateAvatarUrl,
-  generateInitialsDataUrl,
-  generateAvatarOptions,
-  loadAvatarWithRetry,
-  getAvatar,
-  clearAvatarCache,
-  getAvatarSystemStatus,
   LOCAL_AVATARS,
   COLOR_THEMES,
   AVATAR_APIS

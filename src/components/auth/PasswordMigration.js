@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth'
 import { doc, updateDoc, getDoc } from 'firebase/firestore'
-import { auth, db } from '@/src/services/firebase'
+import { db } from '@/src/services/firebase'
 import { validatePassword } from '@/src/utils/validation'
 import { X, Shield, AlertTriangle, Check, Eye, EyeOff } from 'lucide-react'
 import SecurityNotification from '@/src/components/notifications/SecurityNotification'
@@ -39,7 +39,7 @@ export default function PasswordMigration({ user, onComplete, onDismiss }) {
         setShowBanner(false)
       }
     } catch (error) {
-      // Error checking migration status
+      console.error('Error checking migration status:', error)
     }
   }
 
@@ -185,7 +185,7 @@ export default function PasswordMigration({ user, onComplete, onDismiss }) {
               Security Update Required
             </p>
             <p className="text-sm text-blue-700 mt-1">
-              We've enhanced our security requirements. Please update your password to meet the new standards.
+              We&apos;ve enhanced our security requirements. Please update your password to meet the new standards.
             </p>
             <button
               onClick={() => document.getElementById('password-migration-modal').showModal()}

@@ -38,6 +38,7 @@ export default function TeamCreationModal({ onClose, onSuccess }) {
         setError(result.error || 'Failed to create team')
       }
     } catch (err) {
+      console.error('Error creating team:', err)
       setError('An unexpected error occurred')
     }
     

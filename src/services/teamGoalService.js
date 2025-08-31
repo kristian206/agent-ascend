@@ -13,7 +13,6 @@ import {
   getDoc,
   setDoc, 
   updateDoc, 
-  deleteDoc,
   serverTimestamp,
   writeBatch 
 } from 'firebase/firestore'
@@ -503,4 +502,5 @@ class TeamGoalService {
   }
 }
 
-export default new TeamGoalService()
+const teamGoalService = new TeamGoalService()
+export default teamGoalService

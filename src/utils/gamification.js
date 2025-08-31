@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc, collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore'
 import { db } from '@/src/services/firebase'
-import { isBusinessDay, getPreviousBusinessDay, countBusinessDaysBetween } from '@/src/utils/businessDays'
+import { isBusinessDay, getPreviousBusinessDay } from '@/src/utils/businessDays'
 
 export async function calculateStreakForToday(userId) {
   try {
@@ -194,11 +194,11 @@ export function getAchievementDetails(achievementId) {
 }
 
 // Legacy functions for backward compatibility
-export async function calculateStreak(userId, checkins = null) {
+export async function calculateStreak(userId) {
   return calculateStreakForToday(userId)
 }
 
-export function checkAchievements(checkins, currentStreak, todaySales = 0) {
+export function checkAchievements() {
   // This is now handled in calculateStreakForToday
   return []
 }

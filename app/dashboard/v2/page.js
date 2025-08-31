@@ -60,7 +60,7 @@ const SAMPLE_DATA = {
 export default function DashboardV2() {
   const { user, userData } = useAuth()
   const [density, setDensity] = useState('default')
-  const [data, setData] = useState(SAMPLE_DATA)
+  const [data] = useState(SAMPLE_DATA)
   const { isFirstRun, markAsSeen } = useIsFirstRun('dashboard-onboarding')
 
   // Load user preference for density

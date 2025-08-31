@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
-import { Upload, X, Image as ImageIcon, Loader, Check } from 'lucide-react'
+import { Upload, X, Loader, Check } from 'lucide-react'
 import { optimizeImageClient, validateImageFile } from '@/src/services/imageOptimizer'
 
 export default function ImageUpload({ 

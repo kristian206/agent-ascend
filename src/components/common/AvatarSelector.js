@@ -10,7 +10,6 @@ import { RefreshCw, Check, Sparkles, User } from 'lucide-react'
 
 export default function AvatarSelector({ 
   onSelect, 
-  currentAvatar, 
   userName = '',
   showStyleSelector = true 
 }) {

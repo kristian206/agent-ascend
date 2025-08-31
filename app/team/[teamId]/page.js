@@ -5,13 +5,12 @@ import { doc, getDoc, collection, query, where, getDocs, orderBy, limit } from '
 import { db } from '@/src/services/firebase'
 import Link from 'next/link'
 import { 
-  Users, Trophy, Target, TrendingUp, Calendar, Shield, Star,
+  Users, Trophy, Target, Calendar, Shield, Star,
   ChevronRight, Award, Activity, Zap, Crown, UserCheck
 } from 'lucide-react'
-import teamGoalService from '@/src/services/teamGoalService'
 
 export default function TeamProfilePage({ params }) {
-  const { user, userData } = useAuth()
+  const { userData } = useAuth()
   const [teamData, setTeamData] = useState(null)
   const [teamStats, setTeamStats] = useState(null)
   const [teamGoals, setTeamGoals] = useState([])
@@ -137,7 +136,7 @@ export default function TeamProfilePage({ params }) {
         <div className="text-center">
           <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-white mb-2">Team Not Found</h1>
-          <p className="text-gray-400">This team doesn't exist or has been disbanded.</p>
+          <p className="text-gray-400">This team doesn&apos;t exist or has been disbanded.</p>
           <Link href="/team" className="mt-6 inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
             Browse Teams
           </Link>

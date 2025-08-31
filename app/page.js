@@ -77,7 +77,6 @@ export default function AuthPage() {
   
   // Rate limiting state
   const [loginAttempts, setLoginAttempts] = useState(0)
-  const [lastAttemptTime, setLastAttemptTime] = useState(null)
   const [lockoutEndTime, setLockoutEndTime] = useState(null)
   
   const [formData, setFormData] = useState({
@@ -144,7 +143,6 @@ export default function AuthPage() {
   const handleFailedAttempt = () => {
     const newAttempts = loginAttempts + 1
     setLoginAttempts(newAttempts)
-    setLastAttemptTime(Date.now())
     localStorage.setItem('authAttempts', newAttempts.toString())
     
     // Lockout after 5 failed attempts
@@ -164,7 +162,6 @@ export default function AuthPage() {
   // Clear attempts on successful login
   const clearAttempts = () => {
     setLoginAttempts(0)
-    setLastAttemptTime(null)
     setLockoutEndTime(null)
     localStorage.removeItem('authAttempts')
     localStorage.removeItem('authLockoutEnd')
@@ -207,7 +204,7 @@ export default function AuthPage() {
           // For MVP, we'll just show it's available
           setEmailExists(false)
         } catch (err) {
-          // Email check failed silently
+          console.error('Email check failed:', err)
         }
         setCheckingEmail(false)
       }
@@ -796,7 +793,7 @@ export default function AuthPage() {
               <div className="mb-4">
                 <h2 className="text-xl font-semibold text-white">Reset Password</h2>
                 <p className="text-sm text-gray-300 mt-1">
-                  Enter your email address and we'll help you reset your password.
+                  Enter your email address and we&apos;ll help you reset your password.
                 </p>
               </div>
 

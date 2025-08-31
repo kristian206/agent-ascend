@@ -2,17 +2,16 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, db } from '@/src/services/firebase'
-import { collection, getDocs, doc, deleteDoc, updateDoc, getDoc, query, orderBy, limit } from 'firebase/firestore'
-import { deleteUser } from 'firebase/auth'
+import { collection, getDocs, doc, deleteDoc, updateDoc, getDoc, query, orderBy } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import PageLayout from '@/src/components/layout/PageLayout'
-import { Users, Trash2, Shield, Edit, UserX, Users as TeamIcon, Activity, TrendingUp, Settings, Database, RefreshCw, Download, Search, Filter } from 'lucide-react'
+import { Users, Trash2, Shield, Users as TeamIcon, Activity, TrendingUp, RefreshCw, Download, Search } from 'lucide-react'
 
 export default function AdminPanel() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [currentUser, setCurrentUser] = useState(null)
+  const [, setCurrentUser] = useState(null)
   
   // Data states
   const [users, setUsers] = useState([])
@@ -88,7 +87,7 @@ export default function AdminPanel() {
         activeToday
       })
     } catch (error) {
-      // Error loading data
+      console.error('Error loading data:', error)
     } finally {
       setLoading(false)
     }
@@ -121,7 +120,7 @@ export default function AdminPanel() {
       setShowDeleteConfirm(false)
       setDeleteTarget(null)
     } catch (error) {
-      // Error deleting user
+      console.error('Error deleting user:', error)
     }
   }
 
@@ -146,7 +145,7 @@ export default function AdminPanel() {
       setDeleteTarget(null)
       loadData() // Reload to update user data
     } catch (error) {
-      // Error deleting team
+      console.error('Error deleting team:', error)
     }
   }
 
@@ -159,7 +158,7 @@ export default function AdminPanel() {
       await Promise.all(deletions)
       setSelectedUsers([])
     } catch (error) {
-      // Error in bulk delete
+      console.error('Error in bulk delete:', error)
     }
   }
 
@@ -457,7 +456,7 @@ export default function AdminPanel() {
             <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4">
               <h3 className="text-xl font-bold text-white mb-4">Confirm Deletion</h3>
               <p className="text-gray-200 mb-6">
-                Are you sure you want to delete {deleteTarget?.type} "{deleteTarget?.name}"? 
+                Are you sure you want to delete {deleteTarget?.type} &quot;{deleteTarget?.name}&quot;? 
                 This action cannot be undone.
               </p>
               <div className="flex gap-4">

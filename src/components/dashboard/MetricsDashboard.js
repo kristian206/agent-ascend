@@ -6,7 +6,7 @@ import { db } from '@/src/services/firebase'
 import { POLICY_TYPES } from '@/src/utils/sales'
 
 export default function MetricsDashboard() {
-  const { user, userData } = useAuth()
+  const { user } = useAuth()
   const [metrics, setMetrics] = useState(null)
   const [loading, setLoading] = useState(true)
   const [timeframe, setTimeframe] = useState('week')
