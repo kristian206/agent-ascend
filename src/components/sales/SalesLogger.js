@@ -9,17 +9,18 @@ import { withRetry, getUserMessage } from '@/src/utils/errorHandler'
 import { updateMonthlyTotals, updateUserStats } from '@/src/utils/denormalization'
 import ErrorBoundary from '@/src/components/common/ErrorBoundary'
 
-// Product types with commission values
+// Product types with commission and point values
 const PRODUCTS = {
-  home: { name: 'Home', commission: 50, icon: '🏠' },
-  car: { name: 'Car', commission: 50, icon: '🚗' },
-  condo: { name: 'Condo', commission: 50, icon: '🏢' },
-  life: { name: 'Life', commission: 50, icon: '❤️' },
-  renters: { name: 'Renters', commission: 20, icon: '🔑' },
-  umbrella: { name: 'Umbrella', commission: 20, icon: '☂️' },
-  boat: { name: 'Boat', commission: 20, icon: '⛵' },
-  motorcycle: { name: 'Motorcycle', commission: 20, icon: '🏍️' },
-  other: { name: 'Other', commission: 20, icon: '📋' }
+  home: { name: 'Home', commission: 50, points: 20, icon: '🏠' },
+  car: { name: 'Car', commission: 50, points: 10, icon: '🚗' },
+  condo: { name: 'Condo', commission: 50, points: 20, icon: '🏢' },
+  life: { name: 'Life', commission: 50, points: 10, icon: '❤️' },
+  renters: { name: 'Renters', commission: 20, points: 5, icon: '🔑' },
+  umbrella: { name: 'Umbrella', commission: 20, points: 5, icon: '☂️' },
+  boat: { name: 'Boat', commission: 20, points: 5, icon: '⛵' },
+  motorcycle: { name: 'Motorcycle/ORV', commission: 20, points: 5, icon: '🏍️' },
+  roadside: { name: 'Roadside', commission: 20, points: 5, icon: '🚨' },
+  other: { name: 'Other', commission: 20, points: 5, icon: '📋' }
 }
 
 export default function SalesLogger({ onSaleLogged }) {
@@ -35,6 +36,16 @@ export default function SalesLogger({ onSaleLogged }) {
     return Object.entries(selectedProducts).reduce((total, [productKey, quantity]) => {
       if (quantity > 0) {
         return total + (PRODUCTS[productKey].commission * quantity)
+      }
+      return total
+    }, 0)
+  }
+
+  // Calculate total points
+  const calculateTotalPoints = () => {
+    return Object.entries(selectedProducts).reduce((total, [productKey, quantity]) => {
+      if (quantity > 0) {
+        return total + (PRODUCTS[productKey].points * quantity)
       }
       return total
     }, 0)
@@ -80,6 +91,7 @@ export default function SalesLogger({ onSaleLogged }) {
     setIsSubmitting(true)
     try {
       // Prepare sale data with retry logic
+      const totalPoints = calculateTotalPoints()
       const saleData = {
         userId: user.uid,
         userName: userData?.name || 'Agent',
@@ -89,6 +101,7 @@ export default function SalesLogger({ onSaleLogged }) {
         productsSummary: formatProductsSold(),
         totalItems: calculateTotalItems(),
         totalCommission: calculateTotalCommission(),
+        totalPoints: totalPoints,
         totalRevenue: calculateTotalCommission() * 10, // Assuming 10x multiplier for revenue
         timestamp: serverTimestamp(),
         month: new Date().toISOString().slice(0, 7), // YYYY-MM format
@@ -105,11 +118,11 @@ export default function SalesLogger({ onSaleLogged }) {
         // Update monthly totals for fast aggregation
         updateMonthlyTotals(saleData),
         // Update user stats (points, level, streak)
-        updateUserStats(user.uid, calculateTotalCommission(), 'sale'),
+        updateUserStats(user.uid, totalPoints, 'sale'),
         // Create notification
         createNotification(
           user.uid,
-          `💰 Sale logged! ${formatProductsSold()} - $${calculateTotalCommission()} commission earned!`,
+          `💰 Sale logged! ${formatProductsSold()} - $${calculateTotalCommission()} commission, ${totalPoints} points earned!`,
           'success'
         )
       ])
@@ -168,9 +181,9 @@ export default function SalesLogger({ onSaleLogged }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-gray-8500 bg-gray-900" onClick={() => setIsOpen(false)} />
           
-          <div className="relative bg-gray-800 border border-gray-700 rounded-2xl border border-gray-600 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="relative bg-gray-800 border border-gray-700 rounded-2xl max-w-3xl w-full shadow-2xl">
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-white/10 to-white/5 bg-gray-900 p-6 border-b border-gray-600">
+            <div className="bg-gray-900 p-4 border-b border-gray-700 rounded-t-2xl">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-white">Log New Sale</h2>
@@ -195,7 +208,7 @@ export default function SalesLogger({ onSaleLogged }) {
                   <div>
                     <div className="font-semibold text-green-400">Sale Logged Successfully!</div>
                     <div className="text-sm text-green-300">
-                      Commission earned: ${calculateTotalCommission()}
+                      ${calculateTotalCommission()} commission • {calculateTotalPoints()} points
                     </div>
                   </div>
                 </div>
@@ -203,7 +216,7 @@ export default function SalesLogger({ onSaleLogged }) {
             )}
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <form onSubmit={handleSubmit} className="p-4 space-y-4">
               {/* Client Name */}
               <div>
                 <label className="text-sm font-medium text-gray-200 mb-2 block">
@@ -214,7 +227,7 @@ export default function SalesLogger({ onSaleLogged }) {
                   value={clientFirstName}
                   onChange={(e) => setClientFirstName(e.target.value)}
                   placeholder="Enter client's first name"
-                  className="w-full px-4 py-3 rounded-xl bg-gray-8500 border border-gray-700 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  className="w-full px-4 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                   required
                 />
               </div>
@@ -224,15 +237,17 @@ export default function SalesLogger({ onSaleLogged }) {
                 <label className="text-sm font-medium text-gray-200 mb-3 block">
                   Products Sold
                 </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   {Object.entries(PRODUCTS).map(([key, product]) => (
-                    <div key={key} className="bg-gray-800 bg-gray-900 rounded-xl p-4 border border-gray-600 hover:bg-gray-750 transition-all">
+                    <div key={key} className="bg-gray-900 rounded-lg p-3 border border-gray-700 hover:border-gray-600 transition-all">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className="text-2xl">{product.icon}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{product.icon}</span>
                           <div>
-                            <div className="font-medium text-white">{product.name}</div>
-                            <div className="text-xs text-green-400">${product.commission} commission</div>
+                            <div className="font-medium text-white text-sm">{product.name}</div>
+                            <div className="text-xs text-gray-400">
+                              ${product.commission} • {product.points}pts
+                            </div>
                           </div>
                         </div>
                         <input
@@ -242,7 +257,7 @@ export default function SalesLogger({ onSaleLogged }) {
                           value={selectedProducts[key] || ''}
                           onChange={(e) => handleProductChange(key, e.target.value)}
                           placeholder="0"
-                          className="w-20 px-3 py-2 rounded-lg bg-gray-8500 border border-gray-700 text-center text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                          className="w-16 px-2 py-1 rounded bg-gray-800 border border-gray-700 text-center text-white text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         />
                       </div>
                     </div>
@@ -250,16 +265,23 @@ export default function SalesLogger({ onSaleLogged }) {
                 </div>
               </div>
 
-              {/* Commission Preview */}
+              {/* Summary Preview */}
               {calculateTotalItems() > 0 && (
-                <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-gray-300">Products Summary</span>
-                    <span className="text-sm text-white">{formatProductsSold()}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-white">Total Commission</span>
-                    <span className="text-2xl font-bold text-blue-400">${calculateTotalCommission()}</span>
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                  <div className="text-xs text-gray-400 mb-2">{formatProductsSold()}</div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <div className="text-xs text-gray-400">Items</div>
+                      <div className="text-lg font-bold text-white">{calculateTotalItems()}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-400">Commission</div>
+                      <div className="text-lg font-bold text-green-400">${calculateTotalCommission()}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-400">Points</div>
+                      <div className="text-lg font-bold text-blue-400">{calculateTotalPoints()}</div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -269,14 +291,14 @@ export default function SalesLogger({ onSaleLogged }) {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-6 py-3 rounded-xl bg-gray-800 border border-gray-700 hover:bg-gray-750 text-gray-200 font-medium transition-all"
+                  className="px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-750 text-gray-200 font-medium transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || calculateTotalItems() === 0 || !clientFirstName.trim()}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Logging...' : `Log Sale (${calculateTotalItems()} items)`}
                 </button>
