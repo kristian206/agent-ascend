@@ -117,7 +117,7 @@ export default function SeasonProgress() {
             </div>
             
             <div className="flex justify-between items-center">
-              <span className="text-gray-400">Today's Points</span>
+              <span className="text-gray-400">Today&apos;s Points</span>
               <span className="text-lg font-semibold text-green-400">
                 +{userProgress?.dailyPoints?.[new Date().toISOString().split('T')[0]] || 0}
               </span>

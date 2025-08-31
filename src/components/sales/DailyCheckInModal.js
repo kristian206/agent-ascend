@@ -250,7 +250,7 @@ export default function DailyCheckInModal() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Target className="w-4 h-4" />
-                What's your primary goal for today?
+                What&apos;s your primary goal for today?
               </label>
               <textarea
                 value={morningData.primaryGoal}
@@ -297,7 +297,7 @@ export default function DailyCheckInModal() {
             {/* Motivation */}
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                What's motivating you today?
+                What&apos;s motivating you today?
               </label>
               <input
                 type="text"
@@ -415,7 +415,7 @@ export default function DailyCheckInModal() {
                 type="text"
                 value={eveningData.tomorrowFocus}
                 onChange={(e) => setEveningData({ ...eveningData, tomorrowFocus: e.target.value })}
-                placeholder="What's the #1 thing you'll focus on tomorrow?"
+                placeholder="What&apos;s the #1 thing you&apos;ll focus on tomorrow?"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                 required
               />
