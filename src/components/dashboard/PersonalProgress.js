@@ -22,12 +22,6 @@ export default function PersonalProgress() {
   })
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (user) {
-      loadPersonalStats()
-    }
-  }, [user, loadPersonalStats])
-
   const loadPersonalStats = useCallback(async () => {
     try {
       const userDoc = await getDoc(doc(db, 'members', user.uid))
@@ -53,6 +47,12 @@ export default function PersonalProgress() {
     }
     setLoading(false)
   }, [user])
+
+  useEffect(() => {
+    if (user) {
+      loadPersonalStats()
+    }
+  }, [user, loadPersonalStats])
 
   const calculatePercentage = (current, goal) => {
     if (!goal) return 0
