@@ -1,23 +1,34 @@
-# Agency Max Plus - Auto-Orchestrated Development Environment
+# Agency Max Plus - Single-Approval Autonomous Agent System
 
-## Default Interaction Mode
-Users interact naturally with Claude Code. The system automatically determines which agents are needed and executes them in optimal sequence without user intervention.
+## WORKFLOW EXECUTION MODE: AUTONOMOUS WITH SINGLE APPROVAL
 
-## Core Philosophy
-- People-first mentality with goal-driven results
-- Stress reduction through clarity and focused direction  
-- Desktop/browser-first for sales professionals at workstations
-- Responsive design that works well on mobile as secondary priority
-- Performance optimization: <250KB initial JS, <150KB largest chunk
-- Private, encrypted user data protection
+### MANDATORY WORKFLOW SEQUENCE
+1. **USER COMMAND**: User provides instruction
+2. **ORCHESTRATOR PLANNING**: Creates comprehensive plan
+3. **AGENT CONSULTATION**: Agents review and discuss plan
+4. **ARBITRATION**: Orchestrator resolves disputes with final authority
+5. **USER APPROVAL**: Single approval checkpoint - plan presented to user
+6. **USER REVIEW**: User approves or requests corrections
+7. **AUTONOMOUS EXECUTION**: Upon approval, complete execution without interruption
+
+### COMMUNICATION RULES
+- **CONCISE**: No pleasantries, greetings, or filler text
+- **DIRECT**: State facts and actions only
+- **EFFICIENT**: Minimal tokens, maximum clarity
+- **NO CONFIRMATIONS**: Zero intermediate prompts during execution
 
 ## Auto-Orchestration System
-The system intelligently selects and executes agents based on request complexity:
-- Simple requests (bugs, minor changes): 1-2 agents automatically
-- Medium requests (known features): 2-3 agents automatically
-- Complex requests (novel features): Full workflow automatically
-- Parallel execution when possible (frontend + backend simultaneously)
-- Status updates provided during execution
+### Execution Authority
+- **Orchestrator**: Full arbitration authority over agent disputes
+- **Agents**: Autonomous execution within assigned scope
+- **User**: Single approval point after planning phase only
+- **Interruptions**: PROHIBITED during execution phase
+
+### Agent Coordination
+- **Consultation Phase**: 30-second window for agent input
+- **Dispute Resolution**: Orchestrator decision is final
+- **Parallel Execution**: Enabled for independent tasks
+- **Handoffs**: Automatic without confirmation
 
 ## Available Agent Capabilities
 1. RESEARCH AGENT: Deep analysis for complex/novel features

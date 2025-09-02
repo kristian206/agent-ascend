@@ -1,0 +1,110 @@
+{
+  "workflow": {
+    "mode": "AUTONOMOUS_SINGLE_APPROVAL",
+    "version": "2.0",
+    "enforced": true,
+    "stages": [
+      {
+        "id": 1,
+        "name": "USER_COMMAND",
+        "description": "User provides instruction",
+        "requires_confirmation": false,
+        "timeout_ms": null
+      },
+      {
+        "id": 2,
+        "name": "ORCHESTRATOR_PLANNING",
+        "description": "Orchestrator creates comprehensive plan",
+        "requires_confirmation": false,
+        "timeout_ms": 5000
+      },
+      {
+        "id": 3,
+        "name": "AGENT_CONSULTATION",
+        "description": "Agents review and provide input on plan",
+        "requires_confirmation": false,
+        "timeout_ms": 30000,
+        "parallel": true
+      },
+      {
+        "id": 4,
+        "name": "ARBITRATION",
+        "description": "Orchestrator resolves disputes with final authority",
+        "requires_confirmation": false,
+        "timeout_ms": 5000,
+        "authority": "ORCHESTRATOR_FINAL"
+      },
+      {
+        "id": 5,
+        "name": "USER_APPROVAL",
+        "description": "Single approval checkpoint - plan presented to user",
+        "requires_confirmation": true,
+        "timeout_ms": null,
+        "approval_type": "EXPLICIT_USER_APPROVAL"
+      },
+      {
+        "id": 6,
+        "name": "AUTONOMOUS_EXECUTION",
+        "description": "Complete execution without interruption",
+        "requires_confirmation": false,
+        "timeout_ms": null,
+        "interruptions_allowed": false
+      }
+    ]
+  },
+  "orchestrator": {
+    "authority_level": "SUPREME",
+    "arbitration_enabled": true,
+    "can_override_agents": true,
+    "confirmation_prompts": {
+      "during_planning": false,
+      "during_execution": false,
+      "for_user_approval": true
+    }
+  },
+  "agents": {
+    "execution_mode": "AUTONOMOUS",
+    "consultation_enabled": true,
+    "dispute_resolution": "ORCHESTRATOR_DECIDES",
+    "handoff_mode": "AUTOMATIC",
+    "confirmation_requirements": {
+      "before_action": false,
+      "after_action": false,
+      "on_error": false
+    },
+    "parallel_execution": {
+      "enabled": true,
+      "max_concurrent": 4
+    }
+  },
+  "communication": {
+    "style": "CONCISE",
+    "rules": [
+      "NO_PLEASANTRIES",
+      "NO_GREETINGS",
+      "NO_FILLER_TEXT",
+      "FACTS_ONLY",
+      "ACTION_FOCUSED"
+    ],
+    "token_optimization": true,
+    "max_message_length": 500
+  },
+  "approval_points": {
+    "count": 1,
+    "location": "AFTER_PLANNING",
+    "type": "USER_EXPLICIT",
+    "can_request_corrections": true,
+    "correction_iterations": 3
+  },
+  "execution": {
+    "interruption_policy": "PROHIBITED",
+    "error_handling": "AUTONOMOUS_RECOVERY",
+    "completion_notification": "SUMMARY_ONLY",
+    "progress_updates": "CRITICAL_ONLY"
+  },
+  "overrides": {
+    "emergency_stop": "USER_COMMAND_STOP",
+    "force_confirmation": "USER_COMMAND_CONFIRM",
+    "bypass_approval": false
+  }
+}
