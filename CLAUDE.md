@@ -1,47 +1,64 @@
-# Agency Max Plus - Optimized Development Environment
+# Agency Max Plus - Auto-Orchestrated Development Environment
 
-## Claude Code Optimization Settings
-- Always use the 4-step workflow: RESEARCH → PLAN → IMPLEMENT → FINALIZE
-- Apply progressive thinking levels: think → think hard → think harder → ultrathink
-- Maintain context awareness and project understanding
-- Use verification at each step before proceeding
+## Default Interaction Mode
+Users interact naturally with Claude Code. The system automatically determines which agents are needed and executes them in optimal sequence without user intervention.
 
-## 4-Step Agent System
-1. RESEARCH AGENT: Deep analysis before any coding
-2. PLANNING AGENT: Detailed implementation strategy  
+## Core Philosophy
+- People-first mentality with goal-driven results
+- Stress reduction through clarity and focused direction  
+- Desktop/browser-first for sales professionals at workstations
+- Responsive design that works well on mobile as secondary priority
+- Performance optimization: <250KB initial JS, <150KB largest chunk
+- Private, encrypted user data protection
+
+## Auto-Orchestration System
+The system intelligently selects and executes agents based on request complexity:
+- Simple requests (bugs, minor changes): 1-2 agents automatically
+- Medium requests (known features): 2-3 agents automatically
+- Complex requests (novel features): Full workflow automatically
+- Parallel execution when possible (frontend + backend simultaneously)
+- Status updates provided during execution
+
+## Available Agent Capabilities
+1. RESEARCH AGENT: Deep analysis for complex/novel features
+2. PLANNING AGENT: Strategic implementation design
 3. IMPLEMENTATION AGENT: Precise code execution
-4. FINALIZATION AGENT: Testing, docs, and PR preparation
+4. FRONTEND AGENT: Complete UI/UX/responsive/accessibility
+5. TROUBLESHOOTING AGENT: Debug/performance/security/testing
+6. FINALIZATION AGENT: Professional delivery and deployment
 
-## Development Standards for Agency Max Plus
-- Next.js 14+ with App Router and RSC (Server Components)
-- TypeScript strict mode with proper error handling
-- Focus on performance: <250KB initial JS, <150KB largest chunk
-- People-first, goal-driven feature development
-- Private, encrypted user data handling
-- Integration with RingCentral call data and sales tracking
+## Agency Max Plus Context
+- Sales performance platform with streaks, journals, goal tracking
+- RingCentral call data integration with conversion intelligence
+- Daily intentions (morning) and reflection (evening) system
+- Rally mode for behind-pace motivation
+- Goal-driven coaching with people-first approach
+- Primary usage: Desktop browsers at sales workstations
+- Secondary: Mobile responsive for on-the-go access
+- Next.js 14+ App Router, TypeScript strict mode
+- Vercel deployment pipeline
 
-## Coding Best Practices
-- Server Components over Client Components when possible
-- Dynamic imports for heavy client code
-- Proper caching with Next.js APIs
-- Image optimization with next/image
-- Font optimization with next/font
-- Script loading strategies for third-party code
+## Development Standards
+- Server Components first, Client Components only at interaction boundaries
+- Bundle performance budgets enforced
+- WCAG AA accessibility compliance
+- Desktop-first responsive design with mobile adaptation
+- User data encryption and privacy protection
 
 ## Context Recovery Protocol
-If conversation is compacted or context is lost:
-1. Read this CLAUDE.md file completely
-2. Reactivate 4-step agent workflow
-3. Understand Agency Max Plus project scope
-4. Confirm readiness with: "Context loaded. 4-step agents active. Ready for Agency Max Plus development."
+After auto-compact or session restart:
+1. System automatically reloads this context
+2. Auto-orchestration mode remains active
+3. Agency Max Plus project understanding preserved
+4. No user intervention required
 
-## Project Overview
-Agency Max Plus is a performance management platform for insurance agents featuring:
-- **Journal System**: Daily reflection and goal tracking
-- **Goal Intelligence**: Real-time progress monitoring with rally mode
-- **Team Connection**: Anonymous team comparisons and energy tracking
-- **Call-to-Sale Analytics**: Efficiency tracking without quote data
-- **Predictive Coaching**: Smart recommendations based on patterns
+## Project Architecture
+- **Frontend**: Next.js 14 with React 18 (App Router)
+- **Backend**: Firebase (Firestore, Auth, Functions)
+- **Styling**: Tailwind CSS with glass morphism design
+- **State Management**: React Context API
+- **Performance**: 5-minute caching, batch operations
+- **Real-time**: Firebase listeners for live updates
 
 ## Key Components Created
 ### Stage 1: Core Journal System
@@ -143,7 +160,43 @@ NEXT_PUBLIC_FIREBASE_APP_ID=
 - WebSocket for real-time updates
 - GraphQL migration (future)
 
+## Auto-Orchestration Decision Tree
+```
+User Request Analysis:
+├── Bug Fix → TROUBLESHOOTING → IMPLEMENTATION → Done
+├── Minor Change → IMPLEMENTATION → FINALIZATION → Done
+├── Known Feature → PLANNING → IMPLEMENTATION → FINALIZATION → Done
+├── Complex Feature → RESEARCH → PLANNING → IMPLEMENTATION → FINALIZATION → Done
+├── Performance Issue → TROUBLESHOOTING (Performance) → IMPLEMENTATION → Done
+├── Security Concern → TROUBLESHOOTING (Security) → IMPLEMENTATION → Done
+└── UI/UX Update → FRONTEND → FINALIZATION → Done
+```
+
+## Agent Execution Patterns
+- **Parallel Execution**: Frontend + Backend agents run simultaneously when possible
+- **Sequential Execution**: Research → Planning → Implementation for complex features
+- **Skip Patterns**: Skip research for well-understood features
+- **Fast Track**: Direct to implementation for simple fixes
+- **Quality Gates**: Automatic testing and performance checks between agents
+
+## Status Communication
+During execution, the system provides:
+- Current agent and phase
+- Progress percentage
+- Estimated time remaining
+- Issues discovered
+- Next steps
+
+## Success Criteria
+- All user requirements met
+- Performance budgets maintained
+- Tests passing
+- Security validated
+- Documentation updated
+- Ready for deployment
+
 ---
 *Last Updated: Current Session*
 *Project: Agency Max Plus*
 *Version: 1.0.0*
+*Auto-Orchestration: Enabled*
