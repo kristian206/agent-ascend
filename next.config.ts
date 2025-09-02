@@ -62,7 +62,10 @@ const nextConfig: NextConfig = {
   // Environment variables validation
   env: {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000',
-  }
+  },
+  
+  // Fix for multiple lockfiles warning
+  outputFileTracingRoot: __dirname
 };
 
 export default nextConfig;
