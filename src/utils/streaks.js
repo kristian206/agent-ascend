@@ -148,6 +148,13 @@ export async function calculateEnhancedStreak(userId) {
     }
   } catch (error) {
     console.error('Error calculating enhanced streak:', error)
+    console.error('Enhanced streak calculation error details:', {
+      errorMessage: error.message,
+      errorStack: error.stack,
+      userId,
+      timestamp: new Date().toISOString(),
+      function: 'calculateEnhancedStreak'
+    })
     return {
       fullStreak: 0,
       participationStreak: 0,
@@ -192,6 +199,13 @@ export async function getUserStreakStatus(userId) {
     }
   } catch (error) {
     console.error('Error getting streak status:', error)
+    console.error('Streak status error details:', {
+      errorMessage: error.message,
+      errorStack: error.stack,
+      userId,
+      timestamp: new Date().toISOString(),
+      function: 'getUserStreakStatus'
+    })
     return {
       fullStreak: 0,
       participationStreak: 0,

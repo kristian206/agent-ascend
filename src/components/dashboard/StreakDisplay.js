@@ -29,7 +29,15 @@ export default function StreakDisplay() {
       setStreaks(summary)
     } catch (error) {
       console.error('Error loading streaks:', error)
-      setError('Failed to load streaks')
+      console.error('StreakDisplay error details:', {
+        errorMessage: error.message,
+        errorStack: error.stack,
+        userId: user?.uid,
+        userEmail: user?.email,
+        timestamp: new Date().toISOString(),
+        component: 'StreakDisplay'
+      })
+      setError(`Failed to load streaks: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -94,8 +102,21 @@ export default function StreakDisplay() {
   }
 
   if (!streaks) {
+    console.warn('StreakDisplay: No streak data available', {
+      userId: user?.uid,
+      loading,
+      error
+    })
     return null
   }
+  
+  // Log successful data load for debugging
+  console.log('StreakDisplay: Loaded streak data successfully', {
+    userId: user?.uid,
+    activeStreaksCount: streaks.activeStreaks?.length || 0,
+    perfectDays: streaks.perfectDays,
+    hasActiveStreaks: streaks.activeStreaks && streaks.activeStreaks.length > 0
+  })
 
   return (
     <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">

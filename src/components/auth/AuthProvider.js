@@ -31,7 +31,7 @@ export default function AuthProvider({ children }) {
         
         if (!userDoc.exists()) {
           // Get all existing user IDs to ensure uniqueness
-          const usersQuery = query(collection(db, 'users'))
+          const usersQuery = query(collection(db, 'members'))
           const usersSnapshot = await getDocs(usersQuery)
           const existingIds = []
           usersSnapshot.forEach(doc => {
@@ -91,9 +91,39 @@ export default function AuthProvider({ children }) {
         }
       } catch (error) {
         console.error('Error in auth state change:', error)
-        // Don't crash the app, just log the error
-        setUser(null)
-        setUserData(null)
+        console.error('Error details:', {
+          errorCode: error.code,
+          errorMessage: error.message,
+          userId: user?.uid,
+          pathname
+        })
+        
+        // Retry logic for transient errors
+        if (error.code === 'unavailable' || error.code === 'deadline-exceeded') {
+          console.log('Retrying auth operation due to transient error...')
+          // Wait 2 seconds then retry once
+          setTimeout(() => {
+            if (user) {
+              console.log('Retrying user document fetch...')
+              // Simple retry - just try to get the document again
+              const retryUserRef = doc(db, 'members', user.uid)
+              getDoc(retryUserRef).then(doc => {
+                if (doc.exists()) {
+                  setUserData(doc.data())
+                  setUser(user)
+                }
+              }).catch(retryError => {
+                console.error('Retry failed:', retryError)
+                setUser(null)
+                setUserData(null)
+              })
+            }
+          }, 2000)
+        } else {
+          // Don't crash the app, just log the error
+          setUser(null)
+          setUserData(null)
+        }
       } finally {
         setLoading(false)
       }
