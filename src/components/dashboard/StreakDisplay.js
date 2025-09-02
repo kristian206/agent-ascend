@@ -6,21 +6,44 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/src/components/auth/AuthProvider'
+import { useRealtimeUser, useAnimatedValue } from '@/src/hooks/useRealtimeUser'
 import streakService from '@/src/services/streakService'
 import { STREAK_CONFIG } from '@/src/models/streakModels'
 import { Flame, Target, TrendingUp, Calendar, Shield, AlertTriangle } from 'lucide-react'
 
 export default function StreakDisplay() {
   const { user } = useAuth()
+  const { userData, isRealtime } = useRealtimeUser()
   const [streaks, setStreaks] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [prevStreakValues, setPrevStreakValues] = useState({})
 
   useEffect(() => {
     if (user) {
       loadStreaks()
     }
   }, [user])
+
+  // Update streaks when userData changes (real-time)
+  useEffect(() => {
+    if (userData && isRealtime) {
+      const hasStreakChanged = 
+        userData.streak !== prevStreakValues.streak ||
+        userData.fullStreak !== prevStreakValues.fullStreak ||
+        userData.participationStreak !== prevStreakValues.participationStreak
+      
+      if (hasStreakChanged) {
+        console.log('🔥 Streak updated in real-time')
+        loadStreaks()
+        setPrevStreakValues({
+          streak: userData.streak,
+          fullStreak: userData.fullStreak,
+          participationStreak: userData.participationStreak
+        })
+      }
+    }
+  }, [userData, isRealtime])
 
   const loadStreaks = async () => {
     try {
@@ -101,13 +124,28 @@ export default function StreakDisplay() {
     )
   }
 
+  // Handle missing or incomplete streak data
   if (!streaks) {
     console.warn('StreakDisplay: No streak data available', {
       userId: user?.uid,
       loading,
       error
     })
+    // Return empty state with default values
+    const defaultStreaks = {
+      activeStreaks: [],
+      perfectDays: 0,
+      current: 0,
+      fullStreak: 0,
+      participationStreak: 0
+    }
+    setStreaks(defaultStreaks)
     return null
+  }
+  
+  // Ensure activeStreaks is always an array
+  if (!streaks.activeStreaks) {
+    streaks.activeStreaks = []
   }
   
   // Log successful data load for debugging
@@ -141,10 +179,10 @@ export default function StreakDisplay() {
         {/* Login Streak */}
         <StreakCard
           type="login"
-          config={STREAK_CONFIG.login}
-          count={streaks.activeStreaks.find(s => s.type === 'login')?.count || 0}
-          longestStreak={streaks.activeStreaks.find(s => s.type === 'login')?.longestStreak || 0}
-          isActive={streaks.activeStreaks.some(s => s.type === 'login')}
+          config={STREAK_CONFIG.login || { name: 'Login Streak', description: 'Daily login consistency' }}
+          count={streaks.activeStreaks?.find(s => s.type === 'login')?.count || 0}
+          longestStreak={streaks.activeStreaks?.find(s => s.type === 'login')?.longestStreak || 0}
+          isActive={streaks.activeStreaks?.some(s => s.type === 'login') || false}
           icon={<Flame className="w-5 h-5" />}
           gradientColor="from-orange-500 to-red-500"
         />
@@ -152,10 +190,10 @@ export default function StreakDisplay() {
         {/* Intentions Streak */}
         <StreakCard
           type="intentions"
-          config={STREAK_CONFIG.intentions}
-          count={streaks.activeStreaks.find(s => s.type === 'intentions')?.count || 0}
-          longestStreak={streaks.activeStreaks.find(s => s.type === 'intentions')?.longestStreak || 0}
-          isActive={streaks.activeStreaks.some(s => s.type === 'intentions')}
+          config={STREAK_CONFIG.intentions || { name: 'Intentions Streak', description: 'Morning intentions completed' }}
+          count={streaks.activeStreaks?.find(s => s.type === 'intentions')?.count || 0}
+          longestStreak={streaks.activeStreaks?.find(s => s.type === 'intentions')?.longestStreak || 0}
+          isActive={streaks.activeStreaks?.some(s => s.type === 'intentions') || false}
           icon={<Target className="w-5 h-5" />}
           gradientColor="from-blue-500 to-indigo-500"
         />
@@ -163,30 +201,30 @@ export default function StreakDisplay() {
         {/* Sales Streak */}
         <StreakCard
           type="sales"
-          config={STREAK_CONFIG.sales}
-          count={streaks.activeStreaks.find(s => s.type === 'sales')?.count || 0}
-          longestStreak={streaks.activeStreaks.find(s => s.type === 'sales')?.longestStreak || 0}
-          isActive={streaks.activeStreaks.some(s => s.type === 'sales')}
+          config={STREAK_CONFIG.sales || { name: 'Sales Streak', description: 'Daily sales achievement' }}
+          count={streaks.activeStreaks?.find(s => s.type === 'sales')?.count || 0}
+          longestStreak={streaks.activeStreaks?.find(s => s.type === 'sales')?.longestStreak || 0}
+          isActive={streaks.activeStreaks?.some(s => s.type === 'sales') || false}
           icon={<TrendingUp className="w-5 h-5" />}
           gradientColor="from-green-500 to-emerald-500"
         />
       </div>
 
       {/* Motivational Message */}
-      {streaks.activeStreaks.length > 0 && (
+      {streaks.activeStreaks?.length > 0 && (
         <div className="mt-4 p-3 bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-lg border border-blue-500/20">
           <p className="text-sm text-blue-400 flex items-center gap-2">
             <Shield className="w-4 h-4" />
-            {streaks.activeStreaks.length === 3 
+            {streaks.activeStreaks?.length === 3 
               ? "All streaks active! You're on fire! 🔥"
-              : `Keep going! ${3 - streaks.activeStreaks.length} more streak${3 - streaks.activeStreaks.length === 1 ? '' : 's'} to perfect day!`
+              : `Keep going! ${3 - (streaks.activeStreaks?.length || 0)} more streak${3 - (streaks.activeStreaks?.length || 0) === 1 ? '' : 's'} to perfect day!`
             }
           </p>
         </div>
       )}
 
       {/* Protection Status */}
-      {streaks.activeStreaks.some(s => s.isProtectedToday) && (
+      {streaks.activeStreaks?.some(s => s.isProtectedToday) && (
         <div className="mt-2 p-2 bg-gray-900 rounded-lg">
           <p className="text-xs text-gray-400 flex items-center gap-1">
             <Shield className="w-3 h-3" />
@@ -242,7 +280,7 @@ function StreakCard({ type, config, count, longestStreak, isActive, icon, gradie
           {count}
         </div>
         <div className="text-xs text-gray-400">
-          {config.name}
+          {config?.name || `${type.charAt(0).toUpperCase() + type.slice(1)} Streak`}
         </div>
       </div>
 
@@ -275,7 +313,7 @@ function StreakCard({ type, config, count, longestStreak, isActive, icon, gradie
               <span className="text-white font-medium">{longestStreak} days</span>
             </div>
             <div className="pt-1 border-t border-gray-700">
-              <p className="text-gray-400">{config.description}</p>
+              <p className="text-gray-400">{config?.description || 'Track your daily progress'}</p>
             </div>
           </div>
         </div>

@@ -4,6 +4,23 @@
  */
 
 export const STREAK_CONFIG = {
+  // Individual streak configurations
+  login: {
+    name: 'Login Streak',
+    description: 'Daily login consistency',
+    icon: '🔥'
+  },
+  intentions: {
+    name: 'Intentions Streak',
+    description: 'Morning intentions completed',
+    icon: '🎯'
+  },
+  sales: {
+    name: 'Sales Streak',
+    description: 'Daily sales achievement',
+    icon: '📈'
+  },
+  
   // Streak types
   types: {
     FULL: 'full',           // Morning + Evening + Sales

@@ -43,8 +43,9 @@ export default function TeamGoalManager({ teamId, teamData }) {
       const { collection, query, where, getDocs } = await import('firebase/firestore')
       const { db } = await import('@/src/services/firebase')
       
+      // NOTE: 'members' collection stores USER accounts (historical naming)
       const membersQuery = query(
-        collection(db, 'users'),
+        collection(db, 'members'),
         where('teamId', '==', teamId)
       )
       const snapshot = await getDocs(membersQuery)

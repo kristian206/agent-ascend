@@ -63,7 +63,8 @@ service cloud.firestore {
     // USER PROFILE COLLECTIONS
     // ============================================
     
-    // Users collection - PRIMARY user profiles
+    // Users collection - DEPRECATED (kept for backward compatibility)
+    // New code should use 'members' collection
     match /users/{userId} {
       allow read: if isAuthenticated();
       allow create: if isOwner(userId);
@@ -71,7 +72,9 @@ service cloud.firestore {
       allow delete: if isGod();
     }
     
-    // Members collection - EXTENDED user data
+    // Members collection - PRIMARY user accounts/profiles
+    // NOTE: Named 'members' for historical reasons, but stores ALL USER data
+    // Each document represents a USER account, not specifically a member role
     match /members/{userId} {
       allow read: if isAuthenticated();
       allow create: if isOwner(userId);

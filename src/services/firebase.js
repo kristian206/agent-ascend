@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 
 // Security fix: Using environment variables instead of hardcoded values
 const firebaseConfig = {
@@ -28,7 +29,7 @@ function validateFirebaseConfig(config) {
   return true
 }
 
-let app, auth, db
+let app, auth, db, storage
 
 try {
   // Validate before initializing
@@ -38,6 +39,7 @@ try {
   app = initializeApp(firebaseConfig)
   auth = getAuth(app)
   db = getFirestore(app)
+  storage = getStorage(app)
   
   console.log('Firebase initialized successfully')
 } catch (error) {
@@ -54,5 +56,5 @@ try {
   throw error
 }
 
-export { auth, db }
+export { auth, db, storage }
 export default app

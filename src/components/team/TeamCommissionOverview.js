@@ -45,8 +45,9 @@ export default function TeamCommissionOverview() {
       }
 
       // Load team members
+      // NOTE: 'members' collection stores USER accounts (historical naming)
       const membersQuery = query(
-        collection(db, 'users'),
+        collection(db, 'members'),
         where('teamId', '==', userData.teamId)
       )
       const membersSnapshot = await getDocs(membersQuery)

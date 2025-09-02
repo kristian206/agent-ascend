@@ -1,8 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/src/components/auth/AuthProvider'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '@/src/services/firebase'
+import { getUserData } from '@/src/utils/userUtils'
 
 export default function PersonalProgress() {
   const { user } = useAuth()
@@ -24,9 +23,9 @@ export default function PersonalProgress() {
 
   const loadPersonalStats = useCallback(async () => {
     try {
-      const userDoc = await getDoc(doc(db, 'members', user.uid))
-      if (userDoc.exists()) {
-        const data = userDoc.data()
+      // Get user data from 'members' collection (stores USER accounts)
+      const data = await getUserData(user.uid)
+      if (data) {
         setStats({
           weekPoints: data.weekPoints || 0,
           weekGoal: data.weekGoal || 100,

@@ -130,11 +130,46 @@ export default function NightlyWrap() {
       
       await setDoc(doc(db, 'checkins', `${user.uid}_${todayKey}`), wrapData, { merge: true })
       
+      // Award points for completing evening wrap
+      const { awardDailyActivityPoints } = await import('@/src/utils/gamification')
+      const pointsResult = await awardDailyActivityPoints(user.uid, 'evening_wrap')
+      
       // Calculate enhanced streak (with sales requirement)
       const result = await calculateEnhancedStreak(user.uid)
       
       // Log events for analytics
       // wrap_submitted event tracked
+      
+      // Show points earned notification
+      if (pointsResult.success && pointsResult.pointsAwarded > 0) {
+        showToast({
+          icon: '🌙',
+          title: `+${pointsResult.pointsAwarded} Points!`,
+          message: pointsResult.pointsAwarded >= 15 ? 'Daily bonus earned! Perfect day!' : 'Evening wrap complete!'
+        })
+      }
+      
+      // Show XP earned from milestones
+      if (result.xpEarned > 0) {
+        showToast({
+          icon: '⭐',
+          title: `+${result.xpEarned} XP!`,
+          message: 'Streak milestone reached!',
+          duration: 5000
+        })
+      }
+      
+      // Show milestone notifications
+      if (result.newMilestones?.length > 0) {
+        for (const milestone of result.newMilestones) {
+          showToast({
+            icon: milestone.type === 'full' ? '🔥' : '✨',
+            title: `${milestone.days}-Day ${milestone.type === 'full' ? 'Full' : 'Participation'} Streak!`,
+            message: `+${milestone.xp} XP earned!`,
+            duration: 6000
+          })
+        }
+      }
       
       // Show appropriate streak message
       if (result.hasFullStreakToday) {

@@ -368,62 +368,100 @@ export default function AuthPage() {
     setError('')
     
     try {
+      console.log('Starting signup process for:', formData.email)
+      
       // Create auth user
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
       const user = userCredential.user
+      console.log('Firebase Auth user created successfully:', user.uid)
       
       // Send email verification
-      await sendEmailVerification(user, {
-        url: `${window.location.origin}/dashboard`,
-        handleCodeInApp: false
-      })
+      try {
+        await sendEmailVerification(user, {
+          url: `${window.location.origin}/dashboard`,
+          handleCodeInApp: false
+        })
+        console.log('Verification email sent')
+      } catch (emailErr) {
+        console.error('Email verification failed (non-critical):', emailErr)
+      }
       
       // Generate 6-digit ID
       const userId = Math.floor(100000 + Math.random() * 900000).toString()
       
-      // Create user document
-      await setDoc(doc(db, 'users', user.uid), {
-        name: formData.firstName,
-        email: formData.email,
-        state: formData.state,
+      // Create user document in members collection
+      // NOTE: 'members' is the collection name (historical), but this stores USER account data
+      const userData = {
         userId: userId,
-        level: 1,
+        email: formData.email,
+        name: formData.firstName,
+        role: 'member',
         xp: 0,
+        level: 1,
         streak: 0,
+        fullStreak: 0,
+        participationStreak: 0,
         lifetimePoints: 0,
-        monthPoints: 0,
-        weekPoints: 0,
-        onboardingCompleted: false,
+        seasonPoints: 0,
+        todayPoints: 0,
+        achievements: [],
+        achievedMilestones: {},
+        state: formData.state,
+        profileComplete: false,
         createdAt: serverTimestamp(),
-        lastActivityDate: serverTimestamp()
-      })
+        lastLogin: serverTimestamp()
+      }
       
-      // Also create in members collection for compatibility
-      await setDoc(doc(db, 'members', user.uid), {
-        name: formData.firstName,
-        email: formData.email,
-        state: formData.state,
-        userId: userId,
-        level: 1,
-        xp: 0,
-        streak: 0,
-        lifetimePoints: 0,
-        monthPoints: 0,
-        weekPoints: 0,
-        createdAt: serverTimestamp()
-      })
+      try {
+        console.log('Creating member document for:', user.uid)
+        await setDoc(doc(db, 'members', user.uid), memberData)
+        console.log('Member document created successfully')
+      } catch (firestoreErr) {
+        console.error('CRITICAL: Failed to create member document:', firestoreErr)
+        console.error('Error details:', {
+          code: firestoreErr.code,
+          message: firestoreErr.message,
+          userId: user.uid,
+          collection: 'members'
+        })
+        
+        // Delete the auth user if document creation fails
+        try {
+          await user.delete()
+          console.log('Rolled back auth user due to Firestore failure')
+        } catch (deleteErr) {
+          console.error('Failed to rollback auth user:', deleteErr)
+        }
+        
+        throw new Error(`Database error: ${firestoreErr.message || 'Unable to create user profile. Please contact support.'}`)
+      }
       
       // Show email verification screen
       setCurrentUser(user)
       setMode('verify')
+      console.log('Signup completed successfully')
     } catch (err) {
       console.error('Signup error:', err)
+      console.error('Full error object:', {
+        code: err.code,
+        message: err.message,
+        stack: err.stack
+      })
+      
       if (err.code === 'auth/email-already-in-use') {
         setError('An account with this email already exists')
       } else if (err.code === 'auth/weak-password') {
         setError('Password is too weak')
+      } else if (err.code === 'auth/network-request-failed') {
+        setError('Network error. Please check your connection and try again.')
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Invalid email address format')
+      } else if (err.code === 'auth/operation-not-allowed') {
+        setError('Email/password accounts are not enabled. Please contact support.')
+      } else if (err.message && err.message.includes('Database error')) {
+        setError(err.message)
       } else {
-        setError('Failed to create account. Please try again.')
+        setError(`Unable to create account at this time. Error: ${err.message || err.code || 'Unknown error'}`)
       }
     } finally {
       setLoading(false)

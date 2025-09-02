@@ -4,6 +4,7 @@ import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/src/services/firebase'
 import { useAuth } from '@/src/components/auth/AuthProvider'
 import { calculateStreakForToday } from '@/src/utils/gamification'
+import { calculateEnhancedStreak } from '@/src/utils/streaks'
 import MicroCelebration from '@/src/components/common/MicroCelebration'
 import { useNotification } from '@/src/components/notifications/NotificationProvider'
 import { createNotification, NOTIFICATION_TYPES } from '@/src/services/notifications'
@@ -106,15 +107,55 @@ export default function DailyIntentions() {
       
       await setDoc(doc(db, 'checkins', `${user.uid}_${todayKey}`), intentionsData, { merge: true })
       
-      // Calculate streak and achievements
-      const result = await calculateStreakForToday(user.uid)
+      // Award points for completing morning intentions
+      const { awardDailyActivityPoints } = await import('@/src/utils/gamification')
+      const pointsResult = await awardDailyActivityPoints(user.uid, 'morning_intentions')
+      
+      // Calculate enhanced streak with XP
+      const enhancedResult = await calculateEnhancedStreak(user.uid)
       
       // Log event
-      console.log('intentions_submitted', { user_id: user.uid, streak: result.streak })
+      console.log('intentions_submitted', { 
+        user_id: user.uid, 
+        fullStreak: enhancedResult.fullStreak,
+        participationStreak: enhancedResult.participationStreak,
+        xpEarned: enhancedResult.xpEarned 
+      })
       
-      // Check for milestones and create notifications
-      if (result.newAchievements?.length > 0) {
-        for (const achievement of result.newAchievements) {
+      // Show points earned notification
+      if (pointsResult.success && pointsResult.pointsAwarded > 0) {
+        showToast({
+          icon: '✨',
+          title: `+${pointsResult.pointsAwarded} Points!`,
+          message: pointsResult.pointsAwarded >= 15 ? 'Daily bonus earned!' : 'Morning intentions complete!'
+        })
+      }
+      
+      // Show XP earned from milestones
+      if (enhancedResult.xpEarned > 0) {
+        showToast({
+          icon: '⭐',
+          title: `+${enhancedResult.xpEarned} XP!`,
+          message: 'Streak milestone reached!',
+          duration: 5000
+        })
+      }
+      
+      // Show milestone notifications
+      if (enhancedResult.newMilestones?.length > 0) {
+        for (const milestone of enhancedResult.newMilestones) {
+          showToast({
+            icon: milestone.type === 'full' ? '🔥' : '✨',
+            title: `${milestone.days}-Day ${milestone.type === 'full' ? 'Full' : 'Participation'} Streak!`,
+            message: `+${milestone.xp} XP earned!`,
+            duration: 6000
+          })
+        }
+      }
+      
+      // Check for achievements
+      if (enhancedResult.newAchievements?.length > 0) {
+        for (const achievement of enhancedResult.newAchievements) {
           await createNotification(user.uid, NOTIFICATION_TYPES.ACHIEVEMENT_UNLOCKED, {
             achievementName: achievement
           })

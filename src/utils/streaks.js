@@ -1,5 +1,6 @@
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore'
+import { doc, getDoc, setDoc, collection, query, where, getDocs, increment } from 'firebase/firestore'
 import { db } from '@/src/services/firebase'
+import { STREAK_CONFIG } from '@/src/models/streakModels'
 
 /**
  * Enhanced streak calculation with sales requirement
@@ -126,16 +127,79 @@ export async function calculateEnhancedStreak(userId) {
       newAchievements.push('participation_month')
     }
     
+    // Check for milestone XP rewards
+    let xpEarned = 0
+    const achievedMilestones = userData.achievedMilestones || {}
+    const newMilestones = []
+    
+    // Check full streak milestones
+    if (fullStreak > 0) {
+      const fullMilestones = STREAK_CONFIG.milestones.full
+      for (const milestone of fullMilestones) {
+        if (fullStreak >= milestone && !achievedMilestones[`full_${milestone}`]) {
+          xpEarned += STREAK_CONFIG.xpRewards.milestone[milestone]
+          achievedMilestones[`full_${milestone}`] = {
+            achievedAt: new Date().toISOString(),
+            xpAwarded: STREAK_CONFIG.xpRewards.milestone[milestone]
+          }
+          newMilestones.push({
+            type: 'full',
+            days: milestone,
+            xp: STREAK_CONFIG.xpRewards.milestone[milestone]
+          })
+        }
+      }
+    }
+    
+    // Check participation streak milestones
+    if (participationStreak > 0) {
+      const participationMilestoneMap = {
+        7: 250,
+        14: 500,
+        30: 1000,
+        60: 2000,
+        90: 3000,
+        180: 5000,
+        365: 10000
+      }
+      
+      for (const [milestone, xpValue] of Object.entries(participationMilestoneMap)) {
+        const days = parseInt(milestone)
+        if (participationStreak >= days && !achievedMilestones[`participation_${days}`]) {
+          xpEarned += xpValue
+          achievedMilestones[`participation_${days}`] = {
+            achievedAt: new Date().toISOString(),
+            xpAwarded: xpValue
+          }
+          newMilestones.push({
+            type: 'participation',
+            days,
+            xp: xpValue
+          })
+        }
+      }
+    }
+    
     // Update achievements
     const allAchievements = [...existingAchievements, ...newAchievements]
     
-    await setDoc(userRef, {
+    // Build update object
+    const updateData = {
       streak: fullStreak,  // Main streak requires sales
       participationStreak,  // Secondary streak for check-ins only
       fullStreak,
       achievements: allAchievements,
+      achievedMilestones,
       lastStreakUpdate: todayKey
-    }, { merge: true })
+    }
+    
+    // Only increment XP if earned
+    if (xpEarned > 0) {
+      updateData.xp = increment(xpEarned)
+      updateData.lifetimePoints = increment(xpEarned)
+    }
+    
+    await setDoc(userRef, updateData, { merge: true })
     
     return {
       fullStreak,
@@ -144,7 +208,9 @@ export async function calculateEnhancedStreak(userId) {
       hasParticipationToday,
       newAchievements,
       previousXp: userData.xp || 0,
-      xp: userData.xp || 0
+      xp: (userData.xp || 0) + xpEarned,
+      xpEarned,
+      newMilestones
     }
   } catch (error) {
     console.error('Error calculating enhanced streak:', error)

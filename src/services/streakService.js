@@ -17,39 +17,30 @@ const streakService = {
       // Calculate enhanced streak with achievements
       const enhanced = await calculateEnhancedStreak(userId)
       
-      // Create activeStreaks array with the expected structure for StreakDisplay
-      const activeStreaks = []
-      
-      // Add login streak
-      if (enhanced.fullStreak > 0 || enhanced.hasFullStreakToday) {
-        activeStreaks.push({
+      // Create activeStreaks array with ALL streak types (always include all 3)
+      const activeStreaks = [
+        {
           type: 'login',
-          count: enhanced.fullStreak,
-          longestStreak: enhanced.fullStreak, // TODO: Track actual longest streak
-          isActive: enhanced.hasFullStreakToday,
-          isProtectedToday: false // TODO: Implement weekend/holiday protection
-        })
-      }
-      
-      // Add participation streak as intentions
-      if (enhanced.participationStreak > 0 || enhanced.hasParticipationToday) {
-        activeStreaks.push({
-          type: 'intentions',
-          count: enhanced.participationStreak,
-          longestStreak: enhanced.participationStreak,
-          isActive: enhanced.hasParticipationToday,
+          count: enhanced.fullStreak || 0,
+          longestStreak: enhanced.fullStreak || 0,
+          isActive: enhanced.hasFullStreakToday || false,
           isProtectedToday: false
-        })
-      }
-      
-      // Add sales streak (placeholder - implement based on actual sales data)
-      activeStreaks.push({
-        type: 'sales',
-        count: 0, // TODO: Implement sales streak tracking
-        longestStreak: 0,
-        isActive: false,
-        isProtectedToday: false
-      })
+        },
+        {
+          type: 'intentions',
+          count: enhanced.participationStreak || 0,
+          longestStreak: enhanced.participationStreak || 0,
+          isActive: enhanced.hasParticipationToday || false,
+          isProtectedToday: false
+        },
+        {
+          type: 'sales',
+          count: enhanced.fullStreak || 0, // Use fullStreak as it requires sales
+          longestStreak: enhanced.fullStreak || 0,
+          isActive: enhanced.hasFullStreakToday || false,
+          isProtectedToday: false
+        }
+      ]
       
       // Calculate perfect days (days where all streaks were maintained)
       const perfectDays = Math.min(enhanced.fullStreak, enhanced.participationStreak)

@@ -11,16 +11,16 @@ import ErrorBoundary from '@/src/components/common/ErrorBoundary'
 
 // Product types with commission and point values
 const PRODUCTS = {
-  home: { name: 'Home', commission: 50, points: 20, icon: '🏠' },
+  home: { name: 'Home', commission: 50, points: 15, icon: '🏠' },
   car: { name: 'Car', commission: 50, points: 10, icon: '🚗' },
-  condo: { name: 'Condo', commission: 50, points: 20, icon: '🏢' },
-  life: { name: 'Life', commission: 50, points: 10, icon: '❤️' },
+  condo: { name: 'Condo', commission: 50, points: 15, icon: '🏢' },
+  life: { name: 'Life', commission: 50, points: 20, icon: '❤️' },
   renters: { name: 'Renters', commission: 20, points: 5, icon: '🔑' },
   umbrella: { name: 'Umbrella', commission: 20, points: 5, icon: '☂️' },
   boat: { name: 'Boat', commission: 20, points: 5, icon: '⛵' },
   motorcycle: { name: 'Motorcycle/ORV', commission: 20, points: 5, icon: '🏍️' },
   roadside: { name: 'Roadside', commission: 20, points: 5, icon: '🚨' },
-  other: { name: 'Other', commission: 20, points: 5, icon: '📋' }
+  other: { name: 'Other', commission: 20, points: 10, icon: '📋' }
 }
 
 export default function SalesLogger({ onSaleLogged }) {

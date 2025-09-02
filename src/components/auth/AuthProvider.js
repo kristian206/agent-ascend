@@ -5,6 +5,7 @@ import { doc, getDoc, setDoc, serverTimestamp, updateDoc, collection, query, get
 import { auth, db } from '@/src/services/firebase'
 import { useRouter, usePathname } from 'next/navigation'
 import { generateUniqueId } from '@/src/utils/idGenerator'
+import { getUserData, createUser, updateUserData } from '@/src/utils/userUtils'
 import LoadingScreen from '@/src/components/layout/LoadingScreen'
 import SessionManager from '@/src/components/auth/SessionManager'
 
@@ -26,6 +27,7 @@ export default function AuthProvider({ children }) {
           setUser(user)
           
           // Get or create user document
+          // NOTE: 'members' collection stores USER accounts (historical naming)
           const userRef = doc(db, 'members', user.uid)
           const userDoc = await getDoc(userRef)
         
@@ -65,6 +67,18 @@ export default function AuthProvider({ children }) {
           setUserData(userDoc.data())
         }
         
+        // Calculate today's points after user data is loaded
+        const { calculateTodayPoints, checkAndResetIfNewDay } = await import('@/src/utils/gamification')
+        
+        // Check if we need to reset points for a new day
+        await checkAndResetIfNewDay(user.uid)
+        
+        // Calculate and update today's points
+        const pointsResult = await calculateTodayPoints(user.uid)
+        if (pointsResult.success) {
+          console.log(`Today's points calculated: ${pointsResult.todayPoints}`)
+        }
+        
         // Check profile completion for onboarding
         const userDocData = userDoc.exists() ? userDoc.data() : newUserData
         const profileComplete = userDocData?.profileComplete || false
@@ -98,8 +112,38 @@ export default function AuthProvider({ children }) {
           pathname
         })
         
-        // Retry logic for transient errors
-        if (error.code === 'unavailable' || error.code === 'deadline-exceeded') {
+        // Handle specific error types
+        if (error.code === 'permission-denied') {
+          console.error('🔒 FIRESTORE PERMISSION DENIED')
+          console.error('Rules need to be deployed to Firebase')
+          console.error('Quick fix: Go to Firebase Console > Firestore > Rules')
+          console.error('Or run: firebase deploy --only firestore:rules')
+          
+          // Keep user logged in but with limited data
+          if (user) {
+            setUser(user)
+            setUserData({
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName || user.email?.split('@')[0] || 'User',
+              photoURL: user.photoURL || null,
+              createdAt: new Date().toISOString(),
+              role: 'member',
+              streak: 0,
+              xp: 0,
+              level: 1,
+              permissionError: true // Flag to show warning in UI
+            })
+            
+            // Show alert to user
+            if (typeof window !== 'undefined') {
+              console.warn('Firestore permissions need to be configured. Check console for details.')
+            }
+          } else {
+            setUser(null)
+            setUserData(null)
+          }
+        } else if (error.code === 'unavailable' || error.code === 'deadline-exceeded') {
           console.log('Retrying auth operation due to transient error...')
           // Wait 2 seconds then retry once
           setTimeout(() => {

@@ -97,23 +97,24 @@ export async function updateMonthlyTotals(saleData) {
 
 // Update user stats (points, level, streak) - denormalized in user document
 export async function updateUserStats(userId, points, activityType) {
-  if (!userId) return
+  if (!userId || !points) return
   
   try {
-    const userRef = doc(db, 'users', userId)
+    // NOTE: 'members' collection stores USER accounts (historical naming kept for compatibility)
+    const userRef = doc(db, 'members', userId)
     const userDoc = await getDoc(userRef)
     
     if (!userDoc.exists()) {
-      // User document not found for stats update
+      console.error(`User document not found for userId: ${userId}`)
       return
     }
     
     const userData = userDoc.data()
-    const currentPoints = userData.lifetimePoints || 0
-    const newPoints = currentPoints + points
+    const currentLifetimePoints = userData.lifetimePoints || 0
+    const newLifetimePoints = currentLifetimePoints + points
     
-    // Calculate new level (every 1000 points = 1 level)
-    const newLevel = Math.floor(newPoints / 1000) + 1
+    // Calculate new level (every 100 points = 1 level)
+    const newLevel = Math.floor(newLifetimePoints / 100) + 1
     
     // Update streak if activity is daily
     const lastActivity = userData.lastActivityDate?.toDate?.() || new Date(0)
@@ -133,10 +134,13 @@ export async function updateUserStats(userId, points, activityType) {
     }
     // If daysDiff === 0, same day activity, don't change streak
     
-    // Update user document
+    // CRITICAL FIX: Update ALL point fields atomically
     await withRetry(async () => {
       await setDoc(userRef, {
-        lifetimePoints: newPoints,
+        todayPoints: increment(points),      // FIX: Add todayPoints
+        seasonPoints: increment(points),     // FIX: Add seasonPoints
+        lifetimePoints: increment(points),   // FIX: Use increment instead of setting value
+        xp: increment(points),               // FIX: Add XP
         level: newLevel,
         streak: newStreak,
         lastActivityDate: serverTimestamp(),
@@ -144,7 +148,7 @@ export async function updateUserStats(userId, points, activityType) {
       }, { merge: true })
     }, 3, 1000)
     
-    // User stats updated successfully
+    console.log(`Updated user ${userId} stats: +${points} points from ${activityType}`)
   } catch (error) {
     console.error('Error updating user stats:', error)
     // Don't throw - this is a non-critical optimization

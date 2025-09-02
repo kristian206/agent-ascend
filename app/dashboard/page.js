@@ -1,5 +1,6 @@
 'use client'
 import { useAuth } from '@/src/components/auth/AuthProvider'
+import { useRealtimeUser } from '@/src/hooks/useRealtimeUser'
 import PageLayout from '@/src/components/layout/PageLayout'
 import QuickStats from '@/src/components/dashboard/QuickStats'
 import RecentActivity from '@/src/components/dashboard/RecentActivity'
@@ -12,7 +13,8 @@ import StreakDisplay from '@/src/components/dashboard/StreakDisplay'
 import ThemeToggle from '@/src/components/ui/ThemeToggle'
 
 export default function Dashboard() {
-  const { user, userData } = useAuth()
+  const { user } = useAuth()
+  const { userData, isRealtime, lastUpdate } = useRealtimeUser()
 
   if (!user) return null
 
@@ -37,6 +39,11 @@ export default function Dashboard() {
               </h1>
               <p className="type-detail-body theme-text-secondary">
                 Here&apos;s what matters today
+                {isRealtime && (
+                  <span className="ml-2 text-xs text-green-400 animate-pulse">
+                    • Live
+                  </span>
+                )}
               </p>
             </div>
             {/* Desktop-positioned theme toggle */}
