@@ -8,6 +8,8 @@ import PersonalProgress from '@/src/components/dashboard/PersonalProgress'
 import SalesLogger from '@/src/components/sales/SalesLogger'
 import TeamCommissionOverview from '@/src/components/team/TeamCommissionOverview'
 import PasswordMigration from '@/src/components/auth/PasswordMigration'
+import StreakDisplay from '@/src/components/dashboard/StreakDisplay'
+import ThemeToggle from '@/src/components/ui/ThemeToggle'
 
 export default function Dashboard() {
   const { user, userData } = useAuth()
@@ -27,52 +29,63 @@ export default function Dashboard() {
               // Password update dismissed
             }}
           />
-          {/* Hero Section - What Matters Now */}
-          <header className="mb-8">
-            <h1 className="type-dashboard-title text-primary mb-2">
-              Welcome back, {userData?.name || 'Agent'}!
-            </h1>
-            <p className="type-detail-body text-gray-300">
-              Here&apos;s what matters today
-            </p>
+          {/* Hero Section with Theme Toggle - Desktop-optimized */}
+          <header className="mb-8 flex items-start justify-between">
+            <div>
+              <h1 className="type-dashboard-title theme-text-primary mb-2">
+                Welcome back, {userData?.name || 'Agent'}!
+              </h1>
+              <p className="type-detail-body theme-text-secondary">
+                Here&apos;s what matters today
+              </p>
+            </div>
+            {/* Desktop-positioned theme toggle */}
+            <div className="hidden lg:block">
+              <ThemeToggle />
+            </div>
           </header>
+          
+          {/* Mobile theme toggle */}
+          <div className="lg:hidden fixed bottom-20 right-4 z-50">
+            <ThemeToggle />
+          </div>
 
-          {/* Priority Cards - Instagram-style focus on action */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          {/* Priority Cards - Desktop-optimized with consistent alignment */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Daily Streak Card */}
-            <div className="bg-gray-800 border border-gray-700 p-6 hover:scale-105 transition-all bg-[url('/images/bg/noise.svg')]">
+            <div className="theme-bg-card theme-border border p-6 rounded-xl hover:scale-105 transition-all min-h-[200px] flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <img src="/images/badges/star.svg" alt="Streak" className="w-8 h-8" />
                 <span className="type-list-label text-brand-500">STREAK</span>
               </div>
-              <div className="type-dashboard-metric text-primary">{userData?.streak || 0} days</div>
-              <p className="type-detail-caption text-gray-400 mt-2">
+              <div className="type-dashboard-metric theme-text-primary">{userData?.streak || 0} days</div>
+              <p className="type-detail-caption theme-text-secondary mt-2">
                 Keep your momentum going!
               </p>
             </div>
 
             {/* Today's Points */}
-            <div className="bg-gray-800 border border-gray-700 p-6 hover:scale-105 transition-all bg-[url('/images/bg/noise.svg')]">
+            <div className="theme-bg-card theme-border border p-6 rounded-xl hover:scale-105 transition-all min-h-[200px] flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <img src="/images/badges/trophy.svg" alt="Points" className="w-8 h-8" />
                 <span className="type-list-label text-success">TODAY</span>
               </div>
-              <div className="type-dashboard-metric text-primary">{userData?.todayPoints || 0} pts</div>
+              <div className="type-dashboard-metric theme-text-primary">{userData?.todayPoints || 0} pts</div>
               <div className="mt-2">
-                <div className="h-2 bg-gray-750 rounded-full overflow-hidden">
+                <div className="h-2 theme-bg-secondary rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-brand-400 to-brand-600 transition-all"
                     style={{ width: `${Math.min((userData?.todayPoints || 0) / 100 * 100, 100)}%` }}
                   />
                 </div>
-                <p className="type-detail-caption text-gray-400 mt-1">
+                <p className="type-detail-caption theme-text-tertiary mt-1">
                   {100 - (userData?.todayPoints || 0)} pts to daily goal
                 </p>
               </div>
             </div>
 
             {/* Quick Actions - High Contrast CTA */}
-            <div className="relative p-6 rounded-2xl overflow-hidden hover:scale-105 transition-all liquid-stroke" style={{ backgroundImage: "url('/images/ui/cta-bg.svg')", backgroundSize: "cover" }}>
+            <div className="relative p-6 rounded-xl overflow-hidden hover:scale-105 transition-all liquid-stroke min-h-[200px] flex flex-col" style={{ backgroundImage: "url('/images/ui/cta-bg.svg')", backgroundSize: "cover" }}>
               <div className="flex items-center justify-between mb-4">
                 <img src="/images/badges/shield.svg" alt="Quick Win" className="w-8 h-8" />
                 <span className="text-xs font-bold text-white/90 uppercase tracking-wider">QUICK WIN</span>
@@ -99,6 +112,11 @@ export default function Dashboard() {
 
           <QuickStats userData={userData} />
           
+          {/* Streak Display */}
+          <div className="mt-8">
+            <StreakDisplay />
+          </div>
+          
           {/* Team Commission Overview - Only for Leaders */}
           {userData?.isLeader && (
             <div className="mt-8">
@@ -112,25 +130,25 @@ export default function Dashboard() {
             <SalesTracker />
           </div>
           
-          {/* Quick Links Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-            <a href="/daily-intentions" className="bg-gray-800 border border-gray-700 p-6 hover:scale-105 transition-all group bg-[url('/images/bg/noise.svg')]">
-              <h3 className="type-list-heading text-primary mb-2 flex items-center gap-2">
+          {/* Quick Links Grid - Desktop-optimized alignment */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <a href="/daily-intentions" className="theme-bg-card theme-border border p-6 rounded-xl hover:scale-105 transition-all group bg-[url('/images/bg/noise.svg')] block min-h-[150px]">
+              <h3 className="type-list-heading theme-text-primary mb-2 flex items-center gap-2">
                 <img src="/images/icons/menu/daily-intentions.svg" alt="Morning" className="w-5 h-5" />
                 Morning Intentions
               </h3>
-              <p className="type-detail-body text-gray-300">Start your day with clarity and purpose</p>
+              <p className="type-detail-body theme-text-secondary">Start your day with clarity and purpose</p>
               <div className="mt-4 text-brand-500 group-hover:translate-x-2 transition-transform">
                 Set intentions →
               </div>
             </a>
             
-            <a href="/nightly-wrap" className="bg-gray-800 border border-gray-700 p-6 hover:scale-105 transition-all group bg-[url('/images/bg/noise.svg')]">
-              <h3 className="type-list-heading text-primary mb-2 flex items-center gap-2">
+            <a href="/nightly-wrap" className="theme-bg-card theme-border border p-6 rounded-xl hover:scale-105 transition-all group bg-[url('/images/bg/noise.svg')] block min-h-[150px]">
+              <h3 className="type-list-heading theme-text-primary mb-2 flex items-center gap-2">
                 <img src="/images/icons/menu/nightly-wrap.svg" alt="Evening" className="w-5 h-5" />
                 Nightly Wrap
               </h3>
-              <p className="type-detail-body text-gray-300">Reflect on your wins and plan tomorrow</p>
+              <p className="type-detail-body theme-text-secondary">Reflect on your wins and plan tomorrow</p>
               <div className="mt-4 text-brand-500 group-hover:translate-x-2 transition-transform">
                 Complete wrap →
               </div>

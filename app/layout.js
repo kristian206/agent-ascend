@@ -1,8 +1,10 @@
 import { Inter } from 'next/font/google'
 import './globals.css'
+import '@/src/styles/theme-variables.css'
 import AuthProvider from '@/src/components/auth/AuthProvider'
 import NotificationProvider from '@/src/components/notifications/NotificationProvider'
 import { ThemeProvider } from '@/src/components/common/ThemeProvider'
+import { ThemeProvider as DarkModeProvider } from '@/src/contexts/ThemeContext'
 import ErrorBoundary from '@/src/components/common/ErrorBoundary'
 import DailyCheckInModal from '@/src/components/sales/DailyCheckInModal'
 
@@ -27,14 +29,15 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`dark ${inter.variable}`}>
+    <html lang="en" className={inter.variable}>
       <body className="font-sans antialiased">
         <ErrorBoundary area="application">
-          <ThemeProvider>
-            <AuthProvider>
-              <NotificationProvider>
-                <DailyCheckInModal />
-                <div className="min-h-screen relative bg-liquid-gradient">
+          <DarkModeProvider>
+            <ThemeProvider>
+              <AuthProvider>
+                <NotificationProvider>
+                  <DailyCheckInModal />
+                  <div className="min-h-screen relative bg-liquid-gradient theme-bg-primary transition-colors duration-300">
                   {/* LiquidGlass Background Layers */}
                   <div className="fixed inset-0 overflow-hidden pointer-events-none">
                     {/* Grid Pattern */}
@@ -57,6 +60,7 @@ export default function RootLayout({ children }) {
               </NotificationProvider>
             </AuthProvider>
           </ThemeProvider>
+          </DarkModeProvider>
         </ErrorBoundary>
       </body>
     </html>
