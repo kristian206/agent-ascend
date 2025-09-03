@@ -58,11 +58,10 @@ export default function Navigation({ user }) {
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: '/images/icons/menu/dashboard.svg' },
-    { href: '/daily-intentions', label: 'Morning', icon: '/images/icons/menu/daily-intentions.svg' },
-    { href: '/nightly-wrap', label: 'Evening', icon: '/images/icons/menu/nightly-wrap.svg' },
+    { href: '/morning', label: 'Morning', icon: '/images/icons/menu/daily-intentions.svg' },
+    { href: '/nightly', label: 'Nightly', icon: '/images/icons/menu/nightly-wrap.svg' },
+    { href: '/journal', label: 'Journal', icon: '/images/icons/menu/journal.svg' },
     { href: '/team', label: 'Team', icon: '/images/icons/menu/team.svg' },
-    { href: '/achievement-wall', label: 'Achievements', icon: '/images/icons/menu/achievements.svg' },
-    { href: '/leaderboard', label: 'Leaderboard', icon: '/images/icons/menu/leaderboard.svg' },
     { href: '/profile', label: 'Profile', icon: '/images/icons/menu/profile.svg' },
     ...(userData?.isAdmin || userData?.godMode || userData?.role === 'super_admin' ? [
       { href: '/admin/panel', label: 'Admin', icon: '/images/badges/streaks/gold.svg' }

@@ -4,7 +4,6 @@ import '@/src/styles/theme-variables.css'
 import AuthProvider from '@/src/components/auth/AuthProvider'
 import NotificationProvider from '@/src/components/notifications/NotificationProvider'
 import { ThemeProvider } from '@/src/components/common/ThemeProvider'
-import { ThemeProvider as DarkModeProvider } from '@/src/contexts/ThemeContext'
 import ErrorBoundary from '@/src/components/common/ErrorBoundary'
 import DailyCheckInModal from '@/src/components/sales/DailyCheckInModal'
 
@@ -32,7 +31,6 @@ export default function RootLayout({ children }) {
     <html lang="en" className={inter.variable}>
       <body className="font-sans antialiased">
         <ErrorBoundary area="application">
-          <DarkModeProvider>
             <ThemeProvider>
               <AuthProvider>
                 <NotificationProvider>
@@ -60,7 +58,6 @@ export default function RootLayout({ children }) {
               </NotificationProvider>
             </AuthProvider>
           </ThemeProvider>
-          </DarkModeProvider>
         </ErrorBoundary>
       </body>
     </html>

@@ -9,7 +9,7 @@ import CheerButton from './CheerButton'
 import { User, Users, Trophy, Star } from 'lucide-react'
 
 export default function UserBanner({ 
-  userId, 
+  user, // Can be either user object or userId string
   userData, 
   variant = 'full', // full, compact, mini
   showCheer = true,
@@ -19,14 +19,30 @@ export default function UserBanner({
   const [bannerData, setBannerData] = useState(null)
   const [teamName, setTeamName] = useState('')
   const [loading, setLoading] = useState(true)
+  
+  // Handle both user object and userId string
+  const userId = typeof user === 'string' ? user : user?.uid || user?.id
+  const displayData = userData || user
 
   useEffect(() => {
-    loadBannerData()
+    if (userId) {
+      loadBannerData()
+    } else {
+      setLoading(false)
+      setBannerData(getDefaultBanner())
+    }
   }, [userId])
 
   const loadBannerData = async () => {
+    if (!userId) {
+      console.warn('UserBanner: No userId provided')
+      setBannerData(getDefaultBanner())
+      setLoading(false)
+      return
+    }
+    
     try {
-      // Get user's banner data
+      // NOTE: 'members' collection stores USER accounts (historical naming)
       const userDoc = await getDoc(doc(db, 'members', userId))
       if (userDoc.exists()) {
         const data = userDoc.data()
@@ -62,8 +78,8 @@ export default function UserBanner({
   }
 
   const handleTeamClick = () => {
-    if (userData?.teamId) {
-      router.push(`/team/${userData.teamId}`)
+    if (displayData?.teamId) {
+      router.push(`/team/${displayData.teamId}`)
     }
   }
 
@@ -93,18 +109,18 @@ export default function UserBanner({
             onClick={handleNameClick}
             className="text-white font-semibold hover:text-blue-400 transition truncate block"
           >
-            {userData?.name || 'User'}
+            {displayData?.name || 'User'}
           </button>
           {teamName && (
             <div className="text-xs text-gray-400 truncate">{teamName}</div>
           )}
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-400">Lvl {userData?.level || 1}</span>
+          <span className="text-xs text-gray-400">Lvl {displayData?.level || 1}</span>
           {showCheer && (
             <CheerButton 
               recipientId={userId}
-              recipientName={userData?.name}
+              recipientName={displayData?.name}
               size="small"
             />
           )}
@@ -132,7 +148,7 @@ export default function UserBanner({
               onClick={handleNameClick}
               className="text-lg font-bold text-white hover:text-blue-400 transition"
             >
-              {userData?.name || 'User'}
+              {displayData?.name || 'User'}
             </button>
             {teamName && (
               <button 
@@ -149,10 +165,10 @@ export default function UserBanner({
               className="text-sm text-gray-400 hover:text-white transition flex items-center gap-1"
             >
               <Trophy className="w-3 h-3" />
-              Rank #{userData?.seasonRank || '—'}
+              Rank #{displayData?.seasonRank || '—'}
             </button>
             <span className="text-sm text-gray-400">
-              Level {userData?.level || 1}
+              Level {displayData?.level || 1}
             </span>
           </div>
         </div>
@@ -164,7 +180,7 @@ export default function UserBanner({
         {showCheer && (
           <CheerButton 
             recipientId={userId}
-            recipientName={userData?.name}
+            recipientName={displayData?.name}
             cheersReceived={bannerData?.cheersReceived}
           />
         )}
@@ -198,7 +214,7 @@ export default function UserBanner({
               onClick={handleNameClick}
               className="text-2xl font-bold text-white hover:text-blue-400 transition flex items-center gap-2"
             >
-              {userData?.name || 'User'}
+              {displayData?.name || 'User'}
               <User className="w-5 h-5 opacity-50" />
             </button>
             
@@ -219,16 +235,16 @@ export default function UserBanner({
               className="text-gray-400 hover:text-white transition flex items-center gap-2"
             >
               <Trophy className="w-4 h-4" />
-              Season Rank #{userData?.seasonRank || '—'}
+              Season Rank #{displayData?.seasonRank || '—'}
             </button>
             
             <div className="text-gray-400 flex items-center gap-2">
               <Star className="w-4 h-4" />
-              Level {userData?.level || 1}
+              Level {displayData?.level || 1}
             </div>
             
             <div className="text-gray-400">
-              {userData?.xp || 0} XP
+              {displayData?.xp || 0} XP
             </div>
           </div>
         </div>
@@ -245,7 +261,7 @@ export default function UserBanner({
           <div className="flex flex-col items-center">
             <CheerButton 
               recipientId={userId}
-              recipientName={userData?.name}
+              recipientName={displayData?.name}
               cheersReceived={bannerData?.cheersReceived}
               size="large"
             />

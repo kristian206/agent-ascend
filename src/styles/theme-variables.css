@@ -1,5 +1,5 @@
-/* Dark theme (default) */
-[data-theme="dark"] {
+/* Dark theme (only theme) */
+:root, [data-theme="dark"] {
   /* Backgrounds */
   --bg-primary: #111827;
   --bg-secondary: #1f2937;
@@ -16,31 +16,7 @@
   --border-primary: #374151;
   --border-secondary: #4b5563;
   
-  /* Brand colors remain consistent */
-  --brand-primary: #2563eb;
-  --brand-success: #16a34a;
-  --brand-warning: #ea580c;
-}
-
-/* Light theme */
-[data-theme="light"] {
-  /* Backgrounds */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
-  --bg-card: #ffffff;
-  --bg-hover: #f3f4f6;
-  
-  /* Text */
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-tertiary: #6b7280;
-  
-  /* Borders */
-  --border-primary: #e5e7eb;
-  --border-secondary: #d1d5db;
-  
-  /* Brand colors remain consistent */
+  /* Brand colors */
   --brand-primary: #2563eb;
   --brand-success: #16a34a;
   --brand-warning: #ea580c;
