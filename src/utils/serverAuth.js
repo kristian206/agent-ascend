@@ -1,25 +1,50 @@
-import { cookies } from 'next/headers'
 import { cache } from 'react'
 import * as admin from 'firebase-admin'
 
-// Initialize Firebase Admin SDK (singleton)
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-    })
-  })
+// Check if Firebase Admin can be initialized
+const canInitializeFirebase = () => {
+  return (
+    process.env.FIREBASE_PROJECT_ID &&
+    process.env.FIREBASE_CLIENT_EMAIL &&
+    process.env.FIREBASE_PRIVATE_KEY
+  )
 }
 
-const auth = admin.auth()
-const db = admin.firestore()
+// Initialize Firebase Admin SDK (singleton) with safety checks
+let auth = null
+let db = null
+let isInitialized = false
+
+if (canInitializeFirebase()) {
+  try {
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+        })
+      })
+    }
+    auth = admin.auth()
+    db = admin.firestore()
+    isInitialized = true
+  } catch (error) {
+    console.warn('Firebase Admin initialization failed:', error.message)
+    // Continue without Firebase Admin - build will succeed
+  }
+} else {
+  console.warn('Firebase Admin SDK not configured - server-side features disabled')
+}
 
 // Cache user session for request duration
 export const getUserSession = cache(async (cookieStore) => {
+  if (!isInitialized || !auth) {
+    return null // Firebase not available, return null
+  }
+  
   try {
-    const sessionCookie = cookieStore.get('session')
+    const sessionCookie = cookieStore?.get('session')
     if (!sessionCookie) return null
     
     const decodedClaims = await auth.verifySessionCookie(sessionCookie.value, true)
@@ -28,13 +53,17 @@ export const getUserSession = cache(async (cookieStore) => {
       email: decodedClaims.email
     }
   } catch (error) {
-    console.error('Session verification failed:', error)
+    console.error('Session verification failed:', error.message)
     return null
   }
 })
 
 // Server-side data fetching functions
 export async function getUserData(userId) {
+  if (!isInitialized || !db) {
+    return null // Firebase not available
+  }
+  
   try {
     const userDoc = await db.collection('members').doc(userId).get()
     if (!userDoc.exists) return null
@@ -44,12 +73,16 @@ export async function getUserData(userId) {
       ...userDoc.data()
     }
   } catch (error) {
-    console.error('Error fetching user data:', error)
+    console.error('Error fetching user data:', error.message)
     return null
   }
 }
 
 export async function getRecentSales(userId, limit = 5) {
+  if (!isInitialized || !db) {
+    return [] // Firebase not available
+  }
+  
   try {
     const salesSnapshot = await db
       .collection('sales')
@@ -65,12 +98,16 @@ export async function getRecentSales(userId, limit = 5) {
     
     return sales
   } catch (error) {
-    console.error('Error fetching sales:', error)
+    console.error('Error fetching sales:', error.message)
     return []
   }
 }
 
 export async function getTeamData(userId) {
+  if (!isInitialized || !db) {
+    return null // Firebase not available
+  }
+  
   try {
     const userDoc = await db.collection('members').doc(userId).get()
     if (!userDoc.exists) return null
@@ -102,7 +139,7 @@ export async function getTeamData(userId) {
       memberCount: membersSnapshot.size
     }
   } catch (error) {
-    console.error('Error fetching team data:', error)
+    console.error('Error fetching team data:', error.message)
     return null
   }
 }
@@ -110,6 +147,10 @@ export async function getTeamData(userId) {
 // Batch fetch for efficiency
 export async function batchFetchUserData(userIds) {
   if (!userIds || userIds.length === 0) return []
+  
+  if (!isInitialized || !db) {
+    return [] // Firebase not available
+  }
   
   try {
     // Firebase Admin SDK supports IN queries up to 10 items
@@ -135,7 +176,7 @@ export async function batchFetchUserData(userIds) {
     
     return results.flat()
   } catch (error) {
-    console.error('Error batch fetching users:', error)
+    console.error('Error batch fetching users:', error.message)
     return []
   }
 }

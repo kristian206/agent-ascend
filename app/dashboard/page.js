@@ -1,20 +1,41 @@
 import { Suspense } from 'react'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import DashboardClient from './DashboardClient'
 import DashboardSkeleton from '@/src/components/skeletons/DashboardSkeleton'
-import { getUserSession } from '@/src/utils/serverAuth'
+import { getUserSession, getUserData, getRecentSales, getTeamData } from '@/src/utils/serverAuth'
 
 // Server Component - No 'use client'
 export default async function Dashboard() {
-  // Get user session on server
-  const session = await getUserSession(cookies())
+  let session = null
+  let initialData = null
   
-  if (!session) {
-    redirect('/')
+  try {
+    // Try to get user session on server
+    const cookieStore = cookies()
+    session = await getUserSession(cookieStore)
+  } catch (error) {
+    console.log('Server auth not available, falling back to client-side auth')
   }
   
-  // Prefetch critical data on server
-  const initialData = await fetchDashboardData(session.uid)
+  // If no session, render client component to handle auth
+  if (!session) {
+    return (
+      <Suspense fallback={<DashboardSkeleton />}>
+        <DashboardClient 
+          initialData={null}
+          userId={null}
+        />
+      </Suspense>
+    )
+  }
+  
+  // If we have a session, try to prefetch data
+  try {
+    initialData = await fetchDashboardData(session.uid)
+  } catch (error) {
+    console.log('Could not prefetch data, will load on client')
+  }
   
   return (
     <Suspense fallback={<DashboardSkeleton />}>
@@ -27,17 +48,23 @@ export default async function Dashboard() {
 }
 
 async function fetchDashboardData(userId) {
-  // Server-side data fetching
-  const [userData, recentSales, teamData] = await Promise.all([
-    getUserData(userId),
-    getRecentSales(userId, 5),
-    getTeamData(userId)
-  ])
-  
-  return {
-    userData,
-    recentSales,
-    teamData,
-    timestamp: Date.now()
+  try {
+    // Server-side data fetching with error handling
+    const [userData, recentSales, teamData] = await Promise.all([
+      getUserData(userId),
+      getRecentSales(userId, 5),
+      getTeamData(userId)
+    ])
+    
+    return {
+      userData,
+      recentSales,
+      teamData,
+      timestamp: Date.now()
+    }
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error.message)
+    // Return null to indicate data couldn't be fetched
+    return null
   }
 }
