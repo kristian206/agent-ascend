@@ -219,7 +219,7 @@ export default function TestStreakXPPage() {
             <li>Full streaks (with sales) have more milestones</li>
             <li>Participation streaks start at 7 days</li>
             <li>XP is never removed, even if streak is lost</li>
-            <li>Rebuilding a streak won't re-award previous milestones</li>
+            <li>Rebuilding a streak will not re-award previous milestones</li>
           </ol>
         </div>
       </div>

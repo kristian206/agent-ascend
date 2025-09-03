@@ -1,6 +1,7 @@
 'use client'
 import { useCallback, useMemo, useReducer } from 'react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import { useRealtimeUser } from '@/src/hooks/useRealtimeUser'
 import PageLayout from '@/src/components/layout/PageLayout'
 import QuickStats from '@/src/components/dashboard/QuickStats'
@@ -143,9 +144,9 @@ const TeamBanner = ({ teamData }) => (
         <span className="text-sm text-gray-300">Total Points</span>
         <span className="text-xl font-bold text-green-400">{teamData?.points || 0}</span>
       </div>
-      <a href="/team" className="mt-4 text-blue-400 hover:text-blue-300 text-sm inline-flex items-center gap-1">
+      <Link href="/team" className="mt-4 text-blue-400 hover:text-blue-300 text-sm inline-flex items-center gap-1">
         View Team →
-      </a>
+      </Link>
     </div>
   </div>
 )

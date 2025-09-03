@@ -227,10 +227,10 @@ export default function TestSignupPage() {
           <h3 className="text-lg font-semibold text-blue-400 mb-2">Testing Instructions:</h3>
           <ol className="list-decimal list-inside space-y-1 text-sm text-gray-300">
             <li>Enter a test name, email, and password</li>
-            <li>Click "Test Signup" to create a new account</li>
+            <li>Click Test Signup to create a new account</li>
             <li>Watch the logs for any errors</li>
             <li>If successful, try logging in with the new account</li>
-            <li>Use "Clean Up" to remove test data when done</li>
+            <li>Use Clean Up to remove test data when done</li>
           </ol>
         </div>
       </div>

@@ -25,7 +25,7 @@ export default function JournalInsights({ userData, todayStats }) {
           type: 'warning',
           icon: '📞',
           title: 'Low Call Activity',
-          message: `You're at ${todayStats.calls} calls today. Your average is ${avgCalls}.`,
+          message: `You are at ${todayStats.calls} calls today. Your average is ${avgCalls}.`,
           suggestion: 'Block 30 minutes for uninterrupted calling'
         })
         newSuggestions.push({
@@ -74,7 +74,7 @@ export default function JournalInsights({ userData, todayStats }) {
             type: 'celebration',
             icon: '🎉',
             title: `${userData.streak} Day Streak!`,
-            message: 'You're in the top 5% of consistent performers!',
+            message: 'You are in the top 5% of consistent performers!',
             suggestion: 'Share your success with the team'
           })
         }
@@ -121,7 +121,7 @@ export default function JournalInsights({ userData, todayStats }) {
           type: 'celebration',
           icon: '💯',
           title: 'Century Club!',
-          message: 'Over 100 points today - you're crushing it!',
+          message: 'Over 100 points today - you are crushing it!',
           suggestion: 'Document what worked today for future reference'
         })
       }

@@ -126,7 +126,7 @@ export default function TestRealtimePage() {
           
           {checkinData && (
             <div className="mt-4 p-4 bg-gray-700 rounded">
-              <div className="text-sm text-gray-400">Today's Check-in Status</div>
+              <div className="text-sm text-gray-400">Today Check-in Status</div>
               <div className="flex gap-4 mt-2">
                 <span className={`text-sm ${checkinData.intentions_completed ? 'text-green-400' : 'text-gray-500'}`}>
                   Morning: {checkinData.intentions_completed ? '✅' : '⭕'}
@@ -203,7 +203,7 @@ export default function TestRealtimePage() {
             <li>Open this page in two or more browser tabs</li>
             <li>Click any test action button in one tab</li>
             <li>Watch the values update automatically in all tabs</li>
-            <li>The green "Live" indicator shows real-time connection</li>
+            <li>The green Live indicator shows real-time connection</li>
             <li>Updates should appear within 1-2 seconds</li>
           </ol>
         </div>

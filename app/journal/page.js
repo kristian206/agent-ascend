@@ -118,7 +118,7 @@ export default function JournalPage() {
             {/* Today's Stats Bar */}
             {todayStats && (
               <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl p-6 border border-blue-500/20">
-                <h3 className="text-sm text-gray-400 mb-4">Today's Performance</h3>
+                <h3 className="text-sm text-gray-400 mb-4">Today Performance</h3>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   <div>
                     <p className="text-2xl font-bold text-white">{todayStats.calls}</p>

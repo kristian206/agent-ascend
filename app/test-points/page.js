@@ -136,7 +136,7 @@ export default function TestPointsPage() {
               onClick={resetTodayPoints}
               className="px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700"
             >
-              Reset Today's Points
+              Reset Today Points
             </button>
           </div>
         </div>
