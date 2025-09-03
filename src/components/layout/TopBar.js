@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import Link from 'next/link'
 import NotificationBell from '@/src/components/notifications/NotificationBell'
 import SalesLogger from '@/src/components/sales/SalesLogger'
 // CommandPalette is opened via parent component
@@ -153,9 +154,9 @@ export default function TopBar({ user, onOpenCommand }) {
 
                 {/* Menu Items */}
                 <div className="p-2">
-                  <a href="/profile" className="block px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300">
+                  <Link href="/profile" className="block px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300">
                     👤 My Profile
-                  </a>
+                  </Link>
                   <a href="/settings" className="block px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300">
                     ⚙️ Settings
                   </a>

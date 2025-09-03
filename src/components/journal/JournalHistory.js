@@ -176,7 +176,7 @@ export default function JournalHistory({ userId }) {
                     <p className="text-sm text-white">{entry.accomplished}</p>
                   </div>
                   <div className="bg-purple-500/10 rounded-lg p-3 border border-purple-500/20">
-                    <p className="text-xs text-purple-400 mb-1">Tomorrow's Priority</p>
+                    <p className="text-xs text-purple-400 mb-1">Tomorrow Priority</p>
                     <p className="text-sm text-white">{entry.tomorrow}</p>
                   </div>
                   
@@ -200,7 +200,7 @@ export default function JournalHistory({ userId }) {
       ) : (
         <div className="text-center py-12">
           <p className="text-gray-400">No journal entries yet</p>
-          <p className="text-sm text-gray-500 mt-2">Start with today's intentions</p>
+          <p className="text-sm text-gray-500 mt-2">Start with today intentions</p>
         </div>
       )}
     </div>

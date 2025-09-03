@@ -184,7 +184,7 @@ export default function JournalInsights({ userData, todayStats }) {
       {/* Smart Suggestions */}
       <div className="bg-gray-900 rounded-2xl p-6 border border-gray-700">
         <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-          <span>💡</span> Today's Suggestions
+          <span>💡</span> Today Suggestions
         </h3>
         
         {suggestions.length > 0 ? (
