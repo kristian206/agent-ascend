@@ -1,6 +1,66 @@
 'use client'
 import { useState } from 'react'
 
+/**
+ * DashboardCard component provides a flexible container for displaying metrics,
+ * content, and actions in a glass morphism design.
+ * 
+ * Features:
+ * - Glass morphism styling with hover effects
+ * - Density-aware spacing (comfortable/condensed modes)
+ * - Expandable details section
+ * - Primary action button
+ * - Trend indicators with directional colors
+ * - Custom content area for complex layouts
+ * 
+ * @param {Object} props - Component properties
+ * @param {string} props.title - Card title/heading text
+ * @param {string|number} [props.metric] - Primary metric value to display
+ * @param {string} [props.metricLabel] - Label/description for the metric
+ * @param {string} [props.trend] - Trend indicator text (e.g., "+12%", "-5%")
+ * @param {string} [props.trendDirection] - Trend direction: 'up', 'down', or neutral
+ * @param {Object} [props.primaryAction] - Primary action button configuration
+ * @param {string} props.primaryAction.label - Button text
+ * @param {Function} props.primaryAction.onClick - Button click handler
+ * @param {React.ReactNode} [props.details] - Expandable details content
+ * @param {boolean} [props.isCondensed=false] - Use condensed density mode
+ * @param {string} [props.className=''] - Additional CSS classes
+ * @param {React.ReactNode} [props.children] - Custom content for the card body
+ * 
+ * @returns {JSX.Element} Rendered DashboardCard component
+ * 
+ * @example
+ * // Basic metric card
+ * <DashboardCard 
+ *   title="Sales This Month"
+ *   metric="42"
+ *   metricLabel="Policies sold"
+ *   trend="+12%"
+ *   trendDirection="up"
+ * />
+ * 
+ * @example
+ * // Card with action and details
+ * <DashboardCard 
+ *   title="Recent Activity"
+ *   primaryAction={{
+ *     label: 'View All',
+ *     onClick: () => navigate('/activities')
+ *   }}
+ *   details={<ActivityDetails />}
+ * >
+ *   <ActivitySummary />
+ * </DashboardCard>
+ * 
+ * @example
+ * // Condensed card for compact layouts
+ * <DashboardCard 
+ *   title="Quick Stats"
+ *   metric="128"
+ *   isCondensed={true}
+ *   className="col-span-1"
+ * />
+ */
 export default function DashboardCard({
   title,
   metric,
@@ -98,7 +158,68 @@ export default function DashboardCard({
   )
 }
 
-// Specialized card for lists
+/**
+ * ListCard component provides a specialized card layout for displaying
+ * lists of items with pagination and interactive elements.
+ * 
+ * Features:
+ * - Automatic pagination with "Show all" expansion
+ * - Interactive list items with hover states
+ * - Badge support for item status indicators
+ * - Empty state handling
+ * - Density-aware spacing
+ * - Keyboard navigation support
+ * 
+ * @param {Object} props - Component properties
+ * @param {string} props.title - Card title
+ * @param {Array} props.items - Array of list items to display
+ * @param {string} props.items[].id - Unique identifier for the item
+ * @param {string} props.items[].title - Primary text for the item
+ * @param {string} [props.items[].subtitle] - Secondary text for the item
+ * @param {string} [props.items[].icon] - Icon/emoji for the item
+ * @param {Object} [props.items[].badge] - Badge configuration
+ * @param {string} props.items[].badge.type - Badge type: 'hot', 'new', 'default'
+ * @param {string} props.items[].badge.label - Badge text
+ * @param {string} [props.items[].meta] - Metadata text (e.g., timestamp)
+ * @param {Function} [props.items[].onClick] - Click handler for the item
+ * @param {string} [props.emptyMessage] - Message to show when list is empty
+ * @param {Object} [props.primaryAction] - Primary action button configuration
+ * @param {string} props.primaryAction.label - Button text
+ * @param {Function} props.primaryAction.onClick - Button click handler
+ * @param {boolean} [props.isCondensed=false] - Use condensed density mode
+ * @param {number} [props.maxItems=5] - Maximum items to show initially
+ * 
+ * @returns {JSX.Element} Rendered ListCard component
+ * 
+ * @example
+ * // Basic list card
+ * <ListCard 
+ *   title="Recent Activities"
+ *   items={activities}
+ *   emptyMessage="No recent activity"
+ *   maxItems={3}
+ * />
+ * 
+ * @example
+ * // List with badges and actions
+ * <ListCard 
+ *   title="Hot Leads"
+ *   items={[
+ *     {
+ *       id: '1',
+ *       title: 'John Doe - Auto Quote',
+ *       subtitle: 'Interested in comprehensive coverage',
+ *       badge: { type: 'hot', label: 'Hot' },
+ *       meta: '2 hours ago',
+ *       onClick: () => openLead('1')
+ *     }
+ *   ]}
+ *   primaryAction={{
+ *     label: 'View All Leads',
+ *     onClick: () => navigate('/leads')
+ *   }}
+ * />
+ */
 export function ListCard({
   title,
   items,

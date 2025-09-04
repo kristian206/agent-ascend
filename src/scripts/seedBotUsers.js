@@ -125,7 +125,7 @@ function getRandomInt(min, max) {
 
 function generateEmail(firstName, lastName) {
   const num = getRandomInt(1, 999);
-  return `${firstName.toLowerCase()}.${lastName.toLowerCase()}${num}@agentascend.demo`;
+  return `${firstName.toLowerCase()}.${lastName.toLowerCase()}${num}@agencymaxplus.demo`;
 }
 
 function generatePhoneNumber() {

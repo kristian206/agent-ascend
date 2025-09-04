@@ -1,4 +1,4 @@
-# Accessibility & Design Update - Agent Ascend
+# Accessibility & Design Update - Agency Max Plus
 
 ## ✅ Completed Changes
 
@@ -27,7 +27,7 @@
 ### 3. 🗺️ Redesigned Navigation Header
 
 #### Layout Changes
-- **Logo Position:** Top left with "Agent Ascend" text
+- **Logo Position:** Top left with "Agency Max Plus" text
 - **Log Sale Button:** Prominent position next to logo
   - Blue gradient background
   - White text with shadow

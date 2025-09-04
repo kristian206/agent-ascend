@@ -13,8 +13,8 @@ All your code is automatically backed up to GitHub. Even if something breaks loc
 
 ## 📍 Your Code Locations
 
-1. **Local Copy:** `C:\Users\Admin\agent-ascend`
-2. **GitHub (Cloud Backup):** https://github.com/kristian206/agent-ascend
+1. **Local Copy:** `C:\Users\Admin\agency-max-plus`
+2. **GitHub (Cloud Backup):** https://github.com/kristian206/agency-max-plus
 3. **Live Site (if deployed):** Your Vercel URL
 
 ---
@@ -37,7 +37,7 @@ All your code is automatically backed up to GitHub. Even if something breaks loc
 
 ### Command 1: See what's changed
 ```bash
-cd C:\Users\Admin\agent-ascend
+cd C:\Users\Admin\agency-max-plus
 git status
 ```
 **What to look for:** 
@@ -65,7 +65,7 @@ git push origin master
 
 **Step 2:** Restore to last working version:
 ```bash
-cd C:\Users\Admin\agent-ascend
+cd C:\Users\Admin\agency-max-plus
 git stash
 git pull origin master
 npm install
@@ -89,19 +89,19 @@ git checkout -- path/to/deleted/file.js
 **Step 1:** Rename your broken folder (keep it as backup):
 ```bash
 cd C:\Users\Admin
-mv agent-ascend agent-ascend-broken
+mv agency-max-plus agency-max-plus-broken
 ```
 
 **Step 2:** Clone fresh from GitHub:
 ```bash
-git clone https://github.com/kristian206/agent-ascend.git
-cd agent-ascend
+git clone https://github.com/kristian206/agency-max-plus.git
+cd agency-max-plus
 npm install
 ```
 
 **Step 3:** Copy your .env.local file:
 ```bash
-cp ../agent-ascend-broken/.env.local .
+cp ../agency-max-plus-broken/.env.local .
 ```
 
 **Step 4:** Start the app:
@@ -207,7 +207,7 @@ git show HEAD
 If you're stuck:
 1. Check the error message - often tells you exactly what's wrong
 2. Look at CHANGELOG.md - see if recent changes might have caused it
-3. Check GitHub issues: https://github.com/kristian206/agent-ascend/issues
+3. Check GitHub issues: https://github.com/kristian206/agency-max-plus/issues
 4. Restore to last working version (see Emergency Recovery above)
 
 ---

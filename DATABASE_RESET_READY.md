@@ -5,8 +5,8 @@
 The `.env.local` file has been successfully updated with your Firebase Admin SDK credentials from the service account JSON file.
 
 ### Credentials Added:
-- **Project ID**: sales-thermometer
-- **Client Email**: firebase-adminsdk-fbsvc@sales-thermometer.iam.gserviceaccount.com
+- **Project ID**: agency-max-plus
+- **Client Email**: firebase-adminsdk-fbsvc@agency-max-plus.iam.gserviceaccount.com
 - **Private Key**: ✅ Successfully added (encrypted)
 
 ### Admin Account Configuration:
@@ -99,5 +99,5 @@ Once logged in as admin, you can:
 ---
 
 **Setup completed**: August 30, 2025
-**Firebase Project**: sales-thermometer
+**Firebase Project**: agency-max-plus
 **App Name**: Agency Max +

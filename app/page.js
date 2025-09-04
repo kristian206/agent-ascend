@@ -368,12 +368,10 @@ export default function AuthPage() {
     setError('')
     
     try {
-      console.log('Starting signup process for:', formData.email)
       
       // Create auth user
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
       const user = userCredential.user
-      console.log('Firebase Auth user created successfully:', user.uid)
       
       // Send email verification
       try {
@@ -381,7 +379,6 @@ export default function AuthPage() {
           url: `${window.location.origin}/dashboard`,
           handleCodeInApp: false
         })
-        console.log('Verification email sent')
       } catch (emailErr) {
         console.error('Email verification failed (non-critical):', emailErr)
       }
@@ -413,9 +410,7 @@ export default function AuthPage() {
       }
       
       try {
-        console.log('Creating member document for:', user.uid)
-        await setDoc(doc(db, 'members', user.uid), memberData)
-        console.log('Member document created successfully')
+        await setDoc(doc(db, 'members', user.uid), userData)
       } catch (firestoreErr) {
         console.error('CRITICAL: Failed to create member document:', firestoreErr)
         console.error('Error details:', {
@@ -428,7 +423,6 @@ export default function AuthPage() {
         // Delete the auth user if document creation fails
         try {
           await user.delete()
-          console.log('Rolled back auth user due to Firestore failure')
         } catch (deleteErr) {
           console.error('Failed to rollback auth user:', deleteErr)
         }
@@ -439,7 +433,6 @@ export default function AuthPage() {
       // Show email verification screen
       setCurrentUser(user)
       setMode('verify')
-      console.log('Signup completed successfully')
     } catch (err) {
       console.error('Signup error:', err)
       console.error('Full error object:', {

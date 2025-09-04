@@ -2,7 +2,7 @@
 
 ## 🎯 Summary
 
-Complete UI redesign implementing a premium "Liquid Glass" design system with Allstate brand colors. This PR represents a comprehensive 10-step transformation of the Agent Ascend platform, focusing on improved user experience, accessibility, and performance.
+Complete UI redesign implementing a premium "Liquid Glass" design system with Allstate brand colors. This PR represents a comprehensive 10-step transformation of the Agency Max Plus platform, focusing on improved user experience, accessibility, and performance.
 
 ### Key Changes
 - ✨ New glass morphism design system with layered translucent surfaces
@@ -148,7 +148,7 @@ Responsive design on mobile devices.
 
 ## ✍️ Author Notes
 
-This PR represents a significant milestone in modernizing Agent Ascend. The new Liquid Glass design system provides a premium, professional feel while maintaining excellent performance and accessibility standards. The phased rollout approach ensures we can gather feedback and make adjustments before full deployment.
+This PR represents a significant milestone in modernizing Agency Max Plus. The new Liquid Glass design system provides a premium, professional feel while maintaining excellent performance and accessibility standards. The phased rollout approach ensures we can gather feedback and make adjustments before full deployment.
 
 The UI version toggle (`?ui=v2`) allows users to switch between old and new interfaces during the transition period. All existing functionality is preserved with improved UX.
 

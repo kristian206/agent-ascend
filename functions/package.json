@@ -1,6 +1,6 @@
 {
-  "name": "agent-ascend-functions",
-  "description": "Cloud Functions for Agent Ascend",
+  "name": "agency-max-plus-functions",
+  "description": "Cloud Functions for Agency Max Plus",
   "scripts": {
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",

@@ -147,7 +147,7 @@ function getRandomInt(min, max) {
 }
 
 function generateEmail(firstName, lastName, index) {
-  return `${firstName.toLowerCase()}.${lastName.toLowerCase()}${index}@agentascend.bot`;
+  return `${firstName.toLowerCase()}.${lastName.toLowerCase()}${index}@agencymaxplus.bot`;
 }
 
 function generatePhoneNumber() {
@@ -220,7 +220,7 @@ function generateTodayTimestamps() {
 
 // Main seeding function
 async function seedBotUsers() {
-  console.log('🚀 Starting bot user generation for Agent Ascend...');
+  console.log('🚀 Starting bot user generation for Agency Max Plus...');
   console.log('📍 Location: Washington State');
   console.log('🕐 Activity Hours: 8 AM - 8 PM');
   
@@ -491,7 +491,7 @@ async function seedBotUsers() {
 
 // Run the seeder
 console.log('═'.repeat(60));
-console.log('AGENT ASCEND BOT USER SEEDER');
+console.log('AGENCY MAX PLUS BOT USER SEEDER');
 console.log('═'.repeat(60));
 
 seedBotUsers()

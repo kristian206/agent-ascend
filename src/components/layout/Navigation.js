@@ -163,7 +163,7 @@ export default function Navigation({ user }) {
                 {/* God Mode Indicator */}
                 {userData?.role === 'god' && (
                   <Link
-                    href="/admin"
+                    href="/admin/panel"
                     className="flex items-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 transition-all"
                     title="Admin Panel"
                   >

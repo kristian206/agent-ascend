@@ -3,7 +3,19 @@ import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
-// Security fix: Using environment variables instead of hardcoded values
+/**
+ * Firebase configuration object constructed from environment variables.
+ * This ensures sensitive configuration is not hardcoded in the source code.
+ * 
+ * @type {Object}
+ * @property {string} apiKey - Firebase Web API key (public)
+ * @property {string} authDomain - Firebase Auth domain for authentication
+ * @property {string} projectId - Firebase project identifier
+ * @property {string} storageBucket - Cloud Storage bucket for file uploads
+ * @property {string} messagingSenderId - FCM sender ID for notifications
+ * @property {string} appId - Firebase app identifier
+ * @property {string} measurementId - Google Analytics measurement ID (optional)
+ */
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -14,7 +26,26 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 }
 
-// Validate configuration
+/**
+ * Validates Firebase configuration to ensure all required fields are present.
+ * Throws an error if critical configuration is missing.
+ * 
+ * @param {Object} config - Firebase configuration object to validate
+ * @param {string} config.apiKey - Firebase Web API key
+ * @param {string} config.authDomain - Firebase Auth domain
+ * @param {string} config.projectId - Firebase project ID
+ * 
+ * @returns {boolean} True if configuration is valid
+ * @throws {Error} When required configuration fields are missing
+ * 
+ * @example
+ * try {
+ *   validateFirebaseConfig(firebaseConfig)
+ *   console.log('Configuration is valid')
+ * } catch (error) {
+ *   console.error('Invalid configuration:', error.message)
+ * }
+ */
 function validateFirebaseConfig(config) {
   const requiredFields = ['apiKey', 'authDomain', 'projectId']
   const missingFields = requiredFields.filter(field => !config[field])
@@ -56,5 +87,56 @@ try {
   throw error
 }
 
-export { auth, db, storage }
+/**
+ * Firebase Authentication service instance.
+ * Provides user authentication, session management, and auth state monitoring.
+ * 
+ * @type {Auth}
+ * @example
+ * import { auth } from '@/src/services/firebase'
+ * import { signInWithEmailAndPassword } from 'firebase/auth'
+ * 
+ * const user = await signInWithEmailAndPassword(auth, email, password)
+ */
+export { auth }
+
+/**
+ * Firestore Database service instance.
+ * Provides NoSQL document database functionality with real-time updates.
+ * 
+ * @type {Firestore}
+ * @example
+ * import { db } from '@/src/services/firebase'
+ * import { collection, getDocs } from 'firebase/firestore'
+ * 
+ * const snapshot = await getDocs(collection(db, 'users'))
+ */
+export { db }
+
+/**
+ * Firebase Cloud Storage service instance.
+ * Provides file upload, download, and management capabilities.
+ * 
+ * @type {FirebaseStorage}
+ * @example
+ * import { storage } from '@/src/services/firebase'
+ * import { ref, uploadBytes } from 'firebase/storage'
+ * 
+ * const storageRef = ref(storage, 'avatars/user123.jpg')
+ * await uploadBytes(storageRef, file)
+ */
+export { storage }
+
+/**
+ * Firebase App instance.
+ * The main Firebase application object that connects all services.
+ * 
+ * @type {FirebaseApp}
+ * @default
+ * @example
+ * import app from '@/src/services/firebase'
+ * import { getAnalytics } from 'firebase/analytics'
+ * 
+ * const analytics = getAnalytics(app)
+ */
 export default app

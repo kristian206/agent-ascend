@@ -68,7 +68,6 @@ export async function awardDailyActivityPoints(userId, activityType) {
         lastPointsUpdate: new Date().toISOString()
       })
       
-      console.log(`Awarded ${pointsToAdd} points to user ${userId} for ${activityType}`)
       
       return {
         success: true,
@@ -132,7 +131,6 @@ export async function calculateTodayPoints(userId) {
       lastPointsCalculation: new Date().toISOString()
     })
     
-    console.log(`Calculated today's points for ${userId}: ${totalPoints}`)
     
     return {
       success: true,

@@ -3,7 +3,7 @@
 ## Quick Fix for Development (Firebase Console)
 
 1. Go to https://console.firebase.google.com/
-2. Select your project: **sales-thermometer**
+2. Select your project: **agency-max-plus**
 3. Navigate to **Firestore Database** in the left sidebar
 4. Click on the **Rules** tab
 5. For immediate testing, replace the rules with this temporary version:
@@ -32,7 +32,7 @@ npm install -g firebase-tools
 
 ### Deploy Rules
 ```bash
-cd agent-ascend
+cd agency-max-plus
 firebase login
 firebase deploy --only firestore:rules
 ```

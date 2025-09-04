@@ -15,7 +15,6 @@ export default async function Dashboard() {
     const cookieStore = cookies()
     session = await getUserSession(cookieStore)
   } catch (error) {
-    console.log('Server auth not available, falling back to client-side auth')
   }
   
   // If no session, render client component to handle auth
@@ -34,7 +33,6 @@ export default async function Dashboard() {
   try {
     initialData = await fetchDashboardData(session.uid)
   } catch (error) {
-    console.log('Could not prefetch data, will load on client')
   }
   
   return (

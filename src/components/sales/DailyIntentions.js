@@ -114,13 +114,7 @@ export default function DailyIntentions() {
       // Calculate enhanced streak with XP
       const enhancedResult = await calculateEnhancedStreak(user.uid)
       
-      // Log event
-      console.log('intentions_submitted', { 
-        user_id: user.uid, 
-        fullStreak: enhancedResult.fullStreak,
-        participationStreak: enhancedResult.participationStreak,
-        xpEarned: enhancedResult.xpEarned 
-      })
+      // Analytics tracking for intentions submitted
       
       // Show points earned notification
       if (pointsResult.success && pointsResult.pointsAwarded > 0) {

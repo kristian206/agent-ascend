@@ -15,44 +15,56 @@ export default function Button({
 }) {
   const variants = {
     primary: `
-      bg-gradient-to-r from-primary-500 to-primary-600
+      bg-gradient-to-r from-brand-500 to-brand-600
       text-white font-medium
-      hover:from-primary-600 hover:to-primary-700
-      active:from-primary-700 active:to-primary-800
-      shadow-elevation-low hover:shadow-elevation-medium
-      disabled:from-gray-400 disabled:to-gray-500
+      hover:from-brand-600 hover:to-brand-700
+      active:from-brand-700 active:to-brand-800
+      elev-1 hover:elev-2
+      disabled:from-ink-400 disabled:to-ink-500
+      focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-black
     `,
     secondary: `
       glass hover:glass-strong
-      text-primary-700 font-medium
-      border border-primary-200/30
-      hover:border-primary-300/50
+      text-brand-600 font-medium
+      border border-brand-200/30
+      hover:border-brand-300/50 hover:text-brand-700
       active:scale-95
+      focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-black
     `,
     ghost: `
-      text-text-secondary hover:text-primary-600
+      text-ink-400 hover:text-brand-600
       hover:glass-subtle
       font-medium
+      focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-black
     `,
     danger: `
-      bg-gradient-to-r from-error to-error-dark
+      bg-gradient-to-r from-red-500 to-red-600
       text-white font-medium
-      hover:from-error-dark hover:to-red-700
-      shadow-elevation-low hover:shadow-elevation-medium
+      hover:from-red-600 hover:to-red-700
+      elev-1 hover:elev-2
+      focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-black
     `,
     success: `
-      bg-gradient-to-r from-success to-success-dark
+      bg-gradient-to-r from-green-500 to-green-600
       text-white font-medium
-      hover:from-success-dark hover:to-green-700
-      shadow-elevation-low hover:shadow-elevation-medium
+      hover:from-green-600 hover:to-green-700
+      elev-1 hover:elev-2
+      focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black
+    `,
+    brand: `
+      glass-brand
+      text-white font-medium
+      hover:glass-brand-subtle hover:text-brand-100
+      elev-1 hover:elev-2
+      focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-black
     `,
   }
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm rounded-lg',
-    md: 'px-4 py-2.5 text-base rounded-xl',
-    lg: 'px-6 py-3 text-lg rounded-xl',
-    xl: 'px-8 py-4 text-xl rounded-2xl',
+    sm: 'px-3 py-1.5 type-list-body radius-lg',
+    md: 'p-space-3 type-detail-body radius-xl',
+    lg: 'p-space-4 type-detail-title radius-xl',
+    xl: 'p-space-5 type-dashboard-metric radius-2xl',
   }
 
   const baseClasses = `

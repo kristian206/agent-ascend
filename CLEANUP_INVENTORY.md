@@ -2,7 +2,7 @@
 Generated: August 30, 2025
 
 ## Executive Summary
-- **Project Name**: Agency Max + (formerly Agent Ascend)
+- **Project Name**: Agency Max + (formerly Agency Max Plus)
 - **Version**: 1.5.0
 - **Framework**: Next.js 15.5.2 with React 19.1.0
 - **Total Components**: 58 files (12,311 lines)
@@ -13,7 +13,7 @@ Generated: August 30, 2025
 ## 📁 File Structure Overview
 
 ```
-agent-ascend/
+agency-max-plus/
 ├── app/                    # Next.js 13+ App Router pages
 │   ├── page.js            # Main login (857 lines)
 │   ├── dashboard/         # Dashboard pages

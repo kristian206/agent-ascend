@@ -2,6 +2,51 @@
 import { useState, useEffect } from 'react'
 import { parseAvatarData, generateInitialsAvatar } from '@/src/services/avatarService'
 
+/**
+ * UserAvatar component displays user profile pictures with intelligent fallbacks
+ * and optional status indicators.
+ * 
+ * Features:
+ * - Supports multiple avatar sources (DiceBear, uploads, URLs, initials)
+ * - Automatic fallback to initials on image load failure
+ * - Optional online/offline status indicator
+ * - Optional user level badge
+ * - Responsive sizing with consistent proportions
+ * 
+ * @param {Object} props - Component properties
+ * @param {Object} props.user - User object containing avatar and profile data
+ * @param {string} props.user.avatar - Avatar URL or DiceBear identifier
+ * @param {string} [props.user.name] - User's display name for initials fallback
+ * @param {string} [props.user.displayName] - Alternative display name field
+ * @param {number} [props.user.level] - User's level for badge display
+ * @param {boolean} [props.user.isOnline] - User's online status
+ * @param {string} [props.size='md'] - Avatar size: xs, sm, md, lg, xl, 2xl, 3xl
+ * @param {string} [props.className=''] - Additional CSS classes
+ * @param {boolean} [props.showStatus=false] - Show online/offline status indicator
+ * @param {boolean} [props.showLevel=false] - Show user level badge
+ * 
+ * @returns {JSX.Element} Rendered UserAvatar component
+ * 
+ * @example
+ * // Basic avatar
+ * <UserAvatar user={currentUser} />
+ * 
+ * @example
+ * // Avatar with status and level indicators
+ * <UserAvatar 
+ *   user={currentUser} 
+ *   size="lg" 
+ *   showStatus={true} 
+ *   showLevel={true} 
+ * />
+ * 
+ * @example
+ * // Custom styling
+ * <UserAvatar 
+ *   user={currentUser} 
+ *   className="ring-2 ring-blue-500 shadow-lg" 
+ * />
+ */
 export default function UserAvatar({
   user,
   size = 'md',

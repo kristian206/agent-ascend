@@ -462,7 +462,6 @@ function WelcomeStep({ user, onNext }) {
 }
 
 function ProfileStep({ formData, setFormData, onNext }) {
-  // const [uploadedAvatar, setUploadedAvatar] = useState(null)
 
   return (
     <div className="space-y-6">
@@ -535,9 +534,6 @@ function ProfileStep({ formData, setFormData, onNext }) {
               avatarData: avatarInfo.data,
               avatarType: avatarInfo.type === 'custom' ? 'uploaded' : 'generated'
             })
-            // if (avatarInfo.type === 'custom') {
-            //   setUploadedAvatar(avatarInfo.url)
-            // }
           }}
         />
       </div>

@@ -1,4 +1,4 @@
-# Agent Ascend Naming Conventions
+# Agency Max Plus Naming Conventions
 
 ## CRITICAL CLARIFICATION: Users vs Members
 

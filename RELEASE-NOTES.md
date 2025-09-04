@@ -2,7 +2,7 @@
 
 ## 🎉 Major Release: Complete UI Overhaul
 
-We're excited to announce Agent Ascend v2.0.0, featuring a complete redesign with our new "Liquid Glass" design system. This release represents months of work reimagining how insurance agents interact with their performance data.
+We're excited to announce Agency Max Plus v2.0.0, featuring a complete redesign with our new "Liquid Glass" design system. This release represents months of work reimagining how insurance agents interact with their performance data.
 
 ## 🚀 What's New
 
@@ -148,7 +148,7 @@ Special thanks to:
 
 ## 📝 Full Changelog
 
-View the complete list of changes on [GitHub](https://github.com/yourusername/agent-ascend/releases/tag/v2.0.0)
+View the complete list of changes on [GitHub](https://github.com/yourusername/agency-max-plus/releases/tag/v2.0.0)
 
 ---
 

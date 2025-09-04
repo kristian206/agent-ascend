@@ -1,7 +1,7 @@
 # Firestore Security Rules Documentation
 
 ## Overview
-This document provides comprehensive documentation for the Agent Ascend platform's Firestore security rules. The rules implement role-based access control (RBAC) with authentication requirements and team-based permissions.
+This document provides comprehensive documentation for the Agency Max Plus platform's Firestore security rules. The rules implement role-based access control (RBAC) with authentication requirements and team-based permissions.
 
 ## Rule Version
 - **Version**: 2

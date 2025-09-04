@@ -76,7 +76,6 @@ export default function AuthProvider({ children }) {
         // Calculate and update today's points
         const pointsResult = await calculateTodayPoints(user.uid)
         if (pointsResult.success) {
-          console.log(`Today's points calculated: ${pointsResult.todayPoints}`)
         }
         
         // Check profile completion for onboarding
@@ -144,11 +143,9 @@ export default function AuthProvider({ children }) {
             setUserData(null)
           }
         } else if (error.code === 'unavailable' || error.code === 'deadline-exceeded') {
-          console.log('Retrying auth operation due to transient error...')
           // Wait 2 seconds then retry once
           setTimeout(() => {
             if (user) {
-              console.log('Retrying user document fetch...')
               // Simple retry - just try to get the document again
               const retryUserRef = doc(db, 'members', user.uid)
               getDoc(retryUserRef).then(doc => {

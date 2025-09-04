@@ -2,7 +2,7 @@
 Generated: August 30, 2025
 
 ## Summary
-Comprehensive cleanup of the Agency Max + (formerly Agent Ascend) codebase, removing unused files, components, and debug code.
+Comprehensive cleanup of the Agency Max + (formerly Agency Max Plus) codebase, removing unused files, components, and debug code.
 
 ## 🗑️ Files Deleted
 

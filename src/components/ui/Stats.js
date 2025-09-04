@@ -1,6 +1,7 @@
 'use client'
+import { memo } from 'react'
 
-export default function Stats({ stats, columns = 4 }) {
+const Stats = memo(function Stats({ stats, columns = 4 }) {
   const gridCols = {
     1: 'grid-cols-1',
     2: 'grid-cols-1 sm:grid-cols-2',
@@ -16,7 +17,9 @@ export default function Stats({ stats, columns = 4 }) {
       ))}
     </div>
   )
-}
+})
+
+export default Stats
 
 export function StatCard({ 
   label, 

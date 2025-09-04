@@ -17,7 +17,7 @@ module.exports = {
           750: '#2d3340',
           850: '#1a1f2c',
         },
-        // LiquidGlass Agent Ascend colors
+        // LiquidGlass Agency Max Plus colors
         'aa-blue': {
           700: '#073B7A',
           600: '#0C4DA2',

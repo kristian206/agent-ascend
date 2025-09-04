@@ -33,7 +33,7 @@ export default function SessionManager({ children }) {
         if ('Notification' in window && Notification.permission === 'granted') {
           new Notification('Session Expiring Soon', {
             body: `Your session will expire in ${remaining} minutes due to inactivity`,
-            icon: '/images/logo/agent-ascend-logo.svg'
+            icon: '/images/logo/agency-max-plus-logo.svg'
           })
         }
       }
